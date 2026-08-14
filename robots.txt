@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /js/lib/
+Disallow: /models/
+Disallow: /data/
+
+Sitemap: https://frankyi-llll.github.io/ailaoshan-weather/sitemap.xml

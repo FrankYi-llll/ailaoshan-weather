@@ -87,8 +87,9 @@
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1d3552);
-    // 雾效：远山淡入背景，增加深度感
-    scene.fog = new THREE.FogExp2(0x1d3552, 0.018);
+    // 雾效：使用较亮的雾色，保证远山不会被“吞”成黑色
+    scene.fog = new THREE.FogExp2(0x4a6b8a, 0.0075);
+    scene.background = new THREE.Color(0x4a6b8a);
 
     const container = $("three3DContainer");
     const W = container.clientWidth || 900, H = container.clientHeight || 520;
@@ -128,11 +129,15 @@
     sun.shadow.bias = -0.0006;
     scene.add(sun);
 
-    const hemi = new THREE.HemisphereLight(0x8fb8ff, 0x3d3225, 0.55);
+    const hemi = new THREE.HemisphereLight(0x8fb8ff, 0x3d3225, 0.65);
     scene.add(hemi);
-    const fill = new THREE.DirectionalLight(0x5a6f8e, 0.28); // 右下弱补光
+    const fill = new THREE.DirectionalLight(0x7a9ac0, 0.38); // 右下补光
     fill.position.set(5, 3, 4);
     scene.add(fill);
+    // 相机补光：始终朝向地形中心，保证用户当前视角的山体正面有光
+    const camLight = new THREE.DirectionalLight(0xcfe8ff, 0.42);
+    camLight.position.copy(camera.position);
+    scene.add(camLight);
 
     /* ---- 地形网格 ---- */
     terrainMesh = buildTerrain();
@@ -212,6 +217,7 @@
     /* ---- 渲染循环 ---- */
     renderer.setAnimationLoop(()=>{
       controls.update();
+      camLight.position.copy(camera.position);
       renderer.render(scene, camera);
     });
   }
@@ -251,8 +257,8 @@
     // 自定义着色器：顶点色 + 多光源（太阳光/天空/地面/轮廓光）+ 雾效
     const m = new THREE.ShaderMaterial({
       uniforms: {
-        fogColor: {value: new THREE.Color(0x1d3552)},
-        fogDensity: {value: 0.018}
+        fogColor: {value: new THREE.Color(0x4a6b8a)},
+        fogDensity: {value: 0.0075}
       },
       vertexShader: `
         attribute vec3 color;
@@ -557,13 +563,13 @@
     ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 2;
     ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 78px 'PingFang SC','Microsoft YaHei',sans-serif";
+    ctx.font = "bold 60px 'PingFang SC','Microsoft YaHei',sans-serif";
     ctx.textBaseline = "middle";
-    ctx.fillText(main, W/2, sub ? 62 : 80);
+    ctx.fillText(main, W/2, sub ? 56 : 72);
     if(sub){
       ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "46px 'PingFang SC','Microsoft YaHei',sans-serif";
-      ctx.fillText(sub, W/2, 120);
+      ctx.font = "34px 'PingFang SC','Microsoft YaHei',sans-serif";
+      ctx.fillText(sub, W/2, 110);
     }
     // 重置阴影
     ctx.shadowColor = "transparent";
@@ -574,19 +580,19 @@
     const col = LABEL_COLORS[kind] || "#ffe082";
     // 根据类型和文字长度调整标签尺寸（sizeAttenuation=false 保证远距离也清晰可见）
     const mainLen = (main || "").length;
-    let sw = 3.2, sh = 0.58, yOff = 1.05;
-    if(kind === "peak"){ sw = 2.5; sh = 0.48; yOff = 0.95; }
-    else if(kind === "river" || kind === "road"){ sw = 2.3; sh = 0.46; yOff = 0.78; }
-    else if(kind === "region"){ sw = Math.min(6.0, 3.2 + mainLen * 0.22); sh = 0.60; yOff = 1.18; }
-    else if(kind === "county" && mainLen > 4){ sw = 2.75; }
+    let sw = 2.0, sh = 0.36, yOff = 0.95;
+    if(kind === "peak"){ sw = 1.55; sh = 0.30; yOff = 0.85; }
+    else if(kind === "river" || kind === "road"){ sw = 1.45; sh = 0.28; yOff = 0.70; }
+    else if(kind === "region"){ sw = Math.min(3.6, 2.0 + mainLen * 0.14); sh = 0.38; yOff = 1.05; }
+    else if(kind === "county" && mainLen > 4){ sw = 1.75; }
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeLabelTexture(main, sub, col), transparent: true, depthTest: true,
       sizeAttenuation: false
     }));
     sprite.position.set(p.x, p.y + yOff, p.z);
-    // sizeAttenuation=false：标签保持固定屏幕大小，离远也能看清
-    sprite.scale.set(sw * 0.7, sh * 0.7, 1);
-    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.7, y: sh * 0.7}};
+    // sizeAttenuation=false：标签保持固定屏幕大小，离远也能看清；0.65 是世界单位到屏幕像素的折中比例
+    sprite.scale.set(sw * 0.65, sh * 0.65, 1);
+    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.65, y: sh * 0.65}};
     labelsGroup.add(sprite);
     // 引线（从标签底到地表）
     const lg = new THREE.BufferGeometry().setFromPoints([
