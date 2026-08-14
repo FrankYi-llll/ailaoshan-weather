@@ -590,9 +590,9 @@
       sizeAttenuation: false
     }));
     sprite.position.set(p.x, p.y + yOff, p.z);
-    // sizeAttenuation=false：标签保持固定屏幕大小；0.42 让正常视角下地名牌面更小巧、不遮挡地形
-    sprite.scale.set(sw * 0.42, sh * 0.42, 1);
-    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.42, y: sh * 0.42}};
+    // sizeAttenuation=false：标签保持固定屏幕大小；0.30 让地名更小、几乎不遮挡地形
+    sprite.scale.set(sw * 0.30, sh * 0.30, 1);
+    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.30, y: sh * 0.30}};
     labelsGroup.add(sprite);
     // 引线（从标签底到地表）
     const lg = new THREE.BufferGeometry().setFromPoints([
@@ -708,7 +708,7 @@
         transparent: true, depthTest: true, sizeAttenuation: false
       }));
       tSprite.position.set(mid.x, mid.y + 0.75, mid.z);
-      tSprite.scale.set(0.82, 0.16, 1);
+      tSprite.scale.set(0.60, 0.12, 1);
       routesGroup.add(tSprite);
     });
   }
@@ -729,7 +729,7 @@
     const nTex = makeLabelTexture("N", "", "#ff5252");
     const nSprite = new THREE.Sprite(new THREE.SpriteMaterial({map: nTex, transparent: true, sizeAttenuation: false}));
     nSprite.position.y = 1.65;
-    nSprite.scale.set(0.25, 0.05, 1);
+    nSprite.scale.set(0.18, 0.04, 1);
     g.add(shaft, head, nSprite);
     // 放置于地形西北角外
     const hm = HM();
