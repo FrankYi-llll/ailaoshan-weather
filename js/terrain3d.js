@@ -563,13 +563,13 @@
     ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 2;
     ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 38px 'PingFang SC','Microsoft YaHei',sans-serif";
+    ctx.font = "bold 32px 'PingFang SC','Microsoft YaHei',sans-serif";
     ctx.textBaseline = "middle";
-    ctx.fillText(main, W/2, sub ? 48 : 68);
+    ctx.fillText(main, W/2, sub ? 44 : 66);
     if(sub){
       ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "22px 'PingFang SC','Microsoft YaHei',sans-serif";
-      ctx.fillText(sub, W/2, 100);
+      ctx.font = "18px 'PingFang SC','Microsoft YaHei',sans-serif";
+      ctx.fillText(sub, W/2, 90);
     }
     // 重置阴影
     ctx.shadowColor = "transparent";
@@ -580,19 +580,19 @@
     const col = LABEL_COLORS[kind] || "#ffe082";
     // 根据类型和文字长度调整标签尺寸（sizeAttenuation=false 保证远距离也清晰可见）
     const mainLen = (main || "").length;
-    let sw = 1.0, sh = 0.20, yOff = 0.72;
-    if(kind === "peak"){ sw = 0.82; sh = 0.18; yOff = 0.66; }
-    else if(kind === "river" || kind === "road"){ sw = 0.78; sh = 0.16; yOff = 0.56; }
-    else if(kind === "region"){ sw = Math.min(2.1, 1.15 + mainLen * 0.09); sh = 0.23; yOff = 0.78; }
-    else if(kind === "county" && mainLen > 4){ sw = 0.92; }
+    let sw = 0.82, sh = 0.17, yOff = 0.68;
+    if(kind === "peak"){ sw = 0.66; sh = 0.15; yOff = 0.62; }
+    else if(kind === "river" || kind === "road"){ sw = 0.62; sh = 0.14; yOff = 0.52; }
+    else if(kind === "region"){ sw = Math.min(1.75, 0.95 + mainLen * 0.075); sh = 0.20; yOff = 0.74; }
+    else if(kind === "county" && mainLen > 4){ sw = 0.75; }
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeLabelTexture(main, sub, col), transparent: true, depthTest: true,
       sizeAttenuation: false
     }));
     sprite.position.set(p.x, p.y + yOff, p.z);
-    // sizeAttenuation=false：标签保持固定屏幕大小；0.22 让地名更小巧、减少遮挡
-    sprite.scale.set(sw * 0.22, sh * 0.22, 1);
-    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.22, y: sh * 0.22}};
+    // sizeAttenuation=false：标签保持固定屏幕大小；0.16 让地名更小、不遮挡地形
+    sprite.scale.set(sw * 0.16, sh * 0.16, 1);
+    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.16, y: sh * 0.16}};
     labelsGroup.add(sprite);
     // 引线（从标签底到地表）
     const lg = new THREE.BufferGeometry().setFromPoints([
@@ -708,7 +708,7 @@
         transparent: true, depthTest: true, sizeAttenuation: false
       }));
       tSprite.position.set(mid.x, mid.y + 0.75, mid.z);
-      tSprite.scale.set(0.45, 0.09, 1);
+      tSprite.scale.set(0.32, 0.065, 1);
       routesGroup.add(tSprite);
     });
   }
@@ -729,7 +729,7 @@
     const nTex = makeLabelTexture("N", "", "#ff5252");
     const nSprite = new THREE.Sprite(new THREE.SpriteMaterial({map: nTex, transparent: true, sizeAttenuation: false}));
     nSprite.position.y = 1.65;
-    nSprite.scale.set(0.14, 0.03, 1);
+    nSprite.scale.set(0.11, 0.024, 1);
     g.add(shaft, head, nSprite);
     // 放置于地形西北角外
     const hm = HM();
