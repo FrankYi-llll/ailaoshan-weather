@@ -483,22 +483,22 @@
       new THREE.SpriteMaterial({map: makeTreeTexture(1), transparent: true, depthWrite: false, alphaTest: 0.35}),
       new THREE.SpriteMaterial({map: makeTreeTexture(2), transparent: true, depthWrite: false, alphaTest: 0.35})
     ];
-    const N = 900;
+    const N = 1400;
     let placed = 0;
     for(let i = 0; i < N; i++){
       const lat = lat0 + rnd() * (lat1 - lat0);
       const lon = lon0 + rnd() * (lon1 - lon0);
       const e = elevAt(lat, lon);
       let density = 0;
-      if(e >= 900 && e < 1900)      density = 0.13 + (e - 900) / 1000 * 0.10;
-      else if(e >= 1900 && e < 2620) density = 0.27;
-      else if(e >= 2620 && e < 2820) density = 0.13;
-      else if(e >= 700 && e < 900)  density = 0.05;
-      else if(e >= 2820)            density = 0.02;
+      if(e >= 900 && e < 1900)      density = 0.18 + (e - 900) / 1000 * 0.14;
+      else if(e >= 1900 && e < 2620) density = 0.38;
+      else if(e >= 2620 && e < 2820) density = 0.18;
+      else if(e >= 700 && e < 900)  density = 0.08;
+      else if(e >= 2820)            density = 0.04;
       if(rnd() > density) continue;
       if(slopeDegAt(lat, lon) > 42) continue;
       let kind = e < 1400 ? 0 : (e < 2200 ? (rnd() < 0.55 ? 1 : 0) : (e >= 2700 ? 2 : 1));
-      const s = (0.5 + rnd() * 0.75) * 0.9;
+      const s = (0.5 + rnd() * 0.75) * 1.0;
       const p = surfPt(lat, lon);
       const mat = mats[kind].clone();      // 每树独立材质，避免共享 rotation
       mat.rotation = rnd() * Math.PI;
@@ -563,13 +563,13 @@
     ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 2;
     ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 32px 'PingFang SC','Microsoft YaHei',sans-serif";
+    ctx.font = "bold 40px 'PingFang SC','Microsoft YaHei',sans-serif";
     ctx.textBaseline = "middle";
-    ctx.fillText(main, W/2, sub ? 44 : 66);
+    ctx.fillText(main, W/2, sub ? 50 : 70);
     if(sub){
       ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "18px 'PingFang SC','Microsoft YaHei',sans-serif";
-      ctx.fillText(sub, W/2, 90);
+      ctx.font = "22px 'PingFang SC','Microsoft YaHei',sans-serif";
+      ctx.fillText(sub, W/2, 96);
     }
     // 重置阴影
     ctx.shadowColor = "transparent";
@@ -580,19 +580,19 @@
     const col = LABEL_COLORS[kind] || "#ffe082";
     // 根据类型和文字长度调整标签尺寸（sizeAttenuation=false 保证远距离也清晰可见）
     const mainLen = (main || "").length;
-    let sw = 0.82, sh = 0.17, yOff = 0.68;
-    if(kind === "peak"){ sw = 0.66; sh = 0.15; yOff = 0.62; }
-    else if(kind === "river" || kind === "road"){ sw = 0.62; sh = 0.14; yOff = 0.52; }
-    else if(kind === "region"){ sw = Math.min(1.75, 0.95 + mainLen * 0.075); sh = 0.20; yOff = 0.74; }
-    else if(kind === "county" && mainLen > 4){ sw = 0.75; }
+    let sw = 0.95, sh = 0.20, yOff = 0.72;
+    if(kind === "peak"){ sw = 0.78; sh = 0.18; yOff = 0.66; }
+    else if(kind === "river" || kind === "road"){ sw = 0.72; sh = 0.16; yOff = 0.56; }
+    else if(kind === "region"){ sw = Math.min(2.0, 1.1 + mainLen * 0.085); sh = 0.24; yOff = 0.80; }
+    else if(kind === "county" && mainLen > 4){ sw = 0.88; }
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeLabelTexture(main, sub, col), transparent: true, depthTest: true,
       sizeAttenuation: false
     }));
     sprite.position.set(p.x, p.y + yOff, p.z);
-    // sizeAttenuation=false：标签保持固定屏幕大小；0.16 让地名更小、不遮挡地形
-    sprite.scale.set(sw * 0.16, sh * 0.16, 1);
-    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.16, y: sh * 0.16}};
+    // sizeAttenuation=false：标签保持固定屏幕大小；0.26 在清晰与遮挡之间取平衡
+    sprite.scale.set(sw * 0.26, sh * 0.26, 1);
+    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.26, y: sh * 0.26}};
     labelsGroup.add(sprite);
     // 引线（从标签底到地表）
     const lg = new THREE.BufferGeometry().setFromPoints([
@@ -708,7 +708,7 @@
         transparent: true, depthTest: true, sizeAttenuation: false
       }));
       tSprite.position.set(mid.x, mid.y + 0.75, mid.z);
-      tSprite.scale.set(0.32, 0.065, 1);
+      tSprite.scale.set(0.42, 0.085, 1);
       routesGroup.add(tSprite);
     });
   }
@@ -729,7 +729,7 @@
     const nTex = makeLabelTexture("N", "", "#ff5252");
     const nSprite = new THREE.Sprite(new THREE.SpriteMaterial({map: nTex, transparent: true, sizeAttenuation: false}));
     nSprite.position.y = 1.65;
-    nSprite.scale.set(0.11, 0.024, 1);
+    nSprite.scale.set(0.14, 0.03, 1);
     g.add(shaft, head, nSprite);
     // 放置于地形西北角外
     const hm = HM();
