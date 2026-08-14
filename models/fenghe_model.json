@@ -1,0 +1,3503 @@
+{
+  "model_name": "风和气象模型",
+  "model_name_en": "Fenghe Climate Model",
+  "version": "1.1",
+  "description": "基于哀牢山/玉溪/普洱/昆明4站点2020-2026年6.5年小时级气象数据(含2025-2026增量)，学习区域气候结构与规律，模拟近期极端天气概率",
+  "stations": {
+    "ailaoshan": {
+      "name": "哀牢山生态站",
+      "region": "哀牢山核心区",
+      "lat": 24.54,
+      "lon": 101.02,
+      "elev": 2450
+    },
+    "jingdong": {
+      "name": "景东",
+      "region": "普洱片区",
+      "lat": 24.45,
+      "lon": 100.83,
+      "elev": 1150
+    },
+    "xinping": {
+      "name": "新平",
+      "region": "玉溪片区",
+      "lat": 24.07,
+      "lon": 101.99,
+      "elev": 1600
+    },
+    "kunming": {
+      "name": "昆明",
+      "region": "昆明片区",
+      "lat": 25.04,
+      "lon": 102.72,
+      "elev": 1891
+    }
+  },
+  "data_period": "2020-01-01 ~ 2026-08-14",
+  "data_resolution": "hourly",
+  "total_records": 232128,
+  "region_climatology": {
+    "1": {
+      "temp_mean": 10.1,
+      "temp_std": 5.1,
+      "rh_mean": 72.9,
+      "precip_mean": 0.09,
+      "precip_p90": 0.2,
+      "precip_p95": 0.5,
+      "precip_p99": 1.7,
+      "precip_max": 7.9,
+      "ws_mean": 7.1,
+      "ws_p95": 16.8,
+      "ws_max": 33.6,
+      "wg_p95": 48.2,
+      "wg_max": 82.8,
+      "rh_p95": 99.0,
+      "cloud_mean": 38.7,
+      "n_hours": 20832,
+      "rain_hours_pct": 18.1,
+      "heavy_rain_hours": 0,
+      "extreme_rain_hours": 0
+    },
+    "2": {
+      "temp_mean": 12.4,
+      "temp_std": 5.5,
+      "rh_mean": 63.2,
+      "precip_mean": 0.08,
+      "precip_p90": 0.1,
+      "precip_p95": 0.3,
+      "precip_p99": 1.6,
+      "precip_max": 9.4,
+      "ws_mean": 8.1,
+      "ws_p95": 19.5,
+      "ws_max": 36.1,
+      "wg_p95": 54.3,
+      "wg_max": 83.5,
+      "rh_p95": 97.0,
+      "cloud_mean": 33.6,
+      "n_hours": 19008,
+      "rain_hours_pct": 13.7,
+      "heavy_rain_hours": 0,
+      "extreme_rain_hours": 0
+    },
+    "3": {
+      "temp_mean": 16.2,
+      "temp_std": 5.7,
+      "rh_mean": 54.9,
+      "precip_mean": 0.04,
+      "precip_p90": 0.1,
+      "precip_p95": 0.2,
+      "precip_p99": 0.9,
+      "precip_max": 12.3,
+      "ws_mean": 8.6,
+      "ws_p95": 21.3,
+      "ws_max": 36.9,
+      "wg_p95": 57.2,
+      "wg_max": 82.8,
+      "rh_p95": 94.0,
+      "cloud_mean": 32.7,
+      "n_hours": 20832,
+      "rain_hours_pct": 10.0,
+      "heavy_rain_hours": 1,
+      "extreme_rain_hours": 0
+    },
+    "4": {
+      "temp_mean": 18.7,
+      "temp_std": 5.9,
+      "rh_mean": 56.6,
+      "precip_mean": 0.08,
+      "precip_p90": 0.1,
+      "precip_p95": 0.3,
+      "precip_p99": 1.8,
+      "precip_max": 15.1,
+      "ws_mean": 8.6,
+      "ws_p95": 21.1,
+      "ws_max": 36.4,
+      "wg_p95": 57.6,
+      "wg_max": 87.8,
+      "rh_p95": 95.0,
+      "cloud_mean": 39.5,
+      "n_hours": 20160,
+      "rain_hours_pct": 13.9,
+      "heavy_rain_hours": 3,
+      "extreme_rain_hours": 0
+    },
+    "5": {
+      "temp_mean": 20.1,
+      "temp_std": 5.4,
+      "rh_mean": 69.3,
+      "precip_mean": 0.22,
+      "precip_p90": 0.5,
+      "precip_p95": 1.1,
+      "precip_p99": 3.5,
+      "precip_max": 18.7,
+      "ws_mean": 7.6,
+      "ws_p95": 17.5,
+      "ws_max": 32.6,
+      "wg_p95": 49.3,
+      "wg_max": 76.0,
+      "rh_p95": 99.0,
+      "cloud_mean": 55.5,
+      "n_hours": 20832,
+      "rain_hours_pct": 32.5,
+      "heavy_rain_hours": 11,
+      "extreme_rain_hours": 0
+    },
+    "6": {
+      "temp_mean": 20.8,
+      "temp_std": 4.4,
+      "rh_mean": 81.8,
+      "precip_mean": 0.5,
+      "precip_p90": 1.2,
+      "precip_p95": 2.5,
+      "precip_p99": 7.0,
+      "precip_max": 18.5,
+      "ws_mean": 6.6,
+      "ws_p95": 14.1,
+      "ws_max": 24.4,
+      "wg_p95": 41.0,
+      "wg_max": 68.4,
+      "rh_p95": 100.0,
+      "cloud_mean": 82.5,
+      "n_hours": 20160,
+      "rain_hours_pct": 57.8,
+      "heavy_rain_hours": 71,
+      "extreme_rain_hours": 0
+    },
+    "7": {
+      "temp_mean": 20.8,
+      "temp_std": 4.2,
+      "rh_mean": 83.8,
+      "precip_mean": 0.5,
+      "precip_p90": 1.3,
+      "precip_p95": 2.4,
+      "precip_p99": 6.6,
+      "precip_max": 20.8,
+      "ws_mean": 5.9,
+      "ws_p95": 12.9,
+      "ws_max": 25.0,
+      "wg_p95": 37.8,
+      "wg_max": 68.0,
+      "rh_p95": 100.0,
+      "cloud_mean": 83.2,
+      "n_hours": 20832,
+      "rain_hours_pct": 56.5,
+      "heavy_rain_hours": 66,
+      "extreme_rain_hours": 2
+    },
+    "8": {
+      "temp_mean": 20.4,
+      "temp_std": 4.1,
+      "rh_mean": 84.9,
+      "precip_mean": 0.45,
+      "precip_p90": 1.3,
+      "precip_p95": 2.3,
+      "precip_p99": 5.5,
+      "precip_max": 20.0,
+      "ws_mean": 5.2,
+      "ws_p95": 11.0,
+      "ws_max": 26.2,
+      "wg_p95": 33.5,
+      "wg_max": 58.7,
+      "rh_p95": 100.0,
+      "cloud_mean": 80.0,
+      "n_hours": 19200,
+      "rain_hours_pct": 55.1,
+      "heavy_rain_hours": 29,
+      "extreme_rain_hours": 1
+    },
+    "9": {
+      "temp_mean": 19.6,
+      "temp_std": 4.2,
+      "rh_mean": 82.4,
+      "precip_mean": 0.31,
+      "precip_p90": 0.7,
+      "precip_p95": 1.6,
+      "precip_p99": 4.7,
+      "precip_max": 16.6,
+      "ws_mean": 5.9,
+      "ws_p95": 12.4,
+      "ws_max": 26.4,
+      "wg_p95": 35.3,
+      "wg_max": 59.8,
+      "rh_p95": 100.0,
+      "cloud_mean": 70.8,
+      "n_hours": 17280,
+      "rain_hours_pct": 44.7,
+      "heavy_rain_hours": 20,
+      "extreme_rain_hours": 0
+    },
+    "10": {
+      "temp_mean": 17.1,
+      "temp_std": 4.3,
+      "rh_mean": 83.3,
+      "precip_mean": 0.23,
+      "precip_p90": 0.5,
+      "precip_p95": 1.0,
+      "precip_p99": 3.5,
+      "precip_max": 21.6,
+      "ws_mean": 6.3,
+      "ws_p95": 13.1,
+      "ws_max": 30.3,
+      "wg_p95": 35.6,
+      "wg_max": 66.6,
+      "rh_p95": 100.0,
+      "cloud_mean": 67.9,
+      "n_hours": 17856,
+      "rain_hours_pct": 41.7,
+      "heavy_rain_hours": 19,
+      "extreme_rain_hours": 1
+    },
+    "11": {
+      "temp_mean": 13.8,
+      "temp_std": 4.8,
+      "rh_mean": 77.6,
+      "precip_mean": 0.13,
+      "precip_p90": 0.3,
+      "precip_p95": 0.7,
+      "precip_p99": 2.2,
+      "precip_max": 14.7,
+      "ws_mean": 5.8,
+      "ws_p95": 12.5,
+      "ws_max": 25.7,
+      "wg_p95": 35.6,
+      "wg_max": 63.0,
+      "rh_p95": 99.0,
+      "cloud_mean": 45.4,
+      "n_hours": 17280,
+      "rain_hours_pct": 24.1,
+      "heavy_rain_hours": 6,
+      "extreme_rain_hours": 0
+    },
+    "12": {
+      "temp_mean": 11.1,
+      "temp_std": 4.7,
+      "rh_mean": 78.2,
+      "precip_mean": 0.07,
+      "precip_p90": 0.2,
+      "precip_p95": 0.4,
+      "precip_p99": 1.1,
+      "precip_max": 9.5,
+      "ws_mean": 6.5,
+      "ws_p95": 14.1,
+      "ws_max": 30.5,
+      "wg_p95": 41.0,
+      "wg_max": 67.0,
+      "rh_p95": 99.0,
+      "cloud_mean": 46.4,
+      "n_hours": 17856,
+      "rain_hours_pct": 18.8,
+      "heavy_rain_hours": 0,
+      "extreme_rain_hours": 0
+    }
+  },
+  "region_monsoon": {
+    "2020": {
+      "onset": "01-03",
+      "retreat": "01-13",
+      "annual_precip": 8974.5,
+      "rainy_days": 304,
+      "heavy_rain_days": 115
+    },
+    "2021": {
+      "onset": "01-09",
+      "retreat": "02-26",
+      "annual_precip": 7821.6,
+      "rainy_days": 309,
+      "heavy_rain_days": 102
+    },
+    "2022": {
+      "onset": "01-01",
+      "retreat": "01-09",
+      "annual_precip": 7027.4,
+      "rainy_days": 298,
+      "heavy_rain_days": 104
+    },
+    "2023": {
+      "onset": "01-01",
+      "retreat": "01-09",
+      "annual_precip": 6266.5,
+      "rainy_days": 304,
+      "heavy_rain_days": 88
+    },
+    "2024": {
+      "onset": "01-16",
+      "retreat": "02-19",
+      "annual_precip": 7812.2,
+      "rainy_days": 316,
+      "heavy_rain_days": 109
+    },
+    "2025": {
+      "onset": "01-01",
+      "retreat": "01-18",
+      "annual_precip": 9535.0,
+      "rainy_days": 321,
+      "heavy_rain_days": 119
+    },
+    "2026": {
+      "onset": "01-03",
+      "retreat": "01-16",
+      "annual_precip": 4888.8,
+      "rainy_days": 178,
+      "heavy_rain_days": 73
+    }
+  },
+  "region_return_periods": {
+    "annual_max_precip": {
+      "values": [
+        171.8,
+        185.9,
+        201.8,
+        132.1,
+        115.1,
+        227.6,
+        120.8
+      ],
+      "mean": 165.0,
+      "std": 43.4,
+      "p90": 212.1
+    },
+    "annual_max_wind_gust": {
+      "values": [
+        83.5,
+        79.2,
+        79.9,
+        76.3,
+        87.8,
+        82.8,
+        77.0
+      ],
+      "mean": 80.9,
+      "std": 4.0
+    },
+    "annual_fog_hours": {
+      "values": [
+        4412,
+        4409,
+        3874,
+        3278,
+        3686,
+        4388,
+        2394
+      ],
+      "mean": 3777.3
+    },
+    "extreme_precip_threshold": 212.1,
+    "extreme_wind_threshold": 85.2
+  },
+  "region_anomaly": {
+    "temp": -0.11,
+    "precip": -0.01,
+    "rh": 0.61,
+    "ws": -0.4,
+    "heavy_rain_freq_ratio": 0.28,
+    "extreme_rain_freq_ratio": 1.0
+  },
+  "region_extreme_probability": {
+    "extreme_precip_prob": 1.0,
+    "extreme_wind_prob": 0.105,
+    "extreme_fog_prob": 0.1458,
+    "thunderstorm_prob": 0.036,
+    "drought_risk": 11.1667,
+    "extreme_precip_threshold": 0.0,
+    "extreme_wind_threshold": 29.9,
+    "climate_risk_index": 0.4092,
+    "risk_level": "极高"
+  },
+  "region_risk_calendar": {
+    "1": {
+      "month": 1,
+      "precip_risk": 0.0,
+      "wind_risk": 0.0503,
+      "fog_risk": 0.0779,
+      "thunder_risk": 0.0036,
+      "climate_risk_index": 0.0266,
+      "risk_level": "低"
+    },
+    "2": {
+      "month": 2,
+      "precip_risk": 0.0,
+      "wind_risk": 0.05,
+      "fog_risk": 0.0496,
+      "thunder_risk": 0.0044,
+      "climate_risk_index": 0.021,
+      "risk_level": "低"
+    },
+    "3": {
+      "month": 3,
+      "precip_risk": 0.0,
+      "wind_risk": 0.0519,
+      "fog_risk": 0.021,
+      "thunder_risk": 0.0018,
+      "climate_risk_index": 0.0151,
+      "risk_level": "低"
+    },
+    "4": {
+      "month": 4,
+      "precip_risk": 0.0001,
+      "wind_risk": 0.0516,
+      "fog_risk": 0.0283,
+      "thunder_risk": 0.0039,
+      "climate_risk_index": 0.017,
+      "risk_level": "低"
+    },
+    "5": {
+      "month": 5,
+      "precip_risk": 0.0005,
+      "wind_risk": 0.0515,
+      "fog_risk": 0.0841,
+      "thunder_risk": 0.0136,
+      "climate_risk_index": 0.0307,
+      "risk_level": "中"
+    },
+    "6": {
+      "month": 6,
+      "precip_risk": 0.0035,
+      "wind_risk": 0.0506,
+      "fog_risk": 0.1893,
+      "thunder_risk": 0.0402,
+      "climate_risk_index": 0.0593,
+      "risk_level": "中"
+    },
+    "7": {
+      "month": 7,
+      "precip_risk": 0.0032,
+      "wind_risk": 0.0519,
+      "fog_risk": 0.2097,
+      "thunder_risk": 0.0406,
+      "climate_risk_index": 0.0636,
+      "risk_level": "中"
+    },
+    "8": {
+      "month": 8,
+      "precip_risk": 0.0015,
+      "wind_risk": 0.053,
+      "fog_risk": 0.2224,
+      "thunder_risk": 0.036,
+      "climate_risk_index": 0.0646,
+      "risk_level": "中"
+    },
+    "9": {
+      "month": 9,
+      "precip_risk": 0.0012,
+      "wind_risk": 0.0506,
+      "fog_risk": 0.1434,
+      "thunder_risk": 0.022,
+      "climate_risk_index": 0.0447,
+      "risk_level": "中"
+    },
+    "10": {
+      "month": 10,
+      "precip_risk": 0.0011,
+      "wind_risk": 0.0515,
+      "fog_risk": 0.1514,
+      "thunder_risk": 0.0125,
+      "climate_risk_index": 0.0441,
+      "risk_level": "中"
+    },
+    "11": {
+      "month": 11,
+      "precip_risk": 0.0003,
+      "wind_risk": 0.0502,
+      "fog_risk": 0.1086,
+      "thunder_risk": 0.0061,
+      "climate_risk_index": 0.0334,
+      "risk_level": "中"
+    },
+    "12": {
+      "month": 12,
+      "precip_risk": 0.0,
+      "wind_risk": 0.0513,
+      "fog_risk": 0.0898,
+      "thunder_risk": 0.0019,
+      "climate_risk_index": 0.0287,
+      "risk_level": "低"
+    }
+  },
+  "region_diurnal": {
+    "0": {
+      "temp": 18.6,
+      "rh": 93.3,
+      "precip": 0.36,
+      "ws": 4.1,
+      "thunder_prob": 0.0163,
+      "fog_prob": 0.34
+    },
+    "1": {
+      "temp": 18.3,
+      "rh": 94.0,
+      "precip": 0.37,
+      "ws": 3.9,
+      "thunder_prob": 0.0213,
+      "fog_prob": 0.3825
+    },
+    "2": {
+      "temp": 18.1,
+      "rh": 94.8,
+      "precip": 0.34,
+      "ws": 3.8,
+      "thunder_prob": 0.0125,
+      "fog_prob": 0.44
+    },
+    "3": {
+      "temp": 17.8,
+      "rh": 95.3,
+      "precip": 0.34,
+      "ws": 3.6,
+      "thunder_prob": 0.0163,
+      "fog_prob": 0.4562
+    },
+    "4": {
+      "temp": 17.6,
+      "rh": 95.9,
+      "precip": 0.3,
+      "ws": 3.7,
+      "thunder_prob": 0.0163,
+      "fog_prob": 0.505
+    },
+    "5": {
+      "temp": 17.5,
+      "rh": 96.2,
+      "precip": 0.29,
+      "ws": 3.6,
+      "thunder_prob": 0.0138,
+      "fog_prob": 0.525
+    },
+    "6": {
+      "temp": 17.3,
+      "rh": 96.5,
+      "precip": 0.29,
+      "ws": 3.7,
+      "thunder_prob": 0.0125,
+      "fog_prob": 0.5587
+    },
+    "7": {
+      "temp": 17.2,
+      "rh": 96.6,
+      "precip": 0.3,
+      "ws": 3.6,
+      "thunder_prob": 0.0163,
+      "fog_prob": 0.5713
+    },
+    "8": {
+      "temp": 18.3,
+      "rh": 94.0,
+      "precip": 0.28,
+      "ws": 4.1,
+      "thunder_prob": 0.0187,
+      "fog_prob": 0.2625
+    },
+    "9": {
+      "temp": 19.6,
+      "rh": 88.6,
+      "precip": 0.29,
+      "ws": 4.9,
+      "thunder_prob": 0.0112,
+      "fog_prob": 0.115
+    },
+    "10": {
+      "temp": 20.8,
+      "rh": 82.8,
+      "precip": 0.42,
+      "ws": 5.8,
+      "thunder_prob": 0.0275,
+      "fog_prob": 0.0712
+    },
+    "11": {
+      "temp": 22.0,
+      "rh": 77.3,
+      "precip": 0.55,
+      "ws": 6.4,
+      "thunder_prob": 0.0462,
+      "fog_prob": 0.0512
+    },
+    "12": {
+      "temp": 23.0,
+      "rh": 72.7,
+      "precip": 0.69,
+      "ws": 6.9,
+      "thunder_prob": 0.075,
+      "fog_prob": 0.0362
+    },
+    "13": {
+      "temp": 23.6,
+      "rh": 69.9,
+      "precip": 0.76,
+      "ws": 7.4,
+      "thunder_prob": 0.0775,
+      "fog_prob": 0.025
+    },
+    "14": {
+      "temp": 24.0,
+      "rh": 68.2,
+      "precip": 0.81,
+      "ws": 7.5,
+      "thunder_prob": 0.0725,
+      "fog_prob": 0.0238
+    },
+    "15": {
+      "temp": 24.2,
+      "rh": 67.4,
+      "precip": 0.78,
+      "ws": 7.6,
+      "thunder_prob": 0.0725,
+      "fog_prob": 0.0225
+    },
+    "16": {
+      "temp": 24.1,
+      "rh": 67.5,
+      "precip": 0.66,
+      "ws": 7.5,
+      "thunder_prob": 0.0638,
+      "fog_prob": 0.0112
+    },
+    "17": {
+      "temp": 23.6,
+      "rh": 69.6,
+      "precip": 0.64,
+      "ws": 7.3,
+      "thunder_prob": 0.0675,
+      "fog_prob": 0.0138
+    },
+    "18": {
+      "temp": 22.8,
+      "rh": 73.7,
+      "precip": 0.64,
+      "ws": 6.8,
+      "thunder_prob": 0.065,
+      "fog_prob": 0.0238
+    },
+    "19": {
+      "temp": 21.7,
+      "rh": 80.8,
+      "precip": 0.4,
+      "ws": 5.4,
+      "thunder_prob": 0.0413,
+      "fog_prob": 0.0437
+    },
+    "20": {
+      "temp": 20.4,
+      "rh": 88.2,
+      "precip": 0.27,
+      "ws": 4.6,
+      "thunder_prob": 0.0175,
+      "fog_prob": 0.145
+    },
+    "21": {
+      "temp": 19.8,
+      "rh": 90.4,
+      "precip": 0.33,
+      "ws": 4.2,
+      "thunder_prob": 0.025,
+      "fog_prob": 0.215
+    },
+    "22": {
+      "temp": 19.3,
+      "rh": 91.5,
+      "precip": 0.33,
+      "ws": 4.2,
+      "thunder_prob": 0.0312,
+      "fog_prob": 0.2375
+    },
+    "23": {
+      "temp": 18.9,
+      "rh": 92.4,
+      "precip": 0.36,
+      "ws": 4.2,
+      "thunder_prob": 0.0262,
+      "fog_prob": 0.2625
+    }
+  },
+  "station_models": {
+    "ailaoshan": {
+      "name": "哀牢山生态站",
+      "region": "哀牢山核心区",
+      "lat": 24.54,
+      "lon": 101.02,
+      "elev": 2450,
+      "monthly_climatology": {
+        "1": {
+          "temp_mean": 6.1,
+          "temp_std": 3.3,
+          "rh_mean": 73.6,
+          "precip_mean": 0.05,
+          "precip_p90": 0.1,
+          "precip_p95": 0.3,
+          "precip_p99": 0.9,
+          "precip_max": 3.8,
+          "ws_mean": 9.0,
+          "ws_p95": 17.5,
+          "ws_max": 26.2,
+          "wg_p95": 56.9,
+          "wg_max": 82.8,
+          "rh_p95": 100.0,
+          "cloud_mean": 39.0,
+          "n_hours": 5208,
+          "rain_hours_pct": 15.0,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "2": {
+          "temp_mean": 8.4,
+          "temp_std": 3.7,
+          "rh_mean": 61.7,
+          "precip_mean": 0.04,
+          "precip_p90": 0.1,
+          "precip_p95": 0.2,
+          "precip_p99": 0.8,
+          "precip_max": 6.2,
+          "ws_mean": 10.3,
+          "ws_p95": 20.6,
+          "ws_max": 30.4,
+          "wg_p95": 61.9,
+          "wg_max": 83.5,
+          "rh_p95": 100.0,
+          "cloud_mean": 32.8,
+          "n_hours": 4752,
+          "rain_hours_pct": 11.6,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "3": {
+          "temp_mean": 12.1,
+          "temp_std": 4.0,
+          "rh_mean": 52.6,
+          "precip_mean": 0.04,
+          "precip_p90": 0.1,
+          "precip_p95": 0.2,
+          "precip_p99": 0.9,
+          "precip_max": 4.6,
+          "ws_mean": 10.6,
+          "ws_p95": 21.1,
+          "ws_max": 29.1,
+          "wg_p95": 65.5,
+          "wg_max": 82.8,
+          "rh_p95": 96.6,
+          "cloud_mean": 32.1,
+          "n_hours": 5208,
+          "rain_hours_pct": 10.5,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "4": {
+          "temp_mean": 14.3,
+          "temp_std": 4.3,
+          "rh_mean": 56.1,
+          "precip_mean": 0.06,
+          "precip_p90": 0.1,
+          "precip_p95": 0.3,
+          "precip_p99": 1.2,
+          "precip_max": 5.0,
+          "ws_mean": 10.5,
+          "ws_p95": 21.4,
+          "ws_max": 31.7,
+          "wg_p95": 65.5,
+          "wg_max": 87.8,
+          "rh_p95": 97.0,
+          "cloud_mean": 38.6,
+          "n_hours": 5040,
+          "rain_hours_pct": 14.3,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "5": {
+          "temp_mean": 15.4,
+          "temp_std": 3.8,
+          "rh_mean": 71.7,
+          "precip_mean": 0.18,
+          "precip_p90": 0.5,
+          "precip_p95": 0.8,
+          "precip_p99": 2.4,
+          "precip_max": 11.7,
+          "ws_mean": 9.0,
+          "ws_p95": 17.7,
+          "ws_max": 25.0,
+          "wg_p95": 57.6,
+          "wg_max": 76.0,
+          "rh_p95": 100.0,
+          "cloud_mean": 55.7,
+          "n_hours": 5208,
+          "rain_hours_pct": 37.4,
+          "heavy_rain_hours": 2,
+          "extreme_rain_hours": 0
+        },
+        "6": {
+          "temp_mean": 15.9,
+          "temp_std": 2.6,
+          "rh_mean": 86.5,
+          "precip_mean": 0.42,
+          "precip_p90": 0.9,
+          "precip_p95": 1.8,
+          "precip_p99": 5.6,
+          "precip_max": 14.9,
+          "ws_mean": 7.8,
+          "ws_p95": 14.3,
+          "ws_max": 20.0,
+          "wg_p95": 47.2,
+          "wg_max": 68.4,
+          "rh_p95": 100.0,
+          "cloud_mean": 84.4,
+          "n_hours": 5040,
+          "rain_hours_pct": 68.5,
+          "heavy_rain_hours": 7,
+          "extreme_rain_hours": 0
+        },
+        "7": {
+          "temp_mean": 16.0,
+          "temp_std": 2.4,
+          "rh_mean": 87.9,
+          "precip_mean": 0.47,
+          "precip_p90": 1.2,
+          "precip_p95": 2.1,
+          "precip_p99": 5.4,
+          "precip_max": 15.7,
+          "ws_mean": 6.5,
+          "ws_p95": 12.5,
+          "ws_max": 18.2,
+          "wg_p95": 43.2,
+          "wg_max": 68.0,
+          "rh_p95": 100.0,
+          "cloud_mean": 86.7,
+          "n_hours": 5208,
+          "rain_hours_pct": 65.6,
+          "heavy_rain_hours": 7,
+          "extreme_rain_hours": 0
+        },
+        "8": {
+          "temp_mean": 15.7,
+          "temp_std": 2.5,
+          "rh_mean": 88.6,
+          "precip_mean": 0.53,
+          "precip_p90": 1.41,
+          "precip_p95": 2.6,
+          "precip_p99": 6.1,
+          "precip_max": 12.2,
+          "ws_mean": 5.4,
+          "ws_p95": 10.6,
+          "ws_max": 17.2,
+          "wg_p95": 37.4,
+          "wg_max": 58.7,
+          "rh_p95": 100.0,
+          "cloud_mean": 84.8,
+          "n_hours": 4800,
+          "rain_hours_pct": 63.8,
+          "heavy_rain_hours": 9,
+          "extreme_rain_hours": 0
+        },
+        "9": {
+          "temp_mean": 15.1,
+          "temp_std": 2.4,
+          "rh_mean": 85.9,
+          "precip_mean": 0.32,
+          "precip_p90": 0.8,
+          "precip_p95": 1.6,
+          "precip_p99": 3.9,
+          "precip_max": 10.4,
+          "ws_mean": 6.2,
+          "ws_p95": 11.8,
+          "ws_max": 18.8,
+          "wg_p95": 40.0,
+          "wg_max": 59.8,
+          "rh_p95": 100.0,
+          "cloud_mean": 74.5,
+          "n_hours": 4320,
+          "rain_hours_pct": 53.7,
+          "heavy_rain_hours": 2,
+          "extreme_rain_hours": 0
+        },
+        "10": {
+          "temp_mean": 12.9,
+          "temp_std": 2.6,
+          "rh_mean": 86.9,
+          "precip_mean": 0.19,
+          "precip_p90": 0.5,
+          "precip_p95": 0.8,
+          "precip_p99": 2.24,
+          "precip_max": 7.9,
+          "ws_mean": 7.0,
+          "ws_p95": 12.9,
+          "ws_max": 20.3,
+          "wg_p95": 42.8,
+          "wg_max": 66.6,
+          "rh_p95": 100.0,
+          "cloud_mean": 72.3,
+          "n_hours": 4464,
+          "rain_hours_pct": 48.6,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "11": {
+          "temp_mean": 10.0,
+          "temp_std": 3.1,
+          "rh_mean": 78.4,
+          "precip_mean": 0.12,
+          "precip_p90": 0.3,
+          "precip_p95": 0.5,
+          "precip_p99": 2.2,
+          "precip_max": 13.5,
+          "ws_mean": 6.7,
+          "ws_p95": 12.3,
+          "ws_max": 19.3,
+          "wg_p95": 40.7,
+          "wg_max": 63.0,
+          "rh_p95": 100.0,
+          "cloud_mean": 44.8,
+          "n_hours": 4320,
+          "rain_hours_pct": 24.5,
+          "heavy_rain_hours": 2,
+          "extreme_rain_hours": 0
+        },
+        "12": {
+          "temp_mean": 7.1,
+          "temp_std": 2.9,
+          "rh_mean": 79.7,
+          "precip_mean": 0.05,
+          "precip_p90": 0.1,
+          "precip_p95": 0.3,
+          "precip_p99": 0.7,
+          "precip_max": 3.9,
+          "ws_mean": 8.1,
+          "ws_p95": 14.7,
+          "ws_max": 23.7,
+          "wg_p95": 47.2,
+          "wg_max": 67.0,
+          "rh_p95": 100.0,
+          "cloud_mean": 45.5,
+          "n_hours": 4464,
+          "rain_hours_pct": 17.6,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        }
+      },
+      "monsoon_pattern": {
+        "2020": {
+          "onset": "01-04",
+          "retreat": "01-12",
+          "annual_precip": 1876.9,
+          "rainy_days": 253,
+          "heavy_rain_days": 15
+        },
+        "2021": {
+          "onset": "05-25",
+          "retreat": "11-02",
+          "annual_precip": 1869.2,
+          "rainy_days": 262,
+          "heavy_rain_days": 17
+        },
+        "2022": {
+          "onset": "02-22",
+          "retreat": "03-01",
+          "annual_precip": 1442.8,
+          "rainy_days": 260,
+          "heavy_rain_days": 4
+        },
+        "2023": {
+          "onset": "05-13",
+          "retreat": "05-22",
+          "annual_precip": 1571.0,
+          "rainy_days": 245,
+          "heavy_rain_days": 11
+        },
+        "2024": {
+          "onset": "01-25",
+          "retreat": "02-01",
+          "annual_precip": 1744.6,
+          "rainy_days": 268,
+          "heavy_rain_days": 10
+        },
+        "2025": {
+          "onset": "05-02",
+          "retreat": "05-07",
+          "annual_precip": 2315.9,
+          "rainy_days": 269,
+          "heavy_rain_days": 22
+        },
+        "2026": {
+          "onset": "03-14",
+          "retreat": "03-21",
+          "annual_precip": 1175.7,
+          "rainy_days": 156,
+          "heavy_rain_days": 8
+        }
+      },
+      "return_periods": {
+        "annual_max_precip": {
+          "values": [
+            49.6,
+            65.4,
+            62.9,
+            37.5,
+            46.4,
+            79.4,
+            38.7
+          ],
+          "mean": 54.3,
+          "std": 15.5,
+          "p90": 71.0
+        },
+        "annual_max_wind_gust": {
+          "values": [
+            83.5,
+            79.2,
+            79.9,
+            76.3,
+            87.8,
+            82.8,
+            77.0
+          ],
+          "mean": 80.9,
+          "std": 4.0
+        },
+        "annual_fog_hours": {
+          "values": [
+            1927,
+            1961,
+            1812,
+            1483,
+            1581,
+            1979,
+            1127
+          ],
+          "mean": 1695.7
+        },
+        "extreme_precip_threshold": 71.0,
+        "extreme_wind_threshold": 85.2
+      },
+      "current_anomaly": {
+        "temp": -0.18,
+        "precip": -0.02,
+        "rh": 1.15,
+        "ws": -0.13,
+        "heavy_rain_freq_ratio": 0.22,
+        "extreme_rain_freq_ratio": 0.0
+      },
+      "extreme_probability": {
+        "extreme_precip_prob": 1.0,
+        "extreme_wind_prob": 0.1013,
+        "extreme_fog_prob": 0.275,
+        "thunderstorm_prob": 0.0433,
+        "drought_risk": 11.1667,
+        "extreme_precip_threshold": 0.0,
+        "extreme_wind_threshold": 33.1
+      },
+      "risk_calendar": {
+        "1": {
+          "month": 1,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0517,
+          "fog_risk": 0.1423,
+          "thunder_risk": 0.0004,
+          "climate_risk_index": 0.0389,
+          "risk_level": "中"
+        },
+        "2": {
+          "month": 2,
+          "precip_risk": 0.0,
+          "wind_risk": 0.052,
+          "fog_risk": 0.0936,
+          "thunder_risk": 0.0013,
+          "climate_risk_index": 0.0294,
+          "risk_level": "低"
+        },
+        "3": {
+          "month": 3,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0513,
+          "fog_risk": 0.0445,
+          "thunder_risk": 0.0008,
+          "climate_risk_index": 0.0194,
+          "risk_level": "低"
+        },
+        "4": {
+          "month": 4,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0504,
+          "fog_risk": 0.0464,
+          "thunder_risk": 0.002,
+          "climate_risk_index": 0.0199,
+          "risk_level": "低"
+        },
+        "5": {
+          "month": 5,
+          "precip_risk": 0.0004,
+          "wind_risk": 0.0517,
+          "fog_risk": 0.1599,
+          "thunder_risk": 0.0075,
+          "climate_risk_index": 0.0443,
+          "risk_level": "中"
+        },
+        "6": {
+          "month": 6,
+          "precip_risk": 0.0014,
+          "wind_risk": 0.05,
+          "fog_risk": 0.3585,
+          "thunder_risk": 0.027,
+          "climate_risk_index": 0.0889,
+          "risk_level": "高"
+        },
+        "7": {
+          "month": 7,
+          "precip_risk": 0.0013,
+          "wind_risk": 0.0505,
+          "fog_risk": 0.3681,
+          "thunder_risk": 0.0315,
+          "climate_risk_index": 0.0921,
+          "risk_level": "高"
+        },
+        "8": {
+          "month": 8,
+          "precip_risk": 0.0019,
+          "wind_risk": 0.0527,
+          "fog_risk": 0.3742,
+          "thunder_risk": 0.0433,
+          "climate_risk_index": 0.0969,
+          "risk_level": "高"
+        },
+        "9": {
+          "month": 9,
+          "precip_risk": 0.0005,
+          "wind_risk": 0.0514,
+          "fog_risk": 0.2699,
+          "thunder_risk": 0.0192,
+          "climate_risk_index": 0.0692,
+          "risk_level": "中"
+        },
+        "10": {
+          "month": 10,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0506,
+          "fog_risk": 0.2742,
+          "thunder_risk": 0.0052,
+          "climate_risk_index": 0.0663,
+          "risk_level": "中"
+        },
+        "11": {
+          "month": 11,
+          "precip_risk": 0.0005,
+          "wind_risk": 0.0521,
+          "fog_risk": 0.1806,
+          "thunder_risk": 0.006,
+          "climate_risk_index": 0.0482,
+          "risk_level": "中"
+        },
+        "12": {
+          "month": 12,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0522,
+          "fog_risk": 0.1557,
+          "thunder_risk": 0.0007,
+          "climate_risk_index": 0.0417,
+          "risk_level": "中"
+        }
+      },
+      "diurnal_patterns": {
+        "0": {
+          "temp": 14.2,
+          "rh": 95.2,
+          "precip": 0.3,
+          "ws": 4.8,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.545
+        },
+        "1": {
+          "temp": 14.0,
+          "rh": 96.0,
+          "precip": 0.42,
+          "ws": 4.7,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.61
+        },
+        "2": {
+          "temp": 13.9,
+          "rh": 96.7,
+          "precip": 0.4,
+          "ws": 4.5,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.695
+        },
+        "3": {
+          "temp": 13.7,
+          "rh": 97.0,
+          "precip": 0.46,
+          "ws": 4.4,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.695
+        },
+        "4": {
+          "temp": 13.6,
+          "rh": 97.5,
+          "precip": 0.38,
+          "ws": 4.3,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.75
+        },
+        "5": {
+          "temp": 13.5,
+          "rh": 97.8,
+          "precip": 0.41,
+          "ws": 4.2,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.775
+        },
+        "6": {
+          "temp": 13.4,
+          "rh": 97.9,
+          "precip": 0.38,
+          "ws": 4.3,
+          "thunder_prob": 0.025,
+          "fog_prob": 0.79
+        },
+        "7": {
+          "temp": 13.3,
+          "rh": 98.2,
+          "precip": 0.41,
+          "ws": 4.2,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.835
+        },
+        "8": {
+          "temp": 14.1,
+          "rh": 96.3,
+          "precip": 0.45,
+          "ws": 4.8,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.535
+        },
+        "9": {
+          "temp": 15.2,
+          "rh": 91.9,
+          "precip": 0.34,
+          "ws": 5.3,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.24
+        },
+        "10": {
+          "temp": 16.2,
+          "rh": 87.4,
+          "precip": 0.5,
+          "ws": 5.7,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.145
+        },
+        "11": {
+          "temp": 17.2,
+          "rh": 82.3,
+          "precip": 0.66,
+          "ws": 6.1,
+          "thunder_prob": 0.055,
+          "fog_prob": 0.1
+        },
+        "12": {
+          "temp": 18.1,
+          "rh": 78.0,
+          "precip": 0.78,
+          "ws": 6.6,
+          "thunder_prob": 0.065,
+          "fog_prob": 0.085
+        },
+        "13": {
+          "temp": 18.6,
+          "rh": 75.6,
+          "precip": 1.04,
+          "ws": 6.9,
+          "thunder_prob": 0.095,
+          "fog_prob": 0.06
+        },
+        "14": {
+          "temp": 18.9,
+          "rh": 73.5,
+          "precip": 1.15,
+          "ws": 7.1,
+          "thunder_prob": 0.105,
+          "fog_prob": 0.055
+        },
+        "15": {
+          "temp": 19.1,
+          "rh": 72.7,
+          "precip": 1.09,
+          "ws": 7.1,
+          "thunder_prob": 0.105,
+          "fog_prob": 0.05
+        },
+        "16": {
+          "temp": 19.0,
+          "rh": 72.9,
+          "precip": 0.83,
+          "ws": 6.9,
+          "thunder_prob": 0.09,
+          "fog_prob": 0.025
+        },
+        "17": {
+          "temp": 18.5,
+          "rh": 75.1,
+          "precip": 0.7,
+          "ws": 6.8,
+          "thunder_prob": 0.065,
+          "fog_prob": 0.025
+        },
+        "18": {
+          "temp": 17.7,
+          "rh": 79.4,
+          "precip": 0.9,
+          "ws": 6.3,
+          "thunder_prob": 0.11,
+          "fog_prob": 0.055
+        },
+        "19": {
+          "temp": 16.7,
+          "rh": 86.2,
+          "precip": 0.46,
+          "ws": 5.4,
+          "thunder_prob": 0.05,
+          "fog_prob": 0.085
+        },
+        "20": {
+          "temp": 15.3,
+          "rh": 94.0,
+          "precip": 0.24,
+          "ws": 4.6,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.385
+        },
+        "21": {
+          "temp": 14.8,
+          "rh": 94.6,
+          "precip": 0.11,
+          "ws": 4.4,
+          "thunder_prob": 0.0,
+          "fog_prob": 0.465
+        },
+        "22": {
+          "temp": 14.5,
+          "rh": 94.5,
+          "precip": 0.11,
+          "ws": 4.6,
+          "thunder_prob": 0.0,
+          "fog_prob": 0.49
+        },
+        "23": {
+          "temp": 14.3,
+          "rh": 94.7,
+          "precip": 0.27,
+          "ws": 4.7,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.485
+        }
+      }
+    },
+    "jingdong": {
+      "name": "景东",
+      "region": "普洱片区",
+      "lat": 24.45,
+      "lon": 100.83,
+      "elev": 1150,
+      "monthly_climatology": {
+        "1": {
+          "temp_mean": 13.0,
+          "temp_std": 4.6,
+          "rh_mean": 74.5,
+          "precip_mean": 0.19,
+          "precip_p90": 0.6,
+          "precip_p95": 1.1,
+          "precip_p99": 3.0,
+          "precip_max": 6.3,
+          "ws_mean": 4.4,
+          "ws_p95": 9.9,
+          "ws_max": 13.9,
+          "wg_p95": 33.8,
+          "wg_max": 54.4,
+          "rh_p95": 98.0,
+          "cloud_mean": 40.1,
+          "n_hours": 5208,
+          "rain_hours_pct": 28.4,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "2": {
+          "temp_mean": 14.9,
+          "temp_std": 5.4,
+          "rh_mean": 66.7,
+          "precip_mean": 0.16,
+          "precip_p90": 0.4,
+          "precip_p95": 0.9,
+          "precip_p99": 3.3,
+          "precip_max": 9.4,
+          "ws_mean": 4.3,
+          "ws_p95": 9.9,
+          "ws_max": 16.2,
+          "wg_p95": 34.9,
+          "wg_max": 54.0,
+          "rh_p95": 97.0,
+          "cloud_mean": 32.8,
+          "n_hours": 4752,
+          "rain_hours_pct": 20.7,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "3": {
+          "temp_mean": 18.4,
+          "temp_std": 5.8,
+          "rh_mean": 60.7,
+          "precip_mean": 0.07,
+          "precip_p90": 0.1,
+          "precip_p95": 0.4,
+          "precip_p99": 1.4,
+          "precip_max": 12.3,
+          "ws_mean": 4.2,
+          "ws_p95": 10.0,
+          "ws_max": 18.7,
+          "wg_p95": 34.8,
+          "wg_max": 54.0,
+          "rh_p95": 93.0,
+          "cloud_mean": 33.6,
+          "n_hours": 5208,
+          "rain_hours_pct": 13.5,
+          "heavy_rain_hours": 1,
+          "extreme_rain_hours": 0
+        },
+        "4": {
+          "temp_mean": 21.1,
+          "temp_std": 5.8,
+          "rh_mean": 61.4,
+          "precip_mean": 0.09,
+          "precip_p90": 0.1,
+          "precip_p95": 0.4,
+          "precip_p99": 1.96,
+          "precip_max": 15.1,
+          "ws_mean": 4.3,
+          "ws_p95": 10.1,
+          "ws_max": 17.4,
+          "wg_p95": 36.0,
+          "wg_max": 60.1,
+          "rh_p95": 95.0,
+          "cloud_mean": 39.4,
+          "n_hours": 5040,
+          "rain_hours_pct": 15.0,
+          "heavy_rain_hours": 3,
+          "extreme_rain_hours": 0
+        },
+        "5": {
+          "temp_mean": 22.9,
+          "temp_std": 4.9,
+          "rh_mean": 72.2,
+          "precip_mean": 0.34,
+          "precip_p90": 0.9,
+          "precip_p95": 1.7,
+          "precip_p99": 5.6,
+          "precip_max": 18.7,
+          "ws_mean": 4.4,
+          "ws_p95": 9.7,
+          "ws_max": 17.4,
+          "wg_p95": 34.6,
+          "wg_max": 53.3,
+          "rh_p95": 99.0,
+          "cloud_mean": 56.1,
+          "n_hours": 5208,
+          "rain_hours_pct": 38.3,
+          "heavy_rain_hours": 8,
+          "extreme_rain_hours": 0
+        },
+        "6": {
+          "temp_mean": 23.8,
+          "temp_std": 3.3,
+          "rh_mean": 83.9,
+          "precip_mean": 0.93,
+          "precip_p90": 2.6,
+          "precip_p95": 4.81,
+          "precip_p99": 9.76,
+          "precip_max": 17.8,
+          "ws_mean": 4.7,
+          "ws_p95": 9.4,
+          "ws_max": 15.3,
+          "wg_p95": 33.8,
+          "wg_max": 50.8,
+          "rh_p95": 100.0,
+          "cloud_mean": 83.1,
+          "n_hours": 5040,
+          "rain_hours_pct": 70.3,
+          "heavy_rain_hours": 49,
+          "extreme_rain_hours": 0
+        },
+        "7": {
+          "temp_mean": 23.8,
+          "temp_std": 3.0,
+          "rh_mean": 85.4,
+          "precip_mean": 0.81,
+          "precip_p90": 2.2,
+          "precip_p95": 4.1,
+          "precip_p99": 9.3,
+          "precip_max": 20.0,
+          "ws_mean": 4.6,
+          "ws_p95": 9.3,
+          "ws_max": 14.4,
+          "wg_p95": 33.8,
+          "wg_max": 48.6,
+          "rh_p95": 100.0,
+          "cloud_mean": 84.8,
+          "n_hours": 5208,
+          "rain_hours_pct": 63.3,
+          "heavy_rain_hours": 41,
+          "extreme_rain_hours": 1
+        },
+        "8": {
+          "temp_mean": 23.5,
+          "temp_std": 2.9,
+          "rh_mean": 85.6,
+          "precip_mean": 0.6,
+          "precip_p90": 1.7,
+          "precip_p95": 3.1,
+          "precip_p99": 6.7,
+          "precip_max": 20.0,
+          "ws_mean": 4.3,
+          "ws_p95": 8.9,
+          "ws_max": 14.2,
+          "wg_p95": 32.8,
+          "wg_max": 51.1,
+          "rh_p95": 100.0,
+          "cloud_mean": 81.4,
+          "n_hours": 4800,
+          "rain_hours_pct": 57.7,
+          "heavy_rain_hours": 12,
+          "extreme_rain_hours": 1
+        },
+        "9": {
+          "temp_mean": 22.9,
+          "temp_std": 3.1,
+          "rh_mean": 82.4,
+          "precip_mean": 0.44,
+          "precip_p90": 1.1,
+          "precip_p95": 2.2,
+          "precip_p99": 7.08,
+          "precip_max": 15.6,
+          "ws_mean": 4.7,
+          "ws_p95": 9.4,
+          "ws_max": 13.0,
+          "wg_p95": 33.1,
+          "wg_max": 42.8,
+          "rh_p95": 99.0,
+          "cloud_mean": 70.9,
+          "n_hours": 4320,
+          "rain_hours_pct": 44.1,
+          "heavy_rain_hours": 15,
+          "extreme_rain_hours": 0
+        },
+        "10": {
+          "temp_mean": 20.5,
+          "temp_std": 3.0,
+          "rh_mean": 84.8,
+          "precip_mean": 0.42,
+          "precip_p90": 0.9,
+          "precip_p95": 1.9,
+          "precip_p99": 6.37,
+          "precip_max": 21.6,
+          "ws_mean": 4.8,
+          "ws_p95": 9.5,
+          "ws_max": 13.0,
+          "wg_p95": 32.8,
+          "wg_max": 44.6,
+          "rh_p95": 100.0,
+          "cloud_mean": 70.8,
+          "n_hours": 4464,
+          "rain_hours_pct": 51.0,
+          "heavy_rain_hours": 17,
+          "extreme_rain_hours": 1
+        },
+        "11": {
+          "temp_mean": 16.8,
+          "temp_std": 4.1,
+          "rh_mean": 79.9,
+          "precip_mean": 0.24,
+          "precip_p90": 0.7,
+          "precip_p95": 1.2,
+          "precip_p99": 3.1,
+          "precip_max": 14.7,
+          "ws_mean": 4.1,
+          "ws_p95": 9.1,
+          "ws_max": 13.3,
+          "wg_p95": 30.6,
+          "wg_max": 42.8,
+          "rh_p95": 99.0,
+          "cloud_mean": 47.1,
+          "n_hours": 4320,
+          "rain_hours_pct": 33.5,
+          "heavy_rain_hours": 4,
+          "extreme_rain_hours": 0
+        },
+        "12": {
+          "temp_mean": 14.1,
+          "temp_std": 4.1,
+          "rh_mean": 79.1,
+          "precip_mean": 0.14,
+          "precip_p90": 0.4,
+          "precip_p95": 0.7,
+          "precip_p99": 1.9,
+          "precip_max": 9.5,
+          "ws_mean": 4.3,
+          "ws_p95": 9.8,
+          "ws_max": 12.8,
+          "wg_p95": 32.4,
+          "wg_max": 43.2,
+          "rh_p95": 99.0,
+          "cloud_mean": 47.6,
+          "n_hours": 4464,
+          "rain_hours_pct": 30.2,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        }
+      },
+      "monsoon_pattern": {
+        "2020": {
+          "onset": "01-03",
+          "retreat": "01-12",
+          "annual_precip": 3882.7,
+          "rainy_days": 262,
+          "heavy_rain_days": 59
+        },
+        "2021": {
+          "onset": "01-10",
+          "retreat": "01-27",
+          "annual_precip": 2882.1,
+          "rainy_days": 278,
+          "heavy_rain_days": 43
+        },
+        "2022": {
+          "onset": "01-15",
+          "retreat": "02-13",
+          "annual_precip": 2745.1,
+          "rainy_days": 282,
+          "heavy_rain_days": 35
+        },
+        "2023": {
+          "onset": "01-01",
+          "retreat": "01-08",
+          "annual_precip": 2675.7,
+          "rainy_days": 272,
+          "heavy_rain_days": 34
+        },
+        "2024": {
+          "onset": "01-16",
+          "retreat": "02-19",
+          "annual_precip": 3770.9,
+          "rainy_days": 290,
+          "heavy_rain_days": 60
+        },
+        "2025": {
+          "onset": "01-08",
+          "retreat": "01-16",
+          "annual_precip": 3693.2,
+          "rainy_days": 289,
+          "heavy_rain_days": 50
+        },
+        "2026": {
+          "onset": "01-03",
+          "retreat": "01-16",
+          "annual_precip": 1988.7,
+          "rainy_days": 160,
+          "heavy_rain_days": 26
+        }
+      },
+      "return_periods": {
+        "annual_max_precip": {
+          "values": [
+            84.1,
+            54.4,
+            81.1,
+            84.4,
+            77.9,
+            100.4,
+            58.8
+          ],
+          "mean": 77.3,
+          "std": 15.9,
+          "p90": 90.8
+        },
+        "annual_max_wind_gust": {
+          "values": [
+            54.4,
+            51.1,
+            45.0,
+            53.3,
+            60.1,
+            54.0,
+            44.6
+          ],
+          "mean": 51.8,
+          "std": 5.5
+        },
+        "annual_fog_hours": {
+          "values": [
+            1392,
+            1201,
+            906,
+            963,
+            1097,
+            950,
+            509
+          ],
+          "mean": 1002.6
+        },
+        "extreme_precip_threshold": 90.8,
+        "extreme_wind_threshold": 56.7
+      },
+      "current_anomaly": {
+        "temp": -0.1,
+        "precip": 0.03,
+        "rh": -0.55,
+        "ws": 0.02,
+        "heavy_rain_freq_ratio": 0.5,
+        "extreme_rain_freq_ratio": 1.0
+      },
+      "extreme_probability": {
+        "extreme_precip_prob": 1.0,
+        "extreme_wind_prob": 0.101,
+        "extreme_fog_prob": 0.1537,
+        "thunderstorm_prob": 0.054,
+        "drought_risk": 11.1667,
+        "extreme_precip_threshold": 0.0,
+        "extreme_wind_threshold": 30.2
+      },
+      "risk_calendar": {
+        "1": {
+          "month": 1,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0526,
+          "fog_risk": 0.076,
+          "thunder_risk": 0.0108,
+          "climate_risk_index": 0.0284,
+          "risk_level": "低"
+        },
+        "2": {
+          "month": 2,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0522,
+          "fog_risk": 0.0404,
+          "thunder_risk": 0.0118,
+          "climate_risk_index": 0.0215,
+          "risk_level": "低"
+        },
+        "3": {
+          "month": 3,
+          "precip_risk": 0.0002,
+          "wind_risk": 0.0501,
+          "fog_risk": 0.0163,
+          "thunder_risk": 0.0033,
+          "climate_risk_index": 0.0142,
+          "risk_level": "低"
+        },
+        "4": {
+          "month": 4,
+          "precip_risk": 0.0006,
+          "wind_risk": 0.0526,
+          "fog_risk": 0.0298,
+          "thunder_risk": 0.0056,
+          "climate_risk_index": 0.0181,
+          "risk_level": "低"
+        },
+        "5": {
+          "month": 5,
+          "precip_risk": 0.0015,
+          "wind_risk": 0.0517,
+          "fog_risk": 0.0947,
+          "thunder_risk": 0.0234,
+          "climate_risk_index": 0.0357,
+          "risk_level": "中"
+        },
+        "6": {
+          "month": 6,
+          "precip_risk": 0.0097,
+          "wind_risk": 0.0524,
+          "fog_risk": 0.225,
+          "thunder_risk": 0.0857,
+          "climate_risk_index": 0.0803,
+          "risk_level": "高"
+        },
+        "7": {
+          "month": 7,
+          "precip_risk": 0.0079,
+          "wind_risk": 0.0532,
+          "fog_risk": 0.2262,
+          "thunder_risk": 0.0753,
+          "climate_risk_index": 0.0774,
+          "risk_level": "中"
+        },
+        "8": {
+          "month": 8,
+          "precip_risk": 0.0025,
+          "wind_risk": 0.0523,
+          "fog_risk": 0.2331,
+          "thunder_risk": 0.054,
+          "climate_risk_index": 0.0714,
+          "risk_level": "中"
+        },
+        "9": {
+          "month": 9,
+          "precip_risk": 0.0035,
+          "wind_risk": 0.0539,
+          "fog_risk": 0.1322,
+          "thunder_risk": 0.0373,
+          "climate_risk_index": 0.0478,
+          "risk_level": "中"
+        },
+        "10": {
+          "month": 10,
+          "precip_risk": 0.0038,
+          "wind_risk": 0.0526,
+          "fog_risk": 0.1841,
+          "thunder_risk": 0.0325,
+          "climate_risk_index": 0.0568,
+          "risk_level": "中"
+        },
+        "11": {
+          "month": 11,
+          "precip_risk": 0.0009,
+          "wind_risk": 0.0525,
+          "fog_risk": 0.1171,
+          "thunder_risk": 0.0116,
+          "climate_risk_index": 0.0372,
+          "risk_level": "中"
+        },
+        "12": {
+          "month": 12,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0522,
+          "fog_risk": 0.0833,
+          "thunder_risk": 0.0049,
+          "climate_risk_index": 0.0283,
+          "risk_level": "低"
+        }
+      },
+      "diurnal_patterns": {
+        "0": {
+          "temp": 21.7,
+          "rh": 93.7,
+          "precip": 0.44,
+          "ws": 3.2,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.35
+        },
+        "1": {
+          "temp": 21.4,
+          "rh": 94.3,
+          "precip": 0.45,
+          "ws": 2.9,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.4
+        },
+        "2": {
+          "temp": 21.2,
+          "rh": 95.1,
+          "precip": 0.39,
+          "ws": 2.8,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.445
+        },
+        "3": {
+          "temp": 21.0,
+          "rh": 95.5,
+          "precip": 0.38,
+          "ws": 2.7,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.465
+        },
+        "4": {
+          "temp": 20.7,
+          "rh": 96.0,
+          "precip": 0.37,
+          "ws": 2.8,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.505
+        },
+        "5": {
+          "temp": 20.6,
+          "rh": 96.3,
+          "precip": 0.33,
+          "ws": 2.8,
+          "thunder_prob": 0.0,
+          "fog_prob": 0.535
+        },
+        "6": {
+          "temp": 20.5,
+          "rh": 96.5,
+          "precip": 0.35,
+          "ws": 3.0,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.595
+        },
+        "7": {
+          "temp": 20.4,
+          "rh": 96.4,
+          "precip": 0.41,
+          "ws": 3.1,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.585
+        },
+        "8": {
+          "temp": 21.2,
+          "rh": 94.3,
+          "precip": 0.37,
+          "ws": 3.8,
+          "thunder_prob": 0.025,
+          "fog_prob": 0.315
+        },
+        "9": {
+          "temp": 22.5,
+          "rh": 90.2,
+          "precip": 0.43,
+          "ws": 4.4,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.15
+        },
+        "10": {
+          "temp": 23.7,
+          "rh": 84.9,
+          "precip": 0.63,
+          "ws": 4.9,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.105
+        },
+        "11": {
+          "temp": 24.9,
+          "rh": 79.5,
+          "precip": 0.82,
+          "ws": 5.4,
+          "thunder_prob": 0.08,
+          "fog_prob": 0.065
+        },
+        "12": {
+          "temp": 26.0,
+          "rh": 74.5,
+          "precip": 1.23,
+          "ws": 5.9,
+          "thunder_prob": 0.165,
+          "fog_prob": 0.045
+        },
+        "13": {
+          "temp": 26.7,
+          "rh": 71.6,
+          "precip": 1.19,
+          "ws": 6.3,
+          "thunder_prob": 0.145,
+          "fog_prob": 0.035
+        },
+        "14": {
+          "temp": 27.2,
+          "rh": 69.3,
+          "precip": 1.1,
+          "ws": 6.5,
+          "thunder_prob": 0.11,
+          "fog_prob": 0.025
+        },
+        "15": {
+          "temp": 27.5,
+          "rh": 68.2,
+          "precip": 0.96,
+          "ws": 6.5,
+          "thunder_prob": 0.105,
+          "fog_prob": 0.025
+        },
+        "16": {
+          "temp": 27.6,
+          "rh": 67.5,
+          "precip": 0.9,
+          "ws": 6.5,
+          "thunder_prob": 0.105,
+          "fog_prob": 0.01
+        },
+        "17": {
+          "temp": 27.0,
+          "rh": 70.3,
+          "precip": 0.97,
+          "ws": 6.5,
+          "thunder_prob": 0.13,
+          "fog_prob": 0.02
+        },
+        "18": {
+          "temp": 26.1,
+          "rh": 75.2,
+          "precip": 0.78,
+          "ws": 5.9,
+          "thunder_prob": 0.095,
+          "fog_prob": 0.03
+        },
+        "19": {
+          "temp": 25.0,
+          "rh": 82.3,
+          "precip": 0.51,
+          "ws": 4.8,
+          "thunder_prob": 0.065,
+          "fog_prob": 0.08
+        },
+        "20": {
+          "temp": 23.8,
+          "rh": 88.1,
+          "precip": 0.31,
+          "ws": 3.9,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.125
+        },
+        "21": {
+          "temp": 23.0,
+          "rh": 90.4,
+          "precip": 0.34,
+          "ws": 3.4,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.21
+        },
+        "22": {
+          "temp": 22.5,
+          "rh": 91.3,
+          "precip": 0.37,
+          "ws": 3.1,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.22
+        },
+        "23": {
+          "temp": 22.0,
+          "rh": 92.6,
+          "precip": 0.42,
+          "ws": 3.1,
+          "thunder_prob": 0.025,
+          "fog_prob": 0.255
+        }
+      }
+    },
+    "xinping": {
+      "name": "新平",
+      "region": "玉溪片区",
+      "lat": 24.07,
+      "lon": 101.99,
+      "elev": 1600,
+      "monthly_climatology": {
+        "1": {
+          "temp_mean": 12.2,
+          "temp_std": 4.4,
+          "rh_mean": 73.5,
+          "precip_mean": 0.06,
+          "precip_p90": 0.1,
+          "precip_p95": 0.3,
+          "precip_p99": 1.3,
+          "precip_max": 7.9,
+          "ws_mean": 5.2,
+          "ws_p95": 11.0,
+          "ws_max": 16.5,
+          "wg_p95": 33.0,
+          "wg_max": 59.4,
+          "rh_p95": 97.0,
+          "cloud_mean": 35.3,
+          "n_hours": 5208,
+          "rain_hours_pct": 14.1,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "2": {
+          "temp_mean": 14.5,
+          "temp_std": 4.7,
+          "rh_mean": 64.6,
+          "precip_mean": 0.06,
+          "precip_p90": 0.1,
+          "precip_p95": 0.2,
+          "precip_p99": 1.5,
+          "precip_max": 5.9,
+          "ws_mean": 5.9,
+          "ws_p95": 13.0,
+          "ws_max": 21.7,
+          "wg_p95": 37.8,
+          "wg_max": 55.4,
+          "rh_p95": 96.0,
+          "cloud_mean": 31.5,
+          "n_hours": 4752,
+          "rain_hours_pct": 11.1,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "3": {
+          "temp_mean": 18.3,
+          "temp_std": 5.0,
+          "rh_mean": 55.9,
+          "precip_mean": 0.03,
+          "precip_p90": 0.0,
+          "precip_p95": 0.1,
+          "precip_p99": 0.6,
+          "precip_max": 4.9,
+          "ws_mean": 6.6,
+          "ws_p95": 14.3,
+          "ws_max": 21.8,
+          "wg_p95": 41.7,
+          "wg_max": 58.3,
+          "rh_p95": 94.0,
+          "cloud_mean": 28.8,
+          "n_hours": 5208,
+          "rain_hours_pct": 7.1,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "4": {
+          "temp_mean": 20.9,
+          "temp_std": 5.2,
+          "rh_mean": 56.6,
+          "precip_mean": 0.07,
+          "precip_p90": 0.1,
+          "precip_p95": 0.3,
+          "precip_p99": 1.9,
+          "precip_max": 6.7,
+          "ws_mean": 6.7,
+          "ws_p95": 14.8,
+          "ws_max": 23.6,
+          "wg_p95": 43.2,
+          "wg_max": 57.2,
+          "rh_p95": 96.0,
+          "cloud_mean": 36.8,
+          "n_hours": 5040,
+          "rain_hours_pct": 11.9,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "5": {
+          "temp_mean": 22.3,
+          "temp_std": 4.6,
+          "rh_mean": 67.8,
+          "precip_mean": 0.15,
+          "precip_p90": 0.3,
+          "precip_p95": 0.7,
+          "precip_p99": 2.8,
+          "precip_max": 8.3,
+          "ws_mean": 6.0,
+          "ws_p95": 12.9,
+          "ws_max": 19.1,
+          "wg_p95": 38.9,
+          "wg_max": 57.6,
+          "rh_p95": 98.0,
+          "cloud_mean": 52.6,
+          "n_hours": 5208,
+          "rain_hours_pct": 25.2,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "6": {
+          "temp_mean": 22.9,
+          "temp_std": 3.3,
+          "rh_mean": 78.8,
+          "precip_mean": 0.3,
+          "precip_p90": 0.7,
+          "precip_p95": 1.41,
+          "precip_p99": 4.86,
+          "precip_max": 18.5,
+          "ws_mean": 5.3,
+          "ws_p95": 11.7,
+          "ws_max": 17.7,
+          "wg_p95": 34.6,
+          "wg_max": 51.8,
+          "rh_p95": 99.0,
+          "cloud_mean": 80.4,
+          "n_hours": 5040,
+          "rain_hours_pct": 42.6,
+          "heavy_rain_hours": 9,
+          "extreme_rain_hours": 0
+        },
+        "7": {
+          "temp_mean": 22.8,
+          "temp_std": 3.1,
+          "rh_mean": 80.9,
+          "precip_mean": 0.33,
+          "precip_p90": 0.8,
+          "precip_p95": 1.8,
+          "precip_p99": 5.3,
+          "precip_max": 14.4,
+          "ws_mean": 4.7,
+          "ws_p95": 10.5,
+          "ws_max": 18.3,
+          "wg_p95": 32.0,
+          "wg_max": 47.5,
+          "rh_p95": 99.0,
+          "cloud_mean": 80.3,
+          "n_hours": 5208,
+          "rain_hours_pct": 45.7,
+          "heavy_rain_hours": 11,
+          "extreme_rain_hours": 0
+        },
+        "8": {
+          "temp_mean": 22.3,
+          "temp_std": 3.0,
+          "rh_mean": 82.8,
+          "precip_mean": 0.31,
+          "precip_p90": 0.8,
+          "precip_p95": 1.7,
+          "precip_p99": 4.3,
+          "precip_max": 13.5,
+          "ws_mean": 4.3,
+          "ws_p95": 9.5,
+          "ws_max": 16.9,
+          "wg_p95": 28.8,
+          "wg_max": 46.4,
+          "rh_p95": 99.0,
+          "cloud_mean": 77.2,
+          "n_hours": 4800,
+          "rain_hours_pct": 47.7,
+          "heavy_rain_hours": 4,
+          "extreme_rain_hours": 0
+        },
+        "9": {
+          "temp_mean": 21.6,
+          "temp_std": 3.2,
+          "rh_mean": 79.7,
+          "precip_mean": 0.22,
+          "precip_p90": 0.5,
+          "precip_p95": 1.1,
+          "precip_p99": 4.0,
+          "precip_max": 15.3,
+          "ws_mean": 4.7,
+          "ws_p95": 10.4,
+          "ws_max": 20.4,
+          "wg_p95": 30.2,
+          "wg_max": 48.6,
+          "rh_p95": 98.0,
+          "cloud_mean": 66.9,
+          "n_hours": 4320,
+          "rain_hours_pct": 35.9,
+          "heavy_rain_hours": 1,
+          "extreme_rain_hours": 0
+        },
+        "10": {
+          "temp_mean": 19.1,
+          "temp_std": 3.5,
+          "rh_mean": 79.5,
+          "precip_mean": 0.12,
+          "precip_p90": 0.3,
+          "precip_p95": 0.58,
+          "precip_p99": 1.8,
+          "precip_max": 10.8,
+          "ws_mean": 4.8,
+          "ws_p95": 10.5,
+          "ws_max": 17.6,
+          "wg_p95": 29.2,
+          "wg_max": 41.8,
+          "rh_p95": 97.0,
+          "cloud_mean": 58.7,
+          "n_hours": 4464,
+          "rain_hours_pct": 29.5,
+          "heavy_rain_hours": 1,
+          "extreme_rain_hours": 0
+        },
+        "11": {
+          "temp_mean": 15.9,
+          "temp_std": 4.2,
+          "rh_mean": 76.7,
+          "precip_mean": 0.09,
+          "precip_p90": 0.2,
+          "precip_p95": 0.5,
+          "precip_p99": 1.9,
+          "precip_max": 7.5,
+          "ws_mean": 4.4,
+          "ws_p95": 9.2,
+          "ws_max": 15.6,
+          "wg_p95": 26.6,
+          "wg_max": 40.3,
+          "rh_p95": 98.0,
+          "cloud_mean": 42.3,
+          "n_hours": 4320,
+          "rain_hours_pct": 18.5,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "12": {
+          "temp_mean": 13.1,
+          "temp_std": 4.1,
+          "rh_mean": 77.6,
+          "precip_mean": 0.04,
+          "precip_p90": 0.1,
+          "precip_p95": 0.2,
+          "precip_p99": 0.8,
+          "precip_max": 5.0,
+          "ws_mean": 4.8,
+          "ws_p95": 10.1,
+          "ws_max": 15.9,
+          "wg_p95": 29.5,
+          "wg_max": 49.0,
+          "rh_p95": 97.0,
+          "cloud_mean": 42.8,
+          "n_hours": 4464,
+          "rain_hours_pct": 12.9,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        }
+      },
+      "monsoon_pattern": {
+        "2020": {
+          "onset": "01-04",
+          "retreat": "01-12",
+          "annual_precip": 1448.0,
+          "rainy_days": 238,
+          "heavy_rain_days": 14
+        },
+        "2021": {
+          "onset": "02-08",
+          "retreat": "02-15",
+          "annual_precip": 1574.5,
+          "rainy_days": 235,
+          "heavy_rain_days": 13
+        },
+        "2022": {
+          "onset": "01-17",
+          "retreat": "01-23",
+          "annual_precip": 1207.6,
+          "rainy_days": 252,
+          "heavy_rain_days": 4
+        },
+        "2023": {
+          "onset": "04-29",
+          "retreat": "05-06",
+          "annual_precip": 961.7,
+          "rainy_days": 224,
+          "heavy_rain_days": 8
+        },
+        "2024": {
+          "onset": "01-16",
+          "retreat": "02-02",
+          "annual_precip": 926.9,
+          "rainy_days": 240,
+          "heavy_rain_days": 3
+        },
+        "2025": {
+          "onset": "02-25",
+          "retreat": "03-03",
+          "annual_precip": 1703.0,
+          "rainy_days": 259,
+          "heavy_rain_days": 13
+        },
+        "2026": {
+          "onset": "05-07",
+          "retreat": "05-17",
+          "annual_precip": 818.7,
+          "rainy_days": 143,
+          "heavy_rain_days": 5
+        }
+      },
+      "return_periods": {
+        "annual_max_precip": {
+          "values": [
+            61.1,
+            78.8,
+            45.7,
+            33.4,
+            37.5,
+            49.1,
+            40.4
+          ],
+          "mean": 49.4,
+          "std": 15.8,
+          "p90": 68.2
+        },
+        "annual_max_wind_gust": {
+          "values": [
+            59.4,
+            58.3,
+            49.0,
+            55.8,
+            57.2,
+            53.6,
+            55.1
+          ],
+          "mean": 55.5,
+          "std": 3.5
+        },
+        "annual_fog_hours": {
+          "values": [
+            480,
+            551,
+            443,
+            387,
+            492,
+            872,
+            603
+          ],
+          "mean": 546.9
+        },
+        "extreme_precip_threshold": 68.2,
+        "extreme_wind_threshold": 58.7
+      },
+      "current_anomaly": {
+        "temp": -0.18,
+        "precip": -0.1,
+        "rh": 0.59,
+        "ws": -0.43,
+        "heavy_rain_freq_ratio": 0.0,
+        "extreme_rain_freq_ratio": 0.0
+      },
+      "extreme_probability": {
+        "extreme_precip_prob": 1.0,
+        "extreme_wind_prob": 0.1073,
+        "extreme_fog_prob": 0.0852,
+        "thunderstorm_prob": 0.0219,
+        "drought_risk": 11.1667,
+        "extreme_precip_threshold": 0.0,
+        "extreme_wind_threshold": 25.9
+      },
+      "risk_calendar": {
+        "1": {
+          "month": 1,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0501,
+          "fog_risk": 0.0444,
+          "thunder_risk": 0.0023,
+          "climate_risk_index": 0.0195,
+          "risk_level": "低"
+        },
+        "2": {
+          "month": 2,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0511,
+          "fog_risk": 0.0309,
+          "thunder_risk": 0.0029,
+          "climate_risk_index": 0.0172,
+          "risk_level": "低"
+        },
+        "3": {
+          "month": 3,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0501,
+          "fog_risk": 0.0121,
+          "thunder_risk": 0.0013,
+          "climate_risk_index": 0.0128,
+          "risk_level": "低"
+        },
+        "4": {
+          "month": 4,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0504,
+          "fog_risk": 0.0242,
+          "thunder_risk": 0.0034,
+          "climate_risk_index": 0.0158,
+          "risk_level": "低"
+        },
+        "5": {
+          "month": 5,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0522,
+          "fog_risk": 0.0532,
+          "thunder_risk": 0.0092,
+          "climate_risk_index": 0.0234,
+          "risk_level": "低"
+        },
+        "6": {
+          "month": 6,
+          "precip_risk": 0.0018,
+          "wind_risk": 0.0508,
+          "fog_risk": 0.1058,
+          "thunder_risk": 0.0216,
+          "climate_risk_index": 0.0373,
+          "risk_level": "中"
+        },
+        "7": {
+          "month": 7,
+          "precip_risk": 0.0021,
+          "wind_risk": 0.0524,
+          "fog_risk": 0.1348,
+          "thunder_risk": 0.0267,
+          "climate_risk_index": 0.0449,
+          "risk_level": "中"
+        },
+        "8": {
+          "month": 8,
+          "precip_risk": 0.0008,
+          "wind_risk": 0.0542,
+          "fog_risk": 0.1477,
+          "thunder_risk": 0.0219,
+          "climate_risk_index": 0.0461,
+          "risk_level": "中"
+        },
+        "9": {
+          "month": 9,
+          "precip_risk": 0.0002,
+          "wind_risk": 0.0525,
+          "fog_risk": 0.0762,
+          "thunder_risk": 0.0157,
+          "climate_risk_index": 0.0298,
+          "risk_level": "低"
+        },
+        "10": {
+          "month": 10,
+          "precip_risk": 0.0002,
+          "wind_risk": 0.0531,
+          "fog_risk": 0.0453,
+          "thunder_risk": 0.0054,
+          "climate_risk_index": 0.0211,
+          "risk_level": "低"
+        },
+        "11": {
+          "month": 11,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0521,
+          "fog_risk": 0.0729,
+          "thunder_risk": 0.0037,
+          "climate_risk_index": 0.0259,
+          "risk_level": "低"
+        },
+        "12": {
+          "month": 12,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0522,
+          "fog_risk": 0.0444,
+          "thunder_risk": 0.0011,
+          "climate_risk_index": 0.0196,
+          "risk_level": "低"
+        }
+      },
+      "diurnal_patterns": {
+        "0": {
+          "temp": 20.5,
+          "rh": 92.0,
+          "precip": 0.26,
+          "ws": 3.0,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.24
+        },
+        "1": {
+          "temp": 20.2,
+          "rh": 92.7,
+          "precip": 0.27,
+          "ws": 2.7,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.285
+        },
+        "2": {
+          "temp": 19.8,
+          "rh": 93.9,
+          "precip": 0.29,
+          "ws": 2.6,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.325
+        },
+        "3": {
+          "temp": 19.5,
+          "rh": 94.5,
+          "precip": 0.24,
+          "ws": 2.5,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.345
+        },
+        "4": {
+          "temp": 19.3,
+          "rh": 95.1,
+          "precip": 0.24,
+          "ws": 2.4,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.38
+        },
+        "5": {
+          "temp": 19.1,
+          "rh": 95.5,
+          "precip": 0.23,
+          "ws": 2.3,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.39
+        },
+        "6": {
+          "temp": 18.9,
+          "rh": 95.8,
+          "precip": 0.23,
+          "ws": 2.3,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.415
+        },
+        "7": {
+          "temp": 18.9,
+          "rh": 96.1,
+          "precip": 0.21,
+          "ws": 2.0,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.435
+        },
+        "8": {
+          "temp": 20.0,
+          "rh": 92.4,
+          "precip": 0.17,
+          "ws": 2.3,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.115
+        },
+        "9": {
+          "temp": 21.5,
+          "rh": 85.7,
+          "precip": 0.22,
+          "ws": 3.3,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.055
+        },
+        "10": {
+          "temp": 22.8,
+          "rh": 79.1,
+          "precip": 0.37,
+          "ws": 4.8,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.03
+        },
+        "11": {
+          "temp": 24.0,
+          "rh": 74.0,
+          "precip": 0.46,
+          "ws": 5.9,
+          "thunder_prob": 0.04,
+          "fog_prob": 0.035
+        },
+        "12": {
+          "temp": 25.1,
+          "rh": 69.3,
+          "precip": 0.49,
+          "ws": 6.5,
+          "thunder_prob": 0.05,
+          "fog_prob": 0.01
+        },
+        "13": {
+          "temp": 25.8,
+          "rh": 66.5,
+          "precip": 0.48,
+          "ws": 7.0,
+          "thunder_prob": 0.04,
+          "fog_prob": 0.005
+        },
+        "14": {
+          "temp": 26.2,
+          "rh": 64.9,
+          "precip": 0.58,
+          "ws": 7.1,
+          "thunder_prob": 0.045,
+          "fog_prob": 0.005
+        },
+        "15": {
+          "temp": 26.3,
+          "rh": 64.4,
+          "precip": 0.58,
+          "ws": 7.2,
+          "thunder_prob": 0.045,
+          "fog_prob": 0.005
+        },
+        "16": {
+          "temp": 26.1,
+          "rh": 64.9,
+          "precip": 0.43,
+          "ws": 7.2,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.005
+        },
+        "17": {
+          "temp": 25.7,
+          "rh": 66.4,
+          "precip": 0.35,
+          "ws": 6.9,
+          "thunder_prob": 0.04,
+          "fog_prob": 0.005
+        },
+        "18": {
+          "temp": 25.0,
+          "rh": 69.5,
+          "precip": 0.24,
+          "ws": 6.2,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.005
+        },
+        "19": {
+          "temp": 23.9,
+          "rh": 76.7,
+          "precip": 0.17,
+          "ws": 4.7,
+          "thunder_prob": 0.0,
+          "fog_prob": 0.01
+        },
+        "20": {
+          "temp": 22.4,
+          "rh": 86.4,
+          "precip": 0.15,
+          "ws": 3.9,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.06
+        },
+        "21": {
+          "temp": 21.9,
+          "rh": 88.8,
+          "precip": 0.28,
+          "ws": 3.2,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.09
+        },
+        "22": {
+          "temp": 21.3,
+          "rh": 90.6,
+          "precip": 0.3,
+          "ws": 3.2,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.13
+        },
+        "23": {
+          "temp": 20.9,
+          "rh": 91.3,
+          "precip": 0.27,
+          "ws": 3.0,
+          "thunder_prob": 0.025,
+          "fog_prob": 0.165
+        }
+      }
+    },
+    "kunming": {
+      "name": "昆明",
+      "region": "昆明片区",
+      "lat": 25.04,
+      "lon": 102.72,
+      "elev": 1891,
+      "monthly_climatology": {
+        "1": {
+          "temp_mean": 9.2,
+          "temp_std": 4.8,
+          "rh_mean": 70.0,
+          "precip_mean": 0.06,
+          "precip_p90": 0.1,
+          "precip_p95": 0.3,
+          "precip_p99": 1.2,
+          "precip_max": 4.9,
+          "ws_mean": 10.0,
+          "ws_p95": 21.4,
+          "ws_max": 33.6,
+          "wg_p95": 50.4,
+          "wg_max": 70.6,
+          "rh_p95": 97.0,
+          "cloud_mean": 40.2,
+          "n_hours": 5208,
+          "rain_hours_pct": 14.8,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "2": {
+          "temp_mean": 11.9,
+          "temp_std": 5.2,
+          "rh_mean": 59.8,
+          "precip_mean": 0.04,
+          "precip_p90": 0.1,
+          "precip_p95": 0.2,
+          "precip_p99": 0.7,
+          "precip_max": 9.1,
+          "ws_mean": 11.8,
+          "ws_p95": 24.2,
+          "ws_max": 36.1,
+          "wg_p95": 56.3,
+          "wg_max": 77.8,
+          "rh_p95": 97.0,
+          "cloud_mean": 37.1,
+          "n_hours": 4752,
+          "rain_hours_pct": 11.5,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "3": {
+          "temp_mean": 16.1,
+          "temp_std": 5.4,
+          "rh_mean": 50.6,
+          "precip_mean": 0.03,
+          "precip_p90": 0.0,
+          "precip_p95": 0.1,
+          "precip_p99": 0.7,
+          "precip_max": 7.2,
+          "ws_mean": 13.1,
+          "ws_p95": 26.1,
+          "ws_max": 36.9,
+          "wg_p95": 59.4,
+          "wg_max": 82.4,
+          "rh_p95": 93.0,
+          "cloud_mean": 36.2,
+          "n_hours": 5208,
+          "rain_hours_pct": 8.8,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "4": {
+          "temp_mean": 18.6,
+          "temp_std": 5.6,
+          "rh_mean": 52.5,
+          "precip_mean": 0.09,
+          "precip_p90": 0.1,
+          "precip_p95": 0.4,
+          "precip_p99": 1.9,
+          "precip_max": 9.3,
+          "ws_mean": 12.9,
+          "ws_p95": 25.8,
+          "ws_max": 36.4,
+          "wg_p95": 59.4,
+          "wg_max": 80.3,
+          "rh_p95": 94.0,
+          "cloud_mean": 43.1,
+          "n_hours": 5040,
+          "rain_hours_pct": 14.2,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "5": {
+          "temp_mean": 19.8,
+          "temp_std": 4.9,
+          "rh_mean": 65.4,
+          "precip_mean": 0.2,
+          "precip_p90": 0.5,
+          "precip_p95": 1.2,
+          "precip_p99": 3.49,
+          "precip_max": 10.7,
+          "ws_mean": 10.8,
+          "ws_p95": 21.9,
+          "ws_max": 32.6,
+          "wg_p95": 52.6,
+          "wg_max": 70.6,
+          "rh_p95": 97.0,
+          "cloud_mean": 57.6,
+          "n_hours": 5208,
+          "rain_hours_pct": 29.1,
+          "heavy_rain_hours": 1,
+          "extreme_rain_hours": 0
+        },
+        "6": {
+          "temp_mean": 20.4,
+          "temp_std": 3.4,
+          "rh_mean": 78.1,
+          "precip_mean": 0.36,
+          "precip_p90": 0.9,
+          "precip_p95": 2.0,
+          "precip_p99": 4.9,
+          "precip_max": 12.7,
+          "ws_mean": 8.7,
+          "ws_p95": 17.8,
+          "ws_max": 24.4,
+          "wg_p95": 42.1,
+          "wg_max": 55.4,
+          "rh_p95": 98.0,
+          "cloud_mean": 82.1,
+          "n_hours": 5040,
+          "rain_hours_pct": 49.9,
+          "heavy_rain_hours": 6,
+          "extreme_rain_hours": 0
+        },
+        "7": {
+          "temp_mean": 20.5,
+          "temp_std": 3.1,
+          "rh_mean": 81.0,
+          "precip_mean": 0.37,
+          "precip_p90": 0.9,
+          "precip_p95": 1.9,
+          "precip_p99": 4.99,
+          "precip_max": 20.8,
+          "ws_mean": 7.8,
+          "ws_p95": 17.1,
+          "ws_max": 25.0,
+          "wg_p95": 40.3,
+          "wg_max": 55.8,
+          "rh_p95": 98.0,
+          "cloud_mean": 80.9,
+          "n_hours": 5208,
+          "rain_hours_pct": 51.5,
+          "heavy_rain_hours": 7,
+          "extreme_rain_hours": 1
+        },
+        "8": {
+          "temp_mean": 19.9,
+          "temp_std": 3.0,
+          "rh_mean": 82.7,
+          "precip_mean": 0.35,
+          "precip_p90": 1.0,
+          "precip_p95": 1.8,
+          "precip_p99": 4.5,
+          "precip_max": 13.2,
+          "ws_mean": 6.8,
+          "ws_p95": 13.8,
+          "ws_max": 26.2,
+          "wg_p95": 34.2,
+          "wg_max": 52.6,
+          "rh_p95": 98.0,
+          "cloud_mean": 76.8,
+          "n_hours": 4800,
+          "rain_hours_pct": 51.1,
+          "heavy_rain_hours": 4,
+          "extreme_rain_hours": 0
+        },
+        "9": {
+          "temp_mean": 18.9,
+          "temp_std": 3.1,
+          "rh_mean": 81.4,
+          "precip_mean": 0.27,
+          "precip_p90": 0.7,
+          "precip_p95": 1.5,
+          "precip_p99": 3.68,
+          "precip_max": 16.6,
+          "ws_mean": 7.8,
+          "ws_p95": 15.8,
+          "ws_max": 26.4,
+          "wg_p95": 37.1,
+          "wg_max": 54.0,
+          "rh_p95": 98.0,
+          "cloud_mean": 70.9,
+          "n_hours": 4320,
+          "rain_hours_pct": 45.1,
+          "heavy_rain_hours": 2,
+          "extreme_rain_hours": 0
+        },
+        "10": {
+          "temp_mean": 16.0,
+          "temp_std": 3.5,
+          "rh_mean": 81.9,
+          "precip_mean": 0.18,
+          "precip_p90": 0.4,
+          "precip_p95": 0.9,
+          "precip_p99": 2.34,
+          "precip_max": 12.6,
+          "ws_mean": 8.7,
+          "ws_p95": 16.1,
+          "ws_max": 30.3,
+          "wg_p95": 37.1,
+          "wg_max": 58.0,
+          "rh_p95": 99.0,
+          "cloud_mean": 70.1,
+          "n_hours": 4464,
+          "rain_hours_pct": 37.8,
+          "heavy_rain_hours": 1,
+          "extreme_rain_hours": 0
+        },
+        "11": {
+          "temp_mean": 12.7,
+          "temp_std": 4.3,
+          "rh_mean": 75.4,
+          "precip_mean": 0.08,
+          "precip_p90": 0.2,
+          "precip_p95": 0.4,
+          "precip_p99": 1.3,
+          "precip_max": 6.4,
+          "ws_mean": 8.1,
+          "ws_p95": 16.5,
+          "ws_max": 25.7,
+          "wg_p95": 38.2,
+          "wg_max": 54.0,
+          "rh_p95": 98.0,
+          "cloud_mean": 47.5,
+          "n_hours": 4320,
+          "rain_hours_pct": 19.8,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        },
+        "12": {
+          "temp_mean": 10.0,
+          "temp_std": 4.3,
+          "rh_mean": 76.3,
+          "precip_mean": 0.04,
+          "precip_p90": 0.1,
+          "precip_p95": 0.2,
+          "precip_p99": 0.8,
+          "precip_max": 5.0,
+          "ws_mean": 9.0,
+          "ws_p95": 18.7,
+          "ws_max": 30.5,
+          "wg_p95": 43.6,
+          "wg_max": 61.9,
+          "rh_p95": 98.0,
+          "cloud_mean": 49.6,
+          "n_hours": 4464,
+          "rain_hours_pct": 14.5,
+          "heavy_rain_hours": 0,
+          "extreme_rain_hours": 0
+        }
+      },
+      "monsoon_pattern": {
+        "2020": {
+          "onset": "01-04",
+          "retreat": "01-12",
+          "annual_precip": 1766.9,
+          "rainy_days": 248,
+          "heavy_rain_days": 16
+        },
+        "2021": {
+          "onset": "04-06",
+          "retreat": "04-13",
+          "annual_precip": 1495.8,
+          "rainy_days": 258,
+          "heavy_rain_days": 11
+        },
+        "2022": {
+          "onset": "01-31",
+          "retreat": "02-09",
+          "annual_precip": 1631.9,
+          "rainy_days": 269,
+          "heavy_rain_days": 9
+        },
+        "2023": {
+          "onset": "01-01",
+          "retreat": "01-07",
+          "annual_precip": 1058.1,
+          "rainy_days": 228,
+          "heavy_rain_days": 3
+        },
+        "2024": {
+          "onset": "01-25",
+          "retreat": "02-03",
+          "annual_precip": 1369.8,
+          "rainy_days": 259,
+          "heavy_rain_days": 8
+        },
+        "2025": {
+          "onset": "05-14",
+          "retreat": "10-25",
+          "annual_precip": 1822.9,
+          "rainy_days": 280,
+          "heavy_rain_days": 11
+        },
+        "2026": {
+          "onset": "04-28",
+          "retreat": "05-18",
+          "annual_precip": 905.7,
+          "rainy_days": 149,
+          "heavy_rain_days": 1
+        }
+      },
+      "return_periods": {
+        "annual_max_precip": {
+          "values": [
+            112.1,
+            43.3,
+            53.2,
+            27.9,
+            35.3,
+            47.4,
+            41.9
+          ],
+          "mean": 51.6,
+          "std": 27.9,
+          "p90": 76.8
+        },
+        "annual_max_wind_gust": {
+          "values": [
+            78.1,
+            77.8,
+            70.9,
+            75.2,
+            82.4,
+            67.7,
+            71.6
+          ],
+          "mean": 74.8,
+          "std": 5.1
+        },
+        "annual_fog_hours": {
+          "values": [
+            613,
+            696,
+            713,
+            445,
+            516,
+            587,
+            155
+          ],
+          "mean": 532.1
+        },
+        "extreme_precip_threshold": 76.8,
+        "extreme_wind_threshold": 79.8
+      },
+      "current_anomaly": {
+        "temp": -0.11,
+        "precip": 0.08,
+        "rh": 1.15,
+        "ws": -1.08,
+        "heavy_rain_freq_ratio": 0.0,
+        "extreme_rain_freq_ratio": 0.0
+      },
+      "extreme_probability": {
+        "extreme_precip_prob": 1.0,
+        "extreme_wind_prob": 0.101,
+        "extreme_fog_prob": 0.0696,
+        "thunderstorm_prob": 0.0248,
+        "drought_risk": 11.2,
+        "extreme_precip_threshold": 0.0,
+        "extreme_wind_threshold": 30.6
+      },
+      "risk_calendar": {
+        "1": {
+          "month": 1,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0505,
+          "fog_risk": 0.049,
+          "thunder_risk": 0.0012,
+          "climate_risk_index": 0.0202,
+          "risk_level": "低"
+        },
+        "2": {
+          "month": 2,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0501,
+          "fog_risk": 0.0335,
+          "thunder_risk": 0.0015,
+          "climate_risk_index": 0.0171,
+          "risk_level": "低"
+        },
+        "3": {
+          "month": 3,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0518,
+          "fog_risk": 0.0111,
+          "thunder_risk": 0.0017,
+          "climate_risk_index": 0.013,
+          "risk_level": "低"
+        },
+        "4": {
+          "month": 4,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0504,
+          "fog_risk": 0.0127,
+          "thunder_risk": 0.0046,
+          "climate_risk_index": 0.0138,
+          "risk_level": "低"
+        },
+        "5": {
+          "month": 5,
+          "precip_risk": 0.0002,
+          "wind_risk": 0.0515,
+          "fog_risk": 0.0284,
+          "thunder_risk": 0.0142,
+          "climate_risk_index": 0.0196,
+          "risk_level": "低"
+        },
+        "6": {
+          "month": 6,
+          "precip_risk": 0.0012,
+          "wind_risk": 0.0504,
+          "fog_risk": 0.0679,
+          "thunder_risk": 0.0266,
+          "climate_risk_index": 0.0307,
+          "risk_level": "中"
+        },
+        "7": {
+          "month": 7,
+          "precip_risk": 0.0013,
+          "wind_risk": 0.0513,
+          "fog_risk": 0.1096,
+          "thunder_risk": 0.0288,
+          "climate_risk_index": 0.0399,
+          "risk_level": "中"
+        },
+        "8": {
+          "month": 8,
+          "precip_risk": 0.0008,
+          "wind_risk": 0.0504,
+          "fog_risk": 0.1348,
+          "thunder_risk": 0.0248,
+          "climate_risk_index": 0.0435,
+          "risk_level": "中"
+        },
+        "9": {
+          "month": 9,
+          "precip_risk": 0.0005,
+          "wind_risk": 0.0512,
+          "fog_risk": 0.0954,
+          "thunder_risk": 0.016,
+          "climate_risk_index": 0.0335,
+          "risk_level": "中"
+        },
+        "10": {
+          "month": 10,
+          "precip_risk": 0.0002,
+          "wind_risk": 0.0511,
+          "fog_risk": 0.1022,
+          "thunder_risk": 0.0072,
+          "climate_risk_index": 0.0325,
+          "risk_level": "中"
+        },
+        "11": {
+          "month": 11,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0505,
+          "fog_risk": 0.0637,
+          "thunder_risk": 0.003,
+          "climate_risk_index": 0.0236,
+          "risk_level": "低"
+        },
+        "12": {
+          "month": 12,
+          "precip_risk": 0.0,
+          "wind_risk": 0.0511,
+          "fog_risk": 0.0757,
+          "thunder_risk": 0.0009,
+          "climate_risk_index": 0.0256,
+          "risk_level": "低"
+        }
+      },
+      "diurnal_patterns": {
+        "0": {
+          "temp": 18.0,
+          "rh": 92.1,
+          "precip": 0.43,
+          "ws": 5.6,
+          "thunder_prob": 0.025,
+          "fog_prob": 0.225
+        },
+        "1": {
+          "temp": 17.7,
+          "rh": 93.0,
+          "precip": 0.32,
+          "ws": 5.3,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.235
+        },
+        "2": {
+          "temp": 17.4,
+          "rh": 93.7,
+          "precip": 0.28,
+          "ws": 5.2,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.295
+        },
+        "3": {
+          "temp": 17.1,
+          "rh": 94.2,
+          "precip": 0.28,
+          "ws": 4.9,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.32
+        },
+        "4": {
+          "temp": 16.8,
+          "rh": 94.9,
+          "precip": 0.22,
+          "ws": 5.1,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.385
+        },
+        "5": {
+          "temp": 16.7,
+          "rh": 95.3,
+          "precip": 0.18,
+          "ws": 5.0,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.4
+        },
+        "6": {
+          "temp": 16.5,
+          "rh": 95.7,
+          "precip": 0.22,
+          "ws": 5.0,
+          "thunder_prob": 0.015,
+          "fog_prob": 0.435
+        },
+        "7": {
+          "temp": 16.5,
+          "rh": 95.8,
+          "precip": 0.17,
+          "ws": 5.0,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.43
+        },
+        "8": {
+          "temp": 17.7,
+          "rh": 92.8,
+          "precip": 0.13,
+          "ws": 5.5,
+          "thunder_prob": 0.005,
+          "fog_prob": 0.085
+        },
+        "9": {
+          "temp": 19.3,
+          "rh": 86.8,
+          "precip": 0.17,
+          "ws": 6.4,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.015
+        },
+        "10": {
+          "temp": 20.7,
+          "rh": 79.7,
+          "precip": 0.17,
+          "ws": 7.6,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.005
+        },
+        "11": {
+          "temp": 21.9,
+          "rh": 73.5,
+          "precip": 0.24,
+          "ws": 8.3,
+          "thunder_prob": 0.01,
+          "fog_prob": 0.005
+        },
+        "12": {
+          "temp": 22.8,
+          "rh": 69.0,
+          "precip": 0.27,
+          "ws": 8.7,
+          "thunder_prob": 0.02,
+          "fog_prob": 0.005
+        },
+        "13": {
+          "temp": 23.5,
+          "rh": 66.0,
+          "precip": 0.34,
+          "ws": 9.3,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.0
+        },
+        "14": {
+          "temp": 23.8,
+          "rh": 65.0,
+          "precip": 0.41,
+          "ws": 9.4,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.01
+        },
+        "15": {
+          "temp": 23.9,
+          "rh": 64.5,
+          "precip": 0.48,
+          "ws": 9.7,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.01
+        },
+        "16": {
+          "temp": 23.8,
+          "rh": 64.9,
+          "precip": 0.47,
+          "ws": 9.5,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.005
+        },
+        "17": {
+          "temp": 23.4,
+          "rh": 66.6,
+          "precip": 0.52,
+          "ws": 9.3,
+          "thunder_prob": 0.035,
+          "fog_prob": 0.005
+        },
+        "18": {
+          "temp": 22.5,
+          "rh": 70.8,
+          "precip": 0.62,
+          "ws": 8.9,
+          "thunder_prob": 0.05,
+          "fog_prob": 0.005
+        },
+        "19": {
+          "temp": 21.3,
+          "rh": 78.2,
+          "precip": 0.45,
+          "ws": 6.7,
+          "thunder_prob": 0.05,
+          "fog_prob": 0.0
+        },
+        "20": {
+          "temp": 20.0,
+          "rh": 84.3,
+          "precip": 0.4,
+          "ws": 5.9,
+          "thunder_prob": 0.03,
+          "fog_prob": 0.01
+        },
+        "21": {
+          "temp": 19.3,
+          "rh": 87.6,
+          "precip": 0.58,
+          "ws": 5.8,
+          "thunder_prob": 0.05,
+          "fog_prob": 0.095
+        },
+        "22": {
+          "temp": 18.8,
+          "rh": 89.6,
+          "precip": 0.54,
+          "ws": 5.7,
+          "thunder_prob": 0.055,
+          "fog_prob": 0.11
+        },
+        "23": {
+          "temp": 18.4,
+          "rh": 90.9,
+          "precip": 0.48,
+          "ws": 5.8,
+          "thunder_prob": 0.04,
+          "fog_prob": 0.145
+        }
+      }
+    }
+  },
+  "station_comparison": [
+    {
+      "station": "哀牢山生态站",
+      "region": "哀牢山核心区",
+      "elev": 2450,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.1013,
+      "extreme_fog_prob": 0.275,
+      "thunderstorm_prob": 0.0433,
+      "anomaly_precip": -0.02,
+      "anomaly_temp": -0.18
+    },
+    {
+      "station": "景东",
+      "region": "普洱片区",
+      "elev": 1150,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.101,
+      "extreme_fog_prob": 0.1537,
+      "thunderstorm_prob": 0.054,
+      "anomaly_precip": 0.03,
+      "anomaly_temp": -0.1
+    },
+    {
+      "station": "新平",
+      "region": "玉溪片区",
+      "elev": 1600,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.1073,
+      "extreme_fog_prob": 0.0852,
+      "thunderstorm_prob": 0.0219,
+      "anomaly_precip": -0.1,
+      "anomaly_temp": -0.18
+    },
+    {
+      "station": "昆明",
+      "region": "昆明片区",
+      "elev": 1891,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.101,
+      "extreme_fog_prob": 0.0696,
+      "thunderstorm_prob": 0.0248,
+      "anomaly_precip": 0.08,
+      "anomaly_temp": -0.11
+    }
+  ],
+  "extreme_scenarios": {
+    "n_simulations": 1000,
+    "extreme_event_probability": 1.0,
+    "weekly_max_precip": {
+      "mean": 103.8,
+      "p90": 160.5,
+      "p95": 181.8,
+      "p99": 232.6,
+      "max": 295.1
+    },
+    "weekly_max_wind": {
+      "mean": 45.4,
+      "p90": 54.4,
+      "p95": 57.6,
+      "max": 58.7
+    },
+    "weekly_fog_days": {
+      "mean": 1.5,
+      "p90": 3,
+      "max": 5
+    },
+    "weekly_thunderstorm_days": {
+      "mean": 5.2,
+      "p90": 7,
+      "max": 7
+    }
+  },
+  "fenghe_priors": {
+    "extreme_precip_prior": 1.0,
+    "extreme_wind_prior": 0.105,
+    "extreme_fog_prior": 0.1458,
+    "thunderstorm_prior": 0.036,
+    "drought_prior": 11.1667,
+    "climate_risk_index": 0.4092,
+    "risk_level": "极高",
+    "seasonal_adjustment": {
+      "precip_boost": 2.29,
+      "fog_boost": 1.28
+    }
+  },
+  "generated_at": "2026-08-14 19:23:01"
+}

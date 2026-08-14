@@ -1,0 +1,441 @@
+{
+  "report_title": "哀牢山区域多模型联合气象灾害综合研判报告",
+  "generated_at": "2026-08-14 19:23:21",
+  "report_period": "2026年8月（雨季峰值期）",
+  "climate_background": {
+    "model": "风和气象模型 v1.0",
+    "data_coverage": "哀牢山/玉溪/普洱/昆明 4站点 2020-2026（含2025-2026增量）",
+    "total_records": 232128,
+    "current_month_risk": {
+      "month": 8,
+      "precip_risk": 0.0015,
+      "wind_risk": 0.053,
+      "fog_risk": 0.2224,
+      "thunder_risk": 0.036,
+      "climate_risk_index": 0.0646,
+      "risk_level": "中"
+    },
+    "climate_risk_index": 0.4092,
+    "risk_level": "极高",
+    "climate_anomaly": {
+      "temp": -0.11,
+      "precip": -0.01,
+      "rh": 0.61,
+      "ws": -0.4,
+      "heavy_rain_freq_ratio": 0.28,
+      "extreme_rain_freq_ratio": 1.0
+    },
+    "monsoon_info": {
+      "2020": {
+        "onset": "01-03",
+        "retreat": "01-13",
+        "annual_precip": 8974.5,
+        "rainy_days": 304,
+        "heavy_rain_days": 115
+      },
+      "2021": {
+        "onset": "01-09",
+        "retreat": "02-26",
+        "annual_precip": 7821.6,
+        "rainy_days": 309,
+        "heavy_rain_days": 102
+      },
+      "2022": {
+        "onset": "01-01",
+        "retreat": "01-09",
+        "annual_precip": 7027.4,
+        "rainy_days": 298,
+        "heavy_rain_days": 104
+      },
+      "2023": {
+        "onset": "01-01",
+        "retreat": "01-09",
+        "annual_precip": 6266.5,
+        "rainy_days": 304,
+        "heavy_rain_days": 88
+      },
+      "2024": {
+        "onset": "01-16",
+        "retreat": "02-19",
+        "annual_precip": 7812.2,
+        "rainy_days": 316,
+        "heavy_rain_days": 109
+      },
+      "2025": {
+        "onset": "01-01",
+        "retreat": "01-18",
+        "annual_precip": 9535.0,
+        "rainy_days": 321,
+        "heavy_rain_days": 119
+      },
+      "2026": {
+        "onset": "01-03",
+        "retreat": "01-16",
+        "annual_precip": 4888.8,
+        "rainy_days": 178,
+        "heavy_rain_days": 73
+      }
+    }
+  },
+  "extreme_weather_probability": {
+    "extreme_precip": {
+      "probability": 1.0,
+      "description": "8月极端降水概率 100.0%，阈值参考6.5年P90分位",
+      "regional_variation": {
+        "哀牢山生态站": 1.0,
+        "景东": 1.0,
+        "新平": 1.0,
+        "昆明": 1.0
+      }
+    },
+    "extreme_wind": {
+      "probability": 0.105,
+      "description": "8月极端大风概率 10.5%",
+      "regional_variation": {
+        "哀牢山生态站": 0.1013,
+        "景东": 0.101,
+        "新平": 0.1073,
+        "昆明": 0.101
+      }
+    },
+    "extreme_fog": {
+      "probability": 0.1458,
+      "description": "8月浓雾概率 14.6%，哀牢山核心区最高(27.3%)",
+      "regional_variation": {
+        "哀牢山生态站": 0.275,
+        "景东": 0.1537,
+        "新平": 0.0852,
+        "昆明": 0.0696
+      }
+    },
+    "thunderstorm": {
+      "probability": 0.036,
+      "description": "8月强对流概率 3.6%",
+      "regional_variation": {
+        "哀牢山生态站": 0.0433,
+        "景东": 0.054,
+        "新平": 0.0219,
+        "昆明": 0.0248
+      }
+    }
+  },
+  "monte_carlo_simulation": {
+    "n_simulations": 1000,
+    "extreme_event_probability": 1.0,
+    "weekly_max_precip": {
+      "mean": 103.8,
+      "p90": 160.5,
+      "p95": 181.8,
+      "p99": 232.6,
+      "max": 295.1
+    },
+    "weekly_max_wind": {
+      "mean": 45.4,
+      "p90": 54.4,
+      "p95": 57.6,
+      "max": 58.7
+    },
+    "weekly_fog_days": {
+      "mean": 1.5,
+      "p90": 3,
+      "max": 5
+    },
+    "weekly_thunderstorm_days": {
+      "mean": 5.2,
+      "p90": 7,
+      "max": 7
+    }
+  },
+  "emergency_scenarios": [
+    {
+      "id": "S1",
+      "name": "极端强降水-泥石流链生灾害",
+      "trigger": "24h降水 > 100mm + 地形敏感区",
+      "fenghe_prior": 1.0,
+      "model_adjusted": 0.9592,
+      "combined_risk": 0.9755,
+      "risk_level": "极高",
+      "affected_areas": [
+        "哀牢山核心区(徐家坝-大雪锅山)",
+        "恩水公路沿线",
+        "者龙-水塘地带"
+      ],
+      "timeline": "降水开始后2-4小时触发坡面径流→6-8小时触发浅层滑坡→8-12小时泥石流",
+      "recommendation": "立即疏散低洼地带游客，封闭恩水公路K15-K30段，设置警戒线",
+      "severity": 5
+    },
+    {
+      "id": "S2",
+      "name": "持续浓雾-能见度极低",
+      "trigger": "RH>=98% & t-dew<=1°C 持续≥6h",
+      "fenghe_prior": 0.1458,
+      "model_adjusted": 0.7425999999999999,
+      "combined_risk": 0.4442,
+      "risk_level": "高",
+      "affected_areas": [
+        "哀牢山主脊(海拔>2400m)",
+        "金山丫口",
+        "徐家坝-石门峡路段"
+      ],
+      "timeline": "夜间辐射冷却→凌晨2-6时浓雾最浓→上午9-10时消散",
+      "recommendation": "禁止高海拔路段通行，开启雾灯，景区推迟开放至10时",
+      "severity": 3
+    },
+    {
+      "id": "S3",
+      "name": "强对流-雷电冰雹",
+      "trigger": "不稳定能量积累 + 触发机制",
+      "fenghe_prior": 0.036,
+      "model_adjusted": 0.6524399999999999,
+      "combined_risk": 0.375,
+      "risk_level": "高",
+      "affected_areas": [
+        "新平-戛洒谷地",
+        "景东川河",
+        "哀牢山东坡"
+      ],
+      "timeline": "午后14-16时对流最强→17-19时逐渐减弱",
+      "recommendation": "户外游客就近避险，暂停索道和高空项目，注意防雷",
+      "severity": 4
+    },
+    {
+      "id": "S4",
+      "name": "极端大风-树木倒伏",
+      "trigger": "阵风 > 17m/s + 高海拔暴露",
+      "fenghe_prior": 0.105,
+      "model_adjusted": 0.30525,
+      "combined_risk": 0.2051,
+      "risk_level": "中",
+      "affected_areas": [
+        "哀牢山主脊线",
+        "金山丫口观景台",
+        "茶马古道高暴露段"
+      ],
+      "timeline": "强对流过境时阵风峰值→持续30-60分钟",
+      "recommendation": "关闭观景台，游客进入建筑物内，注意落枝",
+      "severity": 3
+    },
+    {
+      "id": "S5",
+      "name": "复合灾害-强降水+大风+浓雾",
+      "trigger": "气候风险指数 > 0.08 + 多模型同时高概率",
+      "fenghe_prior": 0.4092,
+      "model_adjusted": 0.669,
+      "combined_risk": 0.5131,
+      "risk_level": "高",
+      "affected_areas": [
+        "哀牢山全境",
+        "恩水公路全段",
+        "所有景区"
+      ],
+      "timeline": "多重灾害叠加，可能持续12-24小时",
+      "recommendation": "启动I级应急响应，全面封山，疏散所有游客",
+      "severity": 5
+    },
+    {
+      "id": "S6",
+      "name": "干旱-森林火险",
+      "trigger": "连续无降水 > 15天 + 高温",
+      "fenghe_prior": 11.1667,
+      "model_adjusted": 0.0,
+      "combined_risk": 0.4,
+      "risk_level": "高",
+      "affected_areas": [
+        "哀牢山保护区",
+        "人工林区",
+        "景区周边"
+      ],
+      "timeline": "干旱积累型，无明确触发时刻",
+      "recommendation": "加强巡查，禁止野外用火，准备灭火物资",
+      "severity": 4
+    }
+  ],
+  "comprehensive_assessment": {
+    "overall_risk_score": 0.6924,
+    "overall_risk_level": "I级（特别重大）",
+    "recommended_action": "启动I级应急响应，全面封山，疏散所有人员",
+    "high_risk_scenario_count": 5,
+    "extreme_risk_scenario_count": 1,
+    "key_findings": [
+      "风和模型基于4站点6.5年数据(2020-2026)学习显示，当前8月处于雨季峰值期，区域气候风险指数 0.4092（极高）",
+      "近期降水接近常年（-0.01σ），但8月强对流频率处于年内峰值",
+      "蒙特卡洛1000次模拟显示，未来一周内发生至少一次极端事件（日降水>50mm或阵风>20m/s或浓雾≥3天）的概率为 100.0%",
+      "一周最大日降水量P99达 232.6mm，存在极端强降水可能",
+      "多模型联动模拟识别出 5 个高风险场景：极端强降水-泥石流链生灾害、持续浓雾-能见度极低、强对流-雷电冰雹"
+    ],
+    "multi_model_consensus": {
+      "fenghe_climate_risk": 0.4092,
+      "max_scenario_risk": 0.9755,
+      "combined_assessment": 0.6924,
+      "model_agreement": "高"
+    }
+  },
+  "regional_comparison": [
+    {
+      "station": "哀牢山生态站",
+      "region": "哀牢山核心区",
+      "elev": 2450,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.1013,
+      "extreme_fog_prob": 0.275,
+      "thunderstorm_prob": 0.0433,
+      "anomaly_precip": -0.02,
+      "anomaly_temp": -0.18
+    },
+    {
+      "station": "景东",
+      "region": "普洱片区",
+      "elev": 1150,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.101,
+      "extreme_fog_prob": 0.1537,
+      "thunderstorm_prob": 0.054,
+      "anomaly_precip": 0.03,
+      "anomaly_temp": -0.1
+    },
+    {
+      "station": "新平",
+      "region": "玉溪片区",
+      "elev": 1600,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.1073,
+      "extreme_fog_prob": 0.0852,
+      "thunderstorm_prob": 0.0219,
+      "anomaly_precip": -0.1,
+      "anomaly_temp": -0.18
+    },
+    {
+      "station": "昆明",
+      "region": "昆明片区",
+      "elev": 1891,
+      "extreme_precip_prob": 1.0,
+      "extreme_wind_prob": 0.101,
+      "extreme_fog_prob": 0.0696,
+      "thunderstorm_prob": 0.0248,
+      "anomaly_precip": 0.08,
+      "anomaly_temp": -0.11
+    }
+  ],
+  "seasonal_risk_calendar": {
+    "1": {
+      "month": 1,
+      "precip_risk": 0.0,
+      "wind_risk": 0.0503,
+      "fog_risk": 0.0779,
+      "thunder_risk": 0.0036,
+      "climate_risk_index": 0.0266,
+      "risk_level": "低"
+    },
+    "2": {
+      "month": 2,
+      "precip_risk": 0.0,
+      "wind_risk": 0.05,
+      "fog_risk": 0.0496,
+      "thunder_risk": 0.0044,
+      "climate_risk_index": 0.021,
+      "risk_level": "低"
+    },
+    "3": {
+      "month": 3,
+      "precip_risk": 0.0,
+      "wind_risk": 0.0519,
+      "fog_risk": 0.021,
+      "thunder_risk": 0.0018,
+      "climate_risk_index": 0.0151,
+      "risk_level": "低"
+    },
+    "4": {
+      "month": 4,
+      "precip_risk": 0.0001,
+      "wind_risk": 0.0516,
+      "fog_risk": 0.0283,
+      "thunder_risk": 0.0039,
+      "climate_risk_index": 0.017,
+      "risk_level": "低"
+    },
+    "5": {
+      "month": 5,
+      "precip_risk": 0.0005,
+      "wind_risk": 0.0515,
+      "fog_risk": 0.0841,
+      "thunder_risk": 0.0136,
+      "climate_risk_index": 0.0307,
+      "risk_level": "中"
+    },
+    "6": {
+      "month": 6,
+      "precip_risk": 0.0035,
+      "wind_risk": 0.0506,
+      "fog_risk": 0.1893,
+      "thunder_risk": 0.0402,
+      "climate_risk_index": 0.0593,
+      "risk_level": "中"
+    },
+    "7": {
+      "month": 7,
+      "precip_risk": 0.0032,
+      "wind_risk": 0.0519,
+      "fog_risk": 0.2097,
+      "thunder_risk": 0.0406,
+      "climate_risk_index": 0.0636,
+      "risk_level": "中"
+    },
+    "8": {
+      "month": 8,
+      "precip_risk": 0.0015,
+      "wind_risk": 0.053,
+      "fog_risk": 0.2224,
+      "thunder_risk": 0.036,
+      "climate_risk_index": 0.0646,
+      "risk_level": "中"
+    },
+    "9": {
+      "month": 9,
+      "precip_risk": 0.0012,
+      "wind_risk": 0.0506,
+      "fog_risk": 0.1434,
+      "thunder_risk": 0.022,
+      "climate_risk_index": 0.0447,
+      "risk_level": "中"
+    },
+    "10": {
+      "month": 10,
+      "precip_risk": 0.0011,
+      "wind_risk": 0.0515,
+      "fog_risk": 0.1514,
+      "thunder_risk": 0.0125,
+      "climate_risk_index": 0.0441,
+      "risk_level": "中"
+    },
+    "11": {
+      "month": 11,
+      "precip_risk": 0.0003,
+      "wind_risk": 0.0502,
+      "fog_risk": 0.1086,
+      "thunder_risk": 0.0061,
+      "climate_risk_index": 0.0334,
+      "risk_level": "中"
+    },
+    "12": {
+      "month": 12,
+      "precip_risk": 0.0,
+      "wind_risk": 0.0513,
+      "fog_risk": 0.0898,
+      "thunder_risk": 0.0019,
+      "climate_risk_index": 0.0287,
+      "risk_level": "低"
+    }
+  },
+  "recommendations": [
+    "【最高紧急】立即启动I级应急响应，全面封山，疏散所有游客和工作人员",
+    "【最高紧急】通知地方政府、应急管理局、景区管委会联合行动",
+    "【最高紧急】准备救援物资，预置救援力量到关键节点",
+    "【S1】极端强降水-泥石流链生灾害：立即疏散低洼地带游客，封闭恩水公路K15-K30段，设置警戒线",
+    "【S2】持续浓雾-能见度极低：禁止高海拔路段通行，开启雾灯，景区推迟开放至10时",
+    "【S3】强对流-雷电冰雹：户外游客就近避险，暂停索道和高空项目，注意防雷",
+    "【S5】复合灾害-强降水+大风+浓雾：启动I级应急响应，全面封山，疏散所有游客",
+    "【S6】干旱-森林火险：加强巡查，禁止野外用火，准备灭火物资",
+    "【常态】保持与气象部门的实时联动，每2小时更新一次研判",
+    "【常态】确保通信畅通，卫星电话备用"
+  ]
+}

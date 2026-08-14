@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<title>哀牢山实时气象灾害预警 · 强对流/浓雾/山洪/泥石流/塌方风险指数（公开版）</title>
+<meta name="description" content="哀牢山区域实时气象灾害预警：基于双机器学习模型（交叉验证）预测未来24小时强对流与浓雾风险，结合精细地形模拟给出山洪、泥石流、塌方综合风险指数与防护建议。数据来自 Open-Meteo，每次刷新实时更新，可被搜索引擎收录，无需任何软件即可打开。">
+<meta name="keywords" content="哀牢山,天气预警,强对流,浓雾,山洪,泥石流,塌方,风险指数,哀牢山天气,云南新平,大雪锅山">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#0f1c30">
+<meta property="og:title" content="哀牢山实时气象灾害预警 · 公开版">
+<meta property="og:description" content="双模型交叉验证 + 精细地形模拟 + 综合风险指数，每次刷新实时更新。进山前请查看。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
+<link rel="canonical" href="/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "哀牢山实时气象灾害预警",
+  "description": "哀牢山区域强对流/浓雾/山洪/泥石流/塌方综合风险实时预警, 双模型交叉验证, 浏览器端实时计算",
+  "applicationCategory": "WeatherApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "zh-CN",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CNY"}
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="js/lib/three.min.js"></script>
+<script src="js/lib/OrbitControls.js"></script>
+<style>
+:root{
+  --bg:#0f1c30; --panel:#16263f; --line:#243349; --text:#e8eef7; --sub:#8fa3c0;
+  --blue:#4aa3ff; --teal:#2ecc71; --orange:#ff9f43; --yellow:#f7d154; --red:#ff4d4f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+header{border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:18px}
+header h1{font-size:26px;font-weight:800;letter-spacing:.5px}
+header h1 small{font-size:13px;color:var(--sub);font-weight:400;margin-left:10px}
+.meta{font-size:12px;color:var(--sub);margin-top:8px}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;background:rgba(46,204,113,.15);color:var(--teal);border:1px solid rgba(46,204,113,.35);margin-left:6px}
+.badge.red{background:rgba(255,77,79,.15);color:var(--red);border-color:rgba(255,77,79,.4)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
+.panel h2{font-size:18px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.desc{font-size:12.5px;color:var(--sub);margin-bottom:12px}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin:10px 0}
+.legend-row span{display:inline-flex;align-items:center;gap:5px}
+.legend-row i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.legend-row i.line{height:4px;border-radius:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:rgba(255,255,255,.05);color:var(--sub);font-size:12px;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid rgba(36,51,73,.5);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+.pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;color:#fff;font-weight:700}
+.pill.low{background:#2ecc71}.pill.watch{background:#f7d154}.pill.high{background:#ff9f43}.pill.warn{background:#ff4d4f}
+.risk-bar{display:inline-block;height:12px;border-radius:6px;background:rgba(255,255,255,.10);position:relative;min-width:110px;vertical-align:middle;margin-right:8px}
+.risk-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.tags{font-size:11.5px;color:var(--sub)}
+.agree-yes{color:var(--teal);font-weight:700}
+.agree-no{color:var(--red);font-weight:700}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.sum-item{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:12px}
+.sum-item b{font-size:20px;display:block;margin-top:2px}
+.rs-factor{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px}
+.rs-factor span{color:var(--text-dim);display:block;margin-bottom:2px}
+.rs-factor b{font-size:14px;display:block}
+#mapWrap{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#0b1526}
+#mapImg{display:block;width:100%;height:auto}
+#mapSvg{position:absolute;inset:0;width:100%;height:100%}
+#mapSvg .cell{cursor:pointer;stroke:rgba(40,40,40,0.16);stroke-width:0.22}
+#mapSvg .lbl{pointer-events:none}
+.tooltip{position:absolute;pointer-events:none;background:rgba(10,20,35,.96);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;z-index:50;display:none;max-width:280px;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.tooltip b{color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.legend-row{gap:8px}}
+.verify-note{font-size:12px;color:var(--sub);background:rgba(255,255,255,.03);border-left:3px solid var(--blue);padding:10px 12px;border-radius:8px;margin-top:12px}
+footer{border-top:1px solid var(--line);padding-top:16px;font-size:11.5px;color:var(--sub);text-align:center}
+footer b{color:var(--orange)}
+.btn-group{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.risk-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--sub);font-size:13px;cursor:pointer}
+.risk-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
+.loading{text-align:center;padding:40px;color:var(--sub);font-size:14px}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--blue);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-4px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+h3{font-size:14.5px;margin:14px 0 8px;color:var(--text)}
+/* ---- Three.js 3D 地形容器 ---- */
+#three3DContainer{position:relative;width:100%;height:520px;border-radius:12px;overflow:hidden;background:#0b1526;border:1px solid var(--line);cursor:grab}
+#three3DContainer canvas{display:block;width:100%;height:100%}
+#three3DTooltip{display:none;position:absolute;z-index:9;max-width:230px;background:rgba(8,15,26,.94);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:9px 11px;font-size:12px;line-height:1.5;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.45);color:var(--text)}
+#three3DTooltip .tip-main{font-weight:700;color:#fff}
+#three3DTooltip .tip-sub{color:#c8d6ea;margin-top:2px}
+#three3DTooltip .tip-note{color:var(--sub);font-size:11px;margin-top:3px;border-top:1px dashed rgba(255,255,255,.15);padding-top:3px}
+#three3DHint{position:absolute;left:12px;bottom:10px;z-index:8;font-size:11px;color:rgba(232,238,247,.55);pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+#tourBtn{position:absolute;right:12px;top:12px;z-index:8;padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.35);background:rgba(10,20,36,.72);color:#fff;font-size:13px;cursor:pointer;backdrop-filter:blur(4px)}
+#tourBtn:hover{background:rgba(74,163,255,.25);border-color:var(--blue)}
+#tourBtn.active{background:var(--blue);border-color:var(--blue);font-weight:700;color:#fff}
+#three3DScale{position:absolute;right:12px;bottom:12px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none}
+#three3DScale .scale-title{font-size:10px;color:rgba(232,238,247,.6)}
+#three3DScale .scale-bar{width:14px;height:130px;border-radius:4px;border:1px solid rgba(255,255,255,.35);
+  background:linear-gradient(to top,#1a4824 0%,#307032 14%,#589642 28%,#8eaa52 42%,#b49c5e 58%,#ac7c48 72%,#946240 86%,#e9e7f0 100%)}
+#three3DScale .scale-max,#three3DScale .scale-min{font-size:10px;color:rgba(232,238,247,.7)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>⛰ 哀牢山实时气象灾害预警 <small>公开版 · 双模型交叉验证 + 地形模拟</small>
+      <span class="badge" id="freshBadge">等待数据</span></h1>
+    <div class="meta" id="meta">正在加载模型与最新预报… <span style="color:var(--sub)">（本页每次刷新/打开都会重新拉取最新数据）</span></div>
+  </header>
+
+  <div class="panel">
+    <h2>📊 综合风险指数总表 <span class="badge" id="riskCount">—</span></h2>
+    <div class="desc">综合指数 = 40%×强对流峰值 + 15%×浓雾峰值 + 30%×地形敏感性(山洪/泥石流/塌方最高) + 15%×坡度因子 · 30 个网格点 + 主要公路统一排序 · 指数 0-100 · 每次刷新实时更新</div>
+    <div class="legend-row">
+      <span><i style="background:#2ecc71"></i>低 &lt;35</span>
+      <span><i style="background:#f7d154"></i>关注 35-55</span>
+      <span><i style="background:#ff9f43"></i>较高 55-75</span>
+      <span><i style="background:#ff4d4f"></i>预警 ≥75</span>
+      <span><i style="background:transparent;border:1px dashed #ff4d4f"></i>立即停止进山</span>
+    </div>
+    <div class="summary" id="riskSummary"><div class="loading">计算中…</div></div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>位置 / 路段</th><th>类型</th><th>综合指数</th><th>等级</th><th>主要灾害</th><th>双模型一致</th><th>防护建议</th></tr></thead>
+      <tbody id="riskTbody"><tr><td colspan="7" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
+    </table></div>
+    <div class="verify-note" id="riskTips"></div>
+  </div>
+
+  <div class="panel" id="weatherPanel">
+    <h2>🌡 实况天气与气象要素</h2>
+    <div class="desc">哀牢山区域 30 格点平均值 · 每次刷新实时拉取 Open-Meteo 最新预报 · 下方为当前时刻与未来 24h 概要</div>
+    <div class="summary" id="weatherSummary"><div class="loading">加载中…</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>📈 未来 72h 强对流/浓雾概率与气象要素</h2>
+    <div class="desc">曲线 = 哀牢山区域 30 格点逐小时强对流概率最大值（左轴）；柱状 = 降水（mm）；面积 = 相对湿度/云量（右轴）。鼠标悬停看逐小时气温、湿度、降水、云量。</div>
+    <div class="btn-group">
+      <button class="risk-btn active" id="btnChartT" onclick="setChart('thunder')">🌩 强对流</button>
+      <button class="risk-btn" id="btnChartF" onclick="setChart('fog')">🌫 浓雾</button>
+    </div>
+    <div id="weatherChart" style="width:100%;height:380px;border-radius:12px;background:#0b1526;border:1px solid var(--line)"></div>
+  </div>
+
+  <div class="panel" id="advicePanel">
+    <h2>🧭 出行建议</h2>
+    <div class="desc">基于综合风险指数、强对流/浓雾概率、地形敏感性与气象条件自动生成 · 仅供参考，以官方发布为准</div>
+    <div id="adviceContent"><div class="loading">加载中…</div></div>
+  </div>
+
+  <div class="panel" id="routePanel">
+    <h2>🧭 景点路线推荐与禁区提示 <span class="badge" id="routeBadge">—</span></h2>
+    <div class="desc">基于 30 格点实时预警 IDW 插值计算每个景点未来 24h 强对流/浓雾风险 · 推荐指数 = 综合风险 + 海拔 + 景点类型动态评分 · 每次刷新实时更新</div>
+    <div class="summary" id="routeSummary"><div class="loading">计算中…</div></div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>景点</th><th>类型</th><th>海拔</th><th>实时风险</th><th>强对流峰值</th><th>浓雾峰值</th><th>推荐指数</th><th>建议游览时段</th><th>提示</th></tr></thead>
+      <tbody id="routeTbody"><tr><td colspan="9" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
+    </table></div>
+    <h3 style="margin-top:16px">🥾 推荐徒步路线（较安全 · 仅限开放景区）</h3>
+    <div class="desc">以下路线均位于已开放景区/一般控制区，避开核心保护区与未开发区域。请严格按标识行走，不要擅自偏离路线。</div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>路线</th><th>起止点</th><th>距离/耗时</th><th>海拔</th><th>类型</th><th>难度</th><th>主要风险</th><th>安全提示</th></tr></thead>
+      <tbody id="hikingTbody"><tr><td colspan="8" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
+    </table></div>
+    <h3 style="margin-top:16px">🚫 禁区示意（以管护局界桩/公告为准）</h3>
+    <div id="forbiddenList" class="desc"></div>
+    <div class="verify-note" id="routeRules"></div>
+  </div>
+
+  <div class="panel">
+    <h2>🗺 哀牢山精细地形与风险地图</h2>
+    <div class="desc">底图 = 0.02° 精细 DEM 出行地图（微弱地形纹理 + 分级道路着色 + 河流 + 村镇 + 景点 + 禁区）· 色块 = 该格点未来 24h 峰值风险（仅颜色表示，鼠标悬停/点击看详情）· 适合进山出行前快速扫一眼风险分布</div>
+    <div class="btn-group">
+      <button class="risk-btn active" id="btnThunder" onclick="setRisk('thunder')">🌩 强对流</button>
+      <button class="risk-btn" id="btnFog" onclick="setRisk('fog')">🌫 浓雾</button>
+    </div>
+    <div id="mapWrap">
+      <img id="mapImg" alt="哀牢山精细地形图" style="display:none">
+      <svg id="mapSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      <div class="tooltip" id="tip"></div>
+    </div>
+    <div class="legend-row">
+      <span><i style="background:#2ecc71"></i>低</span>
+      <span><i style="background:#f7d154"></i>关注</span>
+      <span><i style="background:#ff9f43"></i>较高</span>
+      <span><i style="background:#ff4d4f"></i>预警</span>
+      <span><i style="background:#1565c0;height:3px"></i>高速</span>
+      <span><i style="background:#d9480f;height:3px"></i>国道</span>
+      <span><i style="background:#7e57c2;height:3px"></i>省道</span>
+      <span><i style="background:#e65100;height:3px"></i>景区路</span>
+      <span><i style="background:#78909c;height:2px"></i>县乡道</span>
+      <span><i style="background:#2ecc71;border-radius:50%;width:10px;height:10px"></i>开放景区</span>
+      <span><i style="background:#ff4d4f;border-radius:50%;width:10px;height:10px"></i>禁区/科研站</span>
+      <span><i style="background:rgba(255,77,79,0.12);border:1px dashed #ff4d4f"></i>禁区范围</span>
+    </div>
+  </div>
+
+  <div class="panel" id="roadPanel">
+    <h2>🚧 公路灾害预警 <span class="badge" id="roadCount">—</span></h2>
+    <div class="desc">结合未来 24h 强对流/浓雾概率 + 精细地形敏感性(0-100) + 历史灾害案例，对大雾/泥石流/山洪/塌方四类风险评级</div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>路段</th><th>综合风险</th><th>大雾</th><th>泥石流</th><th>山洪</th><th>塌方</th><th>最需警惕 / 建议</th></tr></thead>
+      <tbody id="roadTbody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="panel">
+    <h2>🚗 道路出行安全评估 <span class="badge" id="roadSafetyBadge">第9模型</span></h2>
+    <div class="desc">综合考虑阳光（短波辐射）、昼夜、温度、能见度、风力、降水等因素，专门评估道路出行安全风险（道路出行重中之重）</div>
+    <div id="roadSafetyPanel"><div class="loading">加载中…</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>🔁 双模型交叉验证</h2>
+    <div class="desc" id="altDesc">加载中…</div>
+    <div class="grid2">
+      <div>
+        <h3>🌩 强对流一致性</h3>
+        <div class="verify-note" id="altThunder"></div>
+      </div>
+      <div>
+        <h3>🌫 浓雾一致性</h3>
+        <div class="verify-note" id="altFog"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="calibPanel" style="display:none">
+    <h2>📚 历史灾害关联复核</h2>
+    <div class="desc" id="calibNote">加载中…</div>
+    <div class="summary" id="calibSummary"><div class="loading">计算中…</div></div>
+    <h3 style="margin-top:14px">历史高影响案例（用于训练校准模型）</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>日期</th><th>案例</th><th>类型</th><th>实际严重度</th><th>关键特征</th></tr></thead>
+      <tbody id="calibCases"></tbody>
+    </table></div>
+  </div>
+
+  <div class="panel" id="fenghePanel" style="display:none">
+    <h2>🌀 风和气象模型 · 气候规律与极端天气概率</h2>
+    <div class="desc" id="fengheNote">加载中…</div>
+    <div class="summary" id="fengheSummary"><div class="loading">计算中…</div></div>
+    <h3 style="margin-top:14px">极端天气概率（8月 · 基于5年气候规律学习）</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>区域</th><th>站点</th><th>海拔</th><th>极端降水</th><th>极端大风</th><th>浓雾</th><th>强对流</th><th>降水异常</th><th>温度异常</th></tr></thead>
+      <tbody id="fengheStationTbody"></tbody>
+    </table></div>
+    <h3 style="margin-top:14px">蒙特卡洛情景模拟（1000次 · 未来一周）</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>指标</th><th>均值</th><th>P90</th><th>P95</th><th>P99</th><th>最大值</th></tr></thead>
+      <tbody id="fengheMCTbody"></tbody>
+    </table></div>
+    <div class="verify-note" id="fengheInsight"></div>
+  </div>
+
+  <div class="panel" id="jointPanel" style="display:none">
+    <h2>🔬 多模型联合研判报告</h2>
+    <div class="desc" id="jointNote">加载中…</div>
+    <div class="summary" id="jointSummary"><div class="loading">计算中…</div></div>
+    <h3 style="margin-top:14px">紧急状况场景模拟</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>编号</th><th>场景</th><th>触发条件</th><th>风和先验</th><th>模型调整</th><th>综合风险</th><th>等级</th><th>影响区域</th><th>时间线</th><th>建议</th></tr></thead>
+      <tbody id="jointScenariosTbody"></tbody>
+    </table></div>
+    <h3 style="margin-top:14px">关键发现</h3>
+    <div id="jointFindings" class="desc"></div>
+    <h3 style="margin-top:14px">建议措施</h3>
+    <div id="jointRecs" class="desc"></div>
+    <h3 style="margin-top:14px">季节性风险日历</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>月份</th><th>降水风险</th><th>大风风险</th><th>浓雾风险</th><th>强对流风险</th><th>气候风险指数</th><th>等级</th></tr></thead>
+      <tbody id="jointCalTbody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="panel" id="terrain3DPanel" style="display:none">
+    <h2>🏔️ 3D全景地形建模与多模型重算</h2>
+    <div class="desc" id="terrain3DNote">加载中…</div>
+    <div class="summary" id="terrain3DSummary"><div class="loading">计算中…</div></div>
+    <h3 style="margin-top:14px">🌐 3D全景地形可视化（Three.js 真实3D）</h3>
+    <div class="desc">Three.js 实时渲染 169×209 精细 DEM 高度场（35,321 顶点 / 70,000+ 三角面）· 左上45°太阳光照与山体投影阴影 · 摄影风海拔配色 · 真实道路/河流/森林 · 鼠标悬停显示海拔、坡度与地形风险增强</div>
+    <div id="three3DContainer">
+      <div id="three3DTooltip"></div>
+      <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
+      <div id="three3DScale">
+        <div class="scale-title">海拔</div>
+        <div class="scale-bar"></div>
+        <div class="scale-max" id="scaleMax">3078m</div>
+        <div class="scale-min" id="scaleMin">452m</div>
+      </div>
+      <div id="three3DHint">🖱️ 左键拖拽旋转 · 滚轮缩放 · 右键平移 · 悬停查看详情</div>
+    </div>
+    <div class="legend-row" style="margin-top:8px">
+      <span><i style="background:#1a4824"></i>&lt;1000m 河谷雨林</span>
+      <span><i style="background:#589642"></i>1000-1500m 常绿阔叶林</span>
+      <span><i style="background:#8eaa52"></i>1500-2000m 中山湿性林</span>
+      <span><i style="background:#ac7c48"></i>2000-2500m 苔藓矮林/灌丛</span>
+      <span><i style="background:#e9e7f0"></i>&gt;2500m 山顶草甸</span>
+    </div>
+    <h3 style="margin-top:14px">🎨 3D地形特征等高线图</h3>
+    <div class="desc">由服务端用 matplotlib 根据3D地形特征生成的平滑等高线/填色图（非方块热力图），可直观看出山脊、谷地、风险增强区。</div>
+    <div class="btn-group">
+      <button class="risk-btn active" onclick="setHeat3D('elev')">海拔</button>
+      <button class="risk-btn" onclick="setHeat3D('wind_expo')">风暴露</button>
+      <button class="risk-btn" onclick="setHeat3D('cold_pooling')">冷池潜力</button>
+      <button class="risk-btn" onclick="setHeat3D('channeling')">地形通道</button>
+      <button class="risk-btn" onclick="setHeat3D('lightning_enhance')">雷电增强</button>
+      <button class="risk-btn" onclick="setHeat3D('debris_enhance')">泥石流增强</button>
+      <button class="risk-btn" onclick="setHeat3D('roughness_3d')">3D粗糙度</button>
+      <button class="risk-btn" onclick="setHeat3D('ridge_valley')">脊谷指数</button>
+    </div>
+    <img id="contour3DImg" alt="3D地形特征等高线图" style="width:100%;border-radius:12px;background:#0b1526;border:1px solid var(--line);display:none">
+    <div class="desc" id="heat3DDesc" style="margin-top:6px"></div>
+  </div>
+
+  <div class="panel" id="recalc3DPanel" style="display:none">
+    <h2>🔬 3D地形驱动多模型重算结果</h2>
+    <div class="desc" id="recalc3DNote">加载中…</div>
+    <div class="summary" id="recalc3DSummary"><div class="loading">计算中…</div></div>
+
+    <h3 style="margin-top:14px">M1: 强对流模型 + 3D雷电/风暴露增强</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>格点</th><th>基础概率</th><th>3D增强概率</th><th>变化</th><th>雷电增强</th><th>风暴露</th><th>等级</th></tr></thead>
+      <tbody id="m1Tbody"></tbody>
+    </table></div>
+
+    <h3 style="margin-top:14px">M2: 浓雾模型 + 3D冷池/开敞度增强</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>格点</th><th>基础概率</th><th>3D增强概率</th><th>变化</th><th>冷池潜力</th><th>浓雾增强</th><th>等级</th></tr></thead>
+      <tbody id="m2Tbody"></tbody>
+    </table></div>
+
+    <h3 style="margin-top:14px">M3: 历史校准模型 + 3D泥石流/粗糙度增强</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>日期</th><th>案例</th><th>类型</th><th>原始概率</th><th>3D增强概率</th><th>变化</th><th>泥石流增强</th><th>粗糙度</th></tr></thead>
+      <tbody id="m3Tbody"></tbody>
+    </table></div>
+
+    <h3 style="margin-top:14px">M4: 风和气候模型 + 3D地形-气候交互</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>站点</th><th>海拔</th><th>风暴露</th><th>通道</th><th>冷池</th><th>极端大风(原→3D)</th><th>浓雾(原→3D)</th><th>强对流(原→3D)</th></tr></thead>
+      <tbody id="m4Tbody"></tbody>
+    </table></div>
+
+    <h3 style="margin-top:14px">M5: 联合研判 + 3D综合地形风险</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>场景</th><th>原始风险</th><th>3D增强风险</th><th>变化</th><th>原始等级</th><th>3D等级</th><th>3D地形说明</th></tr></thead>
+      <tbody id="m5Tbody"></tbody>
+    </table></div>
+
+    <h3 style="margin-top:14px">🚧 路段3D风险评估</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>路段</th><th>风暴露</th><th>冷池</th><th>通道</th><th>粗糙度</th><th>最大坡度</th><th>3D风险评分</th><th>等级</th></tr></thead>
+      <tbody id="road3DTbody"></tbody>
+    </table></div>
+
+    <h3 style="margin-top:14px">📌 关键发现</h3>
+    <div id="recalc3DFindings" class="desc"></div>
+  </div>
+
+  <div class="panel" id="terrainPanel">
+    <h2>🏔 精细地形模拟</h2>
+    <div class="desc" id="terrainDesc">加载中…</div>
+    <img id="terrainImg" alt="哀牢山精细 DEM 地形图" style="width:100%;border-radius:12px;border:1px solid var(--line);display:none">
+  </div>
+
+  <footer>
+    <p>🛡 <b>防护提示</b>：哀牢山地形陡峭、云雾多变，任何等级下都应在 <b>14:00 前完成下山</b>、远离河道与陡坡、保持手机信号；指数 ≥55（较高/预警）建议取消进山，≥75（预警）严禁进入保护区。</p>
+    <p style="margin-top:8px">模型基于 ERA5 再分析数据训练（2020-2026，含 2025-2026 增量数据，双模型交叉验证），实时预报来自 Open-Meteo，地形基于 MERIT DEM 精细重采样。本页为研究性预警，<b>实际出行/预警以中国气象局及哀牢山管护局官方发布为准</b>。进入保护区请严格遵守进山规范。</p>
+    <p style="margin-top:6px">数据源：Open-Meteo · 每次打开/刷新本页即获取最新数据</p>
+  </footer>
+</div>
+
+<script src="js/site.js?v=2026081430"></script>
+<script src="js/gb.js?v=2026081430"></script>
+<script src="js/app.js?v=2026081430"></script>
+<script src="js/terrain3d.js?v=2026081430"></script>
+</body>
+</html>

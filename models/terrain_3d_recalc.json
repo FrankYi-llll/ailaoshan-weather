@@ -1,0 +1,1970 @@
+{
+  "model_name": "3D Terrain-Driven Multi-Model Recalculation v1.0",
+  "build_time": "2026-08-14T11:23:21",
+  "terrain_3d_source": "AilaoShan 3D Terrain Model v1.0",
+  "dem_grid": "44x54",
+  "elev_range": [
+    452.0,
+    3078.0
+  ],
+  "m1_thunder_3d": {
+    "title": "M1: 强对流模型 + 3D雷电/风暴露增强",
+    "description": "基础强对流概率 × (1 + 0.5×lightning_enhance + 0.25×wind_expo + 0.15×roughness_3d)",
+    "grid_results": {
+      "23.90,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0535,
+        "lightning_boost": 0.199,
+        "wind_boost": 0.086,
+        "level": "安全",
+        "delta": 0.0085
+      },
+      "23.90,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0526,
+        "lightning_boost": 0.168,
+        "wind_boost": 0.222,
+        "level": "安全",
+        "delta": 0.0076
+      },
+      "23.90,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0624,
+        "lightning_boost": 0.507,
+        "wind_boost": 0.319,
+        "level": "安全",
+        "delta": 0.0174
+      },
+      "23.90,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0553,
+        "lightning_boost": 0.272,
+        "wind_boost": 0.278,
+        "level": "安全",
+        "delta": 0.0103
+      },
+      "23.90,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0608,
+        "lightning_boost": 0.421,
+        "wind_boost": 0.437,
+        "level": "安全",
+        "delta": 0.0158
+      },
+      "23.90,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0551,
+        "lightning_boost": 0.192,
+        "wind_boost": 0.354,
+        "level": "安全",
+        "delta": 0.0101
+      },
+      "23.90,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0556,
+        "lightning_boost": 0.18,
+        "wind_boost": 0.324,
+        "level": "安全",
+        "delta": 0.0106
+      },
+      "23.90,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0651,
+        "lightning_boost": 0.542,
+        "wind_boost": 0.478,
+        "level": "安全",
+        "delta": 0.0201
+      },
+      "23.90,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0589,
+        "lightning_boost": 0.422,
+        "wind_boost": 0.247,
+        "level": "安全",
+        "delta": 0.0139
+      },
+      "23.90,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0544,
+        "lightning_boost": 0.204,
+        "wind_boost": 0.234,
+        "level": "安全",
+        "delta": 0.0094
+      },
+      "23.90,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0557,
+        "lightning_boost": 0.17,
+        "wind_boost": 0.383,
+        "level": "安全",
+        "delta": 0.0107
+      },
+      "24.00,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0553,
+        "lightning_boost": 0.238,
+        "wind_boost": 0.267,
+        "level": "安全",
+        "delta": 0.0103
+      },
+      "24.00,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0519,
+        "lightning_boost": 0.147,
+        "wind_boost": 0.197,
+        "level": "安全",
+        "delta": 0.0069
+      },
+      "24.00,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0572,
+        "lightning_boost": 0.255,
+        "wind_boost": 0.455,
+        "level": "安全",
+        "delta": 0.0122
+      },
+      "24.00,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0616,
+        "lightning_boost": 0.395,
+        "wind_boost": 0.57,
+        "level": "安全",
+        "delta": 0.0166
+      },
+      "24.00,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0553,
+        "lightning_boost": 0.195,
+        "wind_boost": 0.37,
+        "level": "安全",
+        "delta": 0.0103
+      },
+      "24.00,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0628,
+        "lightning_boost": 0.533,
+        "wind_boost": 0.334,
+        "level": "安全",
+        "delta": 0.0178
+      },
+      "24.00,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.054,
+        "lightning_boost": 0.158,
+        "wind_boost": 0.282,
+        "level": "安全",
+        "delta": 0.009
+      },
+      "24.00,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0549,
+        "lightning_boost": 0.168,
+        "wind_boost": 0.355,
+        "level": "安全",
+        "delta": 0.0099
+      },
+      "24.00,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0576,
+        "lightning_boost": 0.347,
+        "wind_boost": 0.271,
+        "level": "安全",
+        "delta": 0.0126
+      },
+      "24.00,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0571,
+        "lightning_boost": 0.342,
+        "wind_boost": 0.266,
+        "level": "安全",
+        "delta": 0.0121
+      },
+      "24.00,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0528,
+        "lightning_boost": 0.176,
+        "wind_boost": 0.169,
+        "level": "安全",
+        "delta": 0.0078
+      },
+      "24.10,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0528,
+        "lightning_boost": 0.173,
+        "wind_boost": 0.222,
+        "level": "安全",
+        "delta": 0.0078
+      },
+      "24.10,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.053,
+        "lightning_boost": 0.179,
+        "wind_boost": 0.229,
+        "level": "安全",
+        "delta": 0.008
+      },
+      "24.10,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0572,
+        "lightning_boost": 0.299,
+        "wind_boost": 0.376,
+        "level": "安全",
+        "delta": 0.0122
+      },
+      "24.10,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0536,
+        "lightning_boost": 0.202,
+        "wind_boost": 0.218,
+        "level": "安全",
+        "delta": 0.0086
+      },
+      "24.10,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0661,
+        "lightning_boost": 0.565,
+        "wind_boost": 0.529,
+        "level": "安全",
+        "delta": 0.0211
+      },
+      "24.10,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0542,
+        "lightning_boost": 0.218,
+        "wind_boost": 0.094,
+        "level": "安全",
+        "delta": 0.0092
+      },
+      "24.10,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0524,
+        "lightning_boost": 0.165,
+        "wind_boost": 0.171,
+        "level": "安全",
+        "delta": 0.0074
+      },
+      "24.10,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0598,
+        "lightning_boost": 0.438,
+        "wind_boost": 0.277,
+        "level": "安全",
+        "delta": 0.0148
+      },
+      "24.10,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0559,
+        "lightning_boost": 0.189,
+        "wind_boost": 0.443,
+        "level": "安全",
+        "delta": 0.0109
+      },
+      "24.10,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0578,
+        "lightning_boost": 0.365,
+        "wind_boost": 0.271,
+        "level": "安全",
+        "delta": 0.0128
+      },
+      "24.10,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0544,
+        "lightning_boost": 0.186,
+        "wind_boost": 0.341,
+        "level": "安全",
+        "delta": 0.0094
+      },
+      "24.20,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0521,
+        "lightning_boost": 0.152,
+        "wind_boost": 0.203,
+        "level": "安全",
+        "delta": 0.0071
+      },
+      "24.20,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0611,
+        "lightning_boost": 0.377,
+        "wind_boost": 0.57,
+        "level": "安全",
+        "delta": 0.0161
+      },
+      "24.20,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0549,
+        "lightning_boost": 0.186,
+        "wind_boost": 0.382,
+        "level": "安全",
+        "delta": 0.0099
+      },
+      "24.20,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0535,
+        "lightning_boost": 0.206,
+        "wind_boost": 0.149,
+        "level": "安全",
+        "delta": 0.0085
+      },
+      "24.20,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0682,
+        "lightning_boost": 0.59,
+        "wind_boost": 0.656,
+        "level": "安全",
+        "delta": 0.0232
+      },
+      "24.20,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0618,
+        "lightning_boost": 0.505,
+        "wind_boost": 0.283,
+        "level": "安全",
+        "delta": 0.0168
+      },
+      "24.20,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0578,
+        "lightning_boost": 0.225,
+        "wind_boost": 0.415,
+        "level": "安全",
+        "delta": 0.0128
+      },
+      "24.20,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0534,
+        "lightning_boost": 0.192,
+        "wind_boost": 0.2,
+        "level": "安全",
+        "delta": 0.0084
+      },
+      "24.20,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.057,
+        "lightning_boost": 0.202,
+        "wind_boost": 0.53,
+        "level": "安全",
+        "delta": 0.012
+      },
+      "24.20,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0609,
+        "lightning_boost": 0.428,
+        "wind_boost": 0.45,
+        "level": "安全",
+        "delta": 0.0159
+      },
+      "24.20,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0523,
+        "lightning_boost": 0.16,
+        "wind_boost": 0.209,
+        "level": "安全",
+        "delta": 0.0073
+      },
+      "24.30,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0525,
+        "lightning_boost": 0.168,
+        "wind_boost": 0.187,
+        "level": "安全",
+        "delta": 0.0075
+      },
+      "24.30,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.059,
+        "lightning_boost": 0.373,
+        "wind_boost": 0.398,
+        "level": "安全",
+        "delta": 0.014
+      },
+      "24.30,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0632,
+        "lightning_boost": 0.541,
+        "wind_boost": 0.366,
+        "level": "安全",
+        "delta": 0.0182
+      },
+      "24.30,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0572,
+        "lightning_boost": 0.237,
+        "wind_boost": 0.347,
+        "level": "安全",
+        "delta": 0.0122
+      },
+      "24.30,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0581,
+        "lightning_boost": 0.362,
+        "wind_boost": 0.256,
+        "level": "安全",
+        "delta": 0.0131
+      },
+      "24.30,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.053,
+        "lightning_boost": 0.175,
+        "wind_boost": 0.184,
+        "level": "安全",
+        "delta": 0.008
+      },
+      "24.30,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.052,
+        "lightning_boost": 0.15,
+        "wind_boost": 0.19,
+        "level": "安全",
+        "delta": 0.007
+      },
+      "24.30,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0553,
+        "lightning_boost": 0.153,
+        "wind_boost": 0.45,
+        "level": "安全",
+        "delta": 0.0103
+      },
+      "24.30,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0538,
+        "lightning_boost": 0.159,
+        "wind_boost": 0.308,
+        "level": "安全",
+        "delta": 0.0088
+      },
+      "24.30,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0632,
+        "lightning_boost": 0.538,
+        "wind_boost": 0.326,
+        "level": "安全",
+        "delta": 0.0182
+      },
+      "24.30,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0573,
+        "lightning_boost": 0.358,
+        "wind_boost": 0.291,
+        "level": "安全",
+        "delta": 0.0123
+      },
+      "24.40,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0578,
+        "lightning_boost": 0.262,
+        "wind_boost": 0.542,
+        "level": "安全",
+        "delta": 0.0128
+      },
+      "24.40,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0652,
+        "lightning_boost": 0.522,
+        "wind_boost": 0.54,
+        "level": "安全",
+        "delta": 0.0202
+      },
+      "24.40,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.062,
+        "lightning_boost": 0.514,
+        "wind_boost": 0.332,
+        "level": "安全",
+        "delta": 0.017
+      },
+      "24.40,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0531,
+        "lightning_boost": 0.188,
+        "wind_boost": 0.21,
+        "level": "安全",
+        "delta": 0.0081
+      },
+      "24.40,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0528,
+        "lightning_boost": 0.175,
+        "wind_boost": 0.185,
+        "level": "安全",
+        "delta": 0.0078
+      },
+      "24.40,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0559,
+        "lightning_boost": 0.214,
+        "wind_boost": 0.338,
+        "level": "安全",
+        "delta": 0.0109
+      },
+      "24.40,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0562,
+        "lightning_boost": 0.178,
+        "wind_boost": 0.515,
+        "level": "安全",
+        "delta": 0.0112
+      },
+      "24.40,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0554,
+        "lightning_boost": 0.192,
+        "wind_boost": 0.354,
+        "level": "安全",
+        "delta": 0.0104
+      },
+      "24.40,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0513,
+        "lightning_boost": 0.136,
+        "wind_boost": 0.162,
+        "level": "安全",
+        "delta": 0.0063
+      },
+      "24.40,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0609,
+        "lightning_boost": 0.393,
+        "wind_boost": 0.481,
+        "level": "安全",
+        "delta": 0.0159
+      },
+      "24.40,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0536,
+        "lightning_boost": 0.206,
+        "wind_boost": 0.242,
+        "level": "安全",
+        "delta": 0.0086
+      },
+      "24.50,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0536,
+        "lightning_boost": 0.207,
+        "wind_boost": 0.138,
+        "level": "安全",
+        "delta": 0.0086
+      },
+      "24.50,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0548,
+        "lightning_boost": 0.242,
+        "wind_boost": 0.122,
+        "level": "安全",
+        "delta": 0.0098
+      },
+      "24.50,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0652,
+        "lightning_boost": 0.519,
+        "wind_boost": 0.61,
+        "level": "安全",
+        "delta": 0.0202
+      },
+      "24.50,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0661,
+        "lightning_boost": 0.554,
+        "wind_boost": 0.561,
+        "level": "安全",
+        "delta": 0.0211
+      },
+      "24.50,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0558,
+        "lightning_boost": 0.165,
+        "wind_boost": 0.468,
+        "level": "安全",
+        "delta": 0.0108
+      },
+      "24.50,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0523,
+        "lightning_boost": 0.16,
+        "wind_boost": 0.197,
+        "level": "安全",
+        "delta": 0.0073
+      },
+      "24.50,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0521,
+        "lightning_boost": 0.16,
+        "wind_boost": 0.157,
+        "level": "安全",
+        "delta": 0.0071
+      },
+      "24.50,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0521,
+        "lightning_boost": 0.154,
+        "wind_boost": 0.205,
+        "level": "安全",
+        "delta": 0.0071
+      },
+      "24.50,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0536,
+        "lightning_boost": 0.196,
+        "wind_boost": 0.209,
+        "level": "安全",
+        "delta": 0.0086
+      },
+      "24.50,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0525,
+        "lightning_boost": 0.168,
+        "wind_boost": 0.197,
+        "level": "安全",
+        "delta": 0.0075
+      },
+      "24.50,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0606,
+        "lightning_boost": 0.449,
+        "wind_boost": 0.369,
+        "level": "安全",
+        "delta": 0.0156
+      },
+      "24.60,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0545,
+        "lightning_boost": 0.233,
+        "wind_boost": 0.152,
+        "level": "安全",
+        "delta": 0.0095
+      },
+      "24.60,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0607,
+        "lightning_boost": 0.468,
+        "wind_boost": 0.301,
+        "level": "安全",
+        "delta": 0.0157
+      },
+      "24.60,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0593,
+        "lightning_boost": 0.437,
+        "wind_boost": 0.293,
+        "level": "安全",
+        "delta": 0.0143
+      },
+      "24.60,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0552,
+        "lightning_boost": 0.193,
+        "wind_boost": 0.369,
+        "level": "安全",
+        "delta": 0.0102
+      },
+      "24.60,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0602,
+        "lightning_boost": 0.456,
+        "wind_boost": 0.292,
+        "level": "安全",
+        "delta": 0.0152
+      },
+      "24.60,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0532,
+        "lightning_boost": 0.185,
+        "wind_boost": 0.196,
+        "level": "安全",
+        "delta": 0.0082
+      },
+      "24.60,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0533,
+        "lightning_boost": 0.189,
+        "wind_boost": 0.259,
+        "level": "安全",
+        "delta": 0.0083
+      },
+      "24.60,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0527,
+        "lightning_boost": 0.174,
+        "wind_boost": 0.228,
+        "level": "安全",
+        "delta": 0.0077
+      },
+      "24.60,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0558,
+        "lightning_boost": 0.198,
+        "wind_boost": 0.46,
+        "level": "安全",
+        "delta": 0.0108
+      },
+      "24.60,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0539,
+        "lightning_boost": 0.203,
+        "wind_boost": 0.258,
+        "level": "安全",
+        "delta": 0.0089
+      },
+      "24.60,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0557,
+        "lightning_boost": 0.206,
+        "wind_boost": 0.364,
+        "level": "安全",
+        "delta": 0.0107
+      },
+      "24.70,100.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0552,
+        "lightning_boost": 0.23,
+        "wind_boost": 0.286,
+        "level": "安全",
+        "delta": 0.0102
+      },
+      "24.70,101.00": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0542,
+        "lightning_boost": 0.22,
+        "wind_boost": 0.262,
+        "level": "安全",
+        "delta": 0.0092
+      },
+      "24.70,101.10": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0558,
+        "lightning_boost": 0.284,
+        "wind_boost": 0.279,
+        "level": "安全",
+        "delta": 0.0108
+      },
+      "24.70,101.20": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0631,
+        "lightning_boost": 0.533,
+        "wind_boost": 0.366,
+        "level": "安全",
+        "delta": 0.0181
+      },
+      "24.70,101.30": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0638,
+        "lightning_boost": 0.468,
+        "wind_boost": 0.6,
+        "level": "安全",
+        "delta": 0.0188
+      },
+      "24.70,101.40": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0536,
+        "lightning_boost": 0.193,
+        "wind_boost": 0.257,
+        "level": "安全",
+        "delta": 0.0086
+      },
+      "24.70,101.50": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0592,
+        "lightning_boost": 0.421,
+        "wind_boost": 0.314,
+        "level": "安全",
+        "delta": 0.0142
+      },
+      "24.70,101.60": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0533,
+        "lightning_boost": 0.185,
+        "wind_boost": 0.276,
+        "level": "安全",
+        "delta": 0.0083
+      },
+      "24.70,101.70": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0556,
+        "lightning_boost": 0.177,
+        "wind_boost": 0.508,
+        "level": "安全",
+        "delta": 0.0106
+      },
+      "24.70,101.80": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0533,
+        "lightning_boost": 0.187,
+        "wind_boost": 0.27,
+        "level": "安全",
+        "delta": 0.0083
+      },
+      "24.70,101.90": {
+        "base_prob": 0.045,
+        "enhanced_prob": 0.0637,
+        "lightning_boost": 0.553,
+        "wind_boost": 0.395,
+        "level": "安全",
+        "delta": 0.0187
+      }
+    },
+    "avg_base": 0.045,
+    "avg_enhanced": 0.0567,
+    "max_enhanced": 0.0682,
+    "red_alerts": 0,
+    "orange_alerts": 0
+  },
+  "m2_fog_3d": {
+    "title": "M2: 浓雾模型 + 3D冷池/负开敞度增强",
+    "description": "base + 0.15×cold_pooling + 0.10×neg_openness + 0.08×(1-pos_openness)",
+    "grid_results": {
+      "23.90,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4979,
+        "cold_pooling": 0.672,
+        "fog_enhance": 0.751,
+        "level": "黄色预警",
+        "delta": 0.2249
+      },
+      "23.90,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4512,
+        "cold_pooling": 0.542,
+        "fog_enhance": 0.599,
+        "level": "黄色预警",
+        "delta": 0.1782
+      },
+      "23.90,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.3902,
+        "cold_pooling": 0.258,
+        "fog_enhance": 0.367,
+        "level": "黄色预警",
+        "delta": 0.1172
+      },
+      "23.90,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4335,
+        "cold_pooling": 0.475,
+        "fog_enhance": 0.535,
+        "level": "黄色预警",
+        "delta": 0.1604
+      },
+      "23.90,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4265,
+        "cold_pooling": 0.46,
+        "fog_enhance": 0.522,
+        "level": "黄色预警",
+        "delta": 0.1535
+      },
+      "23.90,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.467,
+        "cold_pooling": 0.588,
+        "fog_enhance": 0.654,
+        "level": "黄色预警",
+        "delta": 0.194
+      },
+      "23.90,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.5025,
+        "cold_pooling": 0.705,
+        "fog_enhance": 0.784,
+        "level": "橙色预警",
+        "delta": 0.2295
+      },
+      "23.90,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.3885,
+        "cold_pooling": 0.334,
+        "fog_enhance": 0.411,
+        "level": "黄色预警",
+        "delta": 0.1155
+      },
+      "23.90,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4162,
+        "cold_pooling": 0.409,
+        "fog_enhance": 0.498,
+        "level": "黄色预警",
+        "delta": 0.1432
+      },
+      "23.90,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4461,
+        "cold_pooling": 0.52,
+        "fog_enhance": 0.583,
+        "level": "黄色预警",
+        "delta": 0.1731
+      },
+      "23.90,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.5123,
+        "cold_pooling": 0.73,
+        "fog_enhance": 0.787,
+        "level": "橙色预警",
+        "delta": 0.2393
+      },
+      "24.00,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4385,
+        "cold_pooling": 0.505,
+        "fog_enhance": 0.563,
+        "level": "黄色预警",
+        "delta": 0.1655
+      },
+      "24.00,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4627,
+        "cold_pooling": 0.587,
+        "fog_enhance": 0.635,
+        "level": "黄色预警",
+        "delta": 0.1897
+      },
+      "24.00,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4407,
+        "cold_pooling": 0.502,
+        "fog_enhance": 0.564,
+        "level": "黄色预警",
+        "delta": 0.1677
+      },
+      "24.00,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4278,
+        "cold_pooling": 0.463,
+        "fog_enhance": 0.524,
+        "level": "黄色预警",
+        "delta": 0.1548
+      },
+      "24.00,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4567,
+        "cold_pooling": 0.559,
+        "fog_enhance": 0.624,
+        "level": "黄色预警",
+        "delta": 0.1837
+      },
+      "24.00,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4103,
+        "cold_pooling": 0.397,
+        "fog_enhance": 0.472,
+        "level": "黄色预警",
+        "delta": 0.1373
+      },
+      "24.00,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4822,
+        "cold_pooling": 0.624,
+        "fog_enhance": 0.707,
+        "level": "黄色预警",
+        "delta": 0.2092
+      },
+      "24.00,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4627,
+        "cold_pooling": 0.571,
+        "fog_enhance": 0.64,
+        "level": "黄色预警",
+        "delta": 0.1897
+      },
+      "24.00,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4313,
+        "cold_pooling": 0.481,
+        "fog_enhance": 0.547,
+        "level": "黄色预警",
+        "delta": 0.1583
+      },
+      "24.00,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.431,
+        "cold_pooling": 0.491,
+        "fog_enhance": 0.552,
+        "level": "黄色预警",
+        "delta": 0.158
+      },
+      "24.00,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4795,
+        "cold_pooling": 0.623,
+        "fog_enhance": 0.679,
+        "level": "黄色预警",
+        "delta": 0.2065
+      },
+      "24.10,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4565,
+        "cold_pooling": 0.554,
+        "fog_enhance": 0.609,
+        "level": "黄色预警",
+        "delta": 0.1835
+      },
+      "24.10,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4473,
+        "cold_pooling": 0.524,
+        "fog_enhance": 0.585,
+        "level": "黄色预警",
+        "delta": 0.1743
+      },
+      "24.10,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4338,
+        "cold_pooling": 0.489,
+        "fog_enhance": 0.549,
+        "level": "黄色预警",
+        "delta": 0.1608
+      },
+      "24.10,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4504,
+        "cold_pooling": 0.531,
+        "fog_enhance": 0.604,
+        "level": "黄色预警",
+        "delta": 0.1774
+      },
+      "24.10,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4021,
+        "cold_pooling": 0.382,
+        "fog_enhance": 0.461,
+        "level": "黄色预警",
+        "delta": 0.1291
+      },
+      "24.10,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4896,
+        "cold_pooling": 0.655,
+        "fog_enhance": 0.739,
+        "level": "黄色预警",
+        "delta": 0.2166
+      },
+      "24.10,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4589,
+        "cold_pooling": 0.547,
+        "fog_enhance": 0.623,
+        "level": "黄色预警",
+        "delta": 0.1859
+      },
+      "24.10,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4218,
+        "cold_pooling": 0.45,
+        "fog_enhance": 0.518,
+        "level": "黄色预警",
+        "delta": 0.1488
+      },
+      "24.10,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4525,
+        "cold_pooling": 0.537,
+        "fog_enhance": 0.612,
+        "level": "黄色预警",
+        "delta": 0.1795
+      },
+      "24.10,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4325,
+        "cold_pooling": 0.479,
+        "fog_enhance": 0.549,
+        "level": "黄色预警",
+        "delta": 0.1595
+      },
+      "24.10,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4508,
+        "cold_pooling": 0.544,
+        "fog_enhance": 0.593,
+        "level": "黄色预警",
+        "delta": 0.1778
+      },
+      "24.20,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.458,
+        "cold_pooling": 0.561,
+        "fog_enhance": 0.615,
+        "level": "黄色预警",
+        "delta": 0.185
+      },
+      "24.20,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4322,
+        "cold_pooling": 0.471,
+        "fog_enhance": 0.534,
+        "level": "黄色预警",
+        "delta": 0.1592
+      },
+      "24.20,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4489,
+        "cold_pooling": 0.531,
+        "fog_enhance": 0.589,
+        "level": "黄色预警",
+        "delta": 0.1759
+      },
+      "24.20,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.481,
+        "cold_pooling": 0.642,
+        "fog_enhance": 0.713,
+        "level": "黄色预警",
+        "delta": 0.208
+      },
+      "24.20,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.3845,
+        "cold_pooling": 0.326,
+        "fog_enhance": 0.412,
+        "level": "黄色预警",
+        "delta": 0.1115
+      },
+      "24.20,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4057,
+        "cold_pooling": 0.37,
+        "fog_enhance": 0.469,
+        "level": "黄色预警",
+        "delta": 0.1327
+      },
+      "24.20,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4719,
+        "cold_pooling": 0.593,
+        "fog_enhance": 0.678,
+        "level": "黄色预警",
+        "delta": 0.1989
+      },
+      "24.20,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4562,
+        "cold_pooling": 0.544,
+        "fog_enhance": 0.616,
+        "level": "黄色预警",
+        "delta": 0.1832
+      },
+      "24.20,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4403,
+        "cold_pooling": 0.504,
+        "fog_enhance": 0.567,
+        "level": "黄色预警",
+        "delta": 0.1673
+      },
+      "24.20,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4245,
+        "cold_pooling": 0.445,
+        "fog_enhance": 0.509,
+        "level": "黄色预警",
+        "delta": 0.1515
+      },
+      "24.20,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4671,
+        "cold_pooling": 0.606,
+        "fog_enhance": 0.647,
+        "level": "黄色预警",
+        "delta": 0.1941
+      },
+      "24.30,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4653,
+        "cold_pooling": 0.58,
+        "fog_enhance": 0.64,
+        "level": "黄色预警",
+        "delta": 0.1923
+      },
+      "24.30,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.428,
+        "cold_pooling": 0.459,
+        "fog_enhance": 0.527,
+        "level": "黄色预警",
+        "delta": 0.155
+      },
+      "24.30,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.403,
+        "cold_pooling": 0.369,
+        "fog_enhance": 0.444,
+        "level": "黄色预警",
+        "delta": 0.13
+      },
+      "24.30,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.489,
+        "cold_pooling": 0.661,
+        "fog_enhance": 0.741,
+        "level": "黄色预警",
+        "delta": 0.216
+      },
+      "24.30,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4362,
+        "cold_pooling": 0.483,
+        "fog_enhance": 0.558,
+        "level": "黄色预警",
+        "delta": 0.1632
+      },
+      "24.30,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4583,
+        "cold_pooling": 0.565,
+        "fog_enhance": 0.626,
+        "level": "黄色预警",
+        "delta": 0.1853
+      },
+      "24.30,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4612,
+        "cold_pooling": 0.577,
+        "fog_enhance": 0.63,
+        "level": "黄色预警",
+        "delta": 0.1882
+      },
+      "24.30,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4666,
+        "cold_pooling": 0.581,
+        "fog_enhance": 0.65,
+        "level": "黄色预警",
+        "delta": 0.1936
+      },
+      "24.30,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.453,
+        "cold_pooling": 0.526,
+        "fog_enhance": 0.596,
+        "level": "黄色预警",
+        "delta": 0.18
+      },
+      "24.30,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4054,
+        "cold_pooling": 0.389,
+        "fog_enhance": 0.462,
+        "level": "黄色预警",
+        "delta": 0.1324
+      },
+      "24.30,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4304,
+        "cold_pooling": 0.475,
+        "fog_enhance": 0.524,
+        "level": "黄色预警",
+        "delta": 0.1573
+      },
+      "24.40,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4387,
+        "cold_pooling": 0.494,
+        "fog_enhance": 0.55,
+        "level": "黄色预警",
+        "delta": 0.1657
+      },
+      "24.40,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4141,
+        "cold_pooling": 0.432,
+        "fog_enhance": 0.504,
+        "level": "黄色预警",
+        "delta": 0.1411
+      },
+      "24.40,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4148,
+        "cold_pooling": 0.415,
+        "fog_enhance": 0.491,
+        "level": "黄色预警",
+        "delta": 0.1418
+      },
+      "24.40,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4602,
+        "cold_pooling": 0.561,
+        "fog_enhance": 0.625,
+        "level": "黄色预警",
+        "delta": 0.1872
+      },
+      "24.40,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.458,
+        "cold_pooling": 0.555,
+        "fog_enhance": 0.625,
+        "level": "黄色预警",
+        "delta": 0.185
+      },
+      "24.40,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4584,
+        "cold_pooling": 0.561,
+        "fog_enhance": 0.631,
+        "level": "黄色预警",
+        "delta": 0.1854
+      },
+      "24.40,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4429,
+        "cold_pooling": 0.513,
+        "fog_enhance": 0.575,
+        "level": "黄色预警",
+        "delta": 0.1699
+      },
+      "24.40,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4558,
+        "cold_pooling": 0.554,
+        "fog_enhance": 0.615,
+        "level": "黄色预警",
+        "delta": 0.1828
+      },
+      "24.40,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4697,
+        "cold_pooling": 0.608,
+        "fog_enhance": 0.663,
+        "level": "黄色预警",
+        "delta": 0.1967
+      },
+      "24.40,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4295,
+        "cold_pooling": 0.469,
+        "fog_enhance": 0.536,
+        "level": "黄色预警",
+        "delta": 0.1565
+      },
+      "24.40,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.446,
+        "cold_pooling": 0.514,
+        "fog_enhance": 0.57,
+        "level": "黄色预警",
+        "delta": 0.173
+      },
+      "24.50,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4762,
+        "cold_pooling": 0.598,
+        "fog_enhance": 0.684,
+        "level": "黄色预警",
+        "delta": 0.2032
+      },
+      "24.50,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.5022,
+        "cold_pooling": 0.749,
+        "fog_enhance": 0.805,
+        "level": "橙色预警",
+        "delta": 0.2292
+      },
+      "24.50,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4098,
+        "cold_pooling": 0.411,
+        "fog_enhance": 0.485,
+        "level": "黄色预警",
+        "delta": 0.1368
+      },
+      "24.50,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.3933,
+        "cold_pooling": 0.346,
+        "fog_enhance": 0.43,
+        "level": "黄色预警",
+        "delta": 0.1203
+      },
+      "24.50,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.464,
+        "cold_pooling": 0.576,
+        "fog_enhance": 0.643,
+        "level": "黄色预警",
+        "delta": 0.191
+      },
+      "24.50,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4615,
+        "cold_pooling": 0.581,
+        "fog_enhance": 0.635,
+        "level": "黄色预警",
+        "delta": 0.1885
+      },
+      "24.50,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4747,
+        "cold_pooling": 0.619,
+        "fog_enhance": 0.679,
+        "level": "黄色预警",
+        "delta": 0.2017
+      },
+      "24.50,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4598,
+        "cold_pooling": 0.569,
+        "fog_enhance": 0.622,
+        "level": "黄色预警",
+        "delta": 0.1868
+      },
+      "24.50,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4567,
+        "cold_pooling": 0.547,
+        "fog_enhance": 0.613,
+        "level": "黄色预警",
+        "delta": 0.1837
+      },
+      "24.50,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4652,
+        "cold_pooling": 0.591,
+        "fog_enhance": 0.646,
+        "level": "黄色预警",
+        "delta": 0.1922
+      },
+      "24.50,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4207,
+        "cold_pooling": 0.46,
+        "fog_enhance": 0.505,
+        "level": "黄色预警",
+        "delta": 0.1477
+      },
+      "24.60,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4751,
+        "cold_pooling": 0.598,
+        "fog_enhance": 0.685,
+        "level": "黄色预警",
+        "delta": 0.2021
+      },
+      "24.60,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4208,
+        "cold_pooling": 0.447,
+        "fog_enhance": 0.521,
+        "level": "黄色预警",
+        "delta": 0.1478
+      },
+      "24.60,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4228,
+        "cold_pooling": 0.444,
+        "fog_enhance": 0.512,
+        "level": "黄色预警",
+        "delta": 0.1498
+      },
+      "24.60,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4551,
+        "cold_pooling": 0.543,
+        "fog_enhance": 0.605,
+        "level": "黄色预警",
+        "delta": 0.1821
+      },
+      "24.60,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4251,
+        "cold_pooling": 0.45,
+        "fog_enhance": 0.517,
+        "level": "黄色预警",
+        "delta": 0.1521
+      },
+      "24.60,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4608,
+        "cold_pooling": 0.567,
+        "fog_enhance": 0.629,
+        "level": "黄色预警",
+        "delta": 0.1878
+      },
+      "24.60,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4471,
+        "cold_pooling": 0.529,
+        "fog_enhance": 0.583,
+        "level": "黄色预警",
+        "delta": 0.1741
+      },
+      "24.60,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4585,
+        "cold_pooling": 0.563,
+        "fog_enhance": 0.615,
+        "level": "黄色预警",
+        "delta": 0.1855
+      },
+      "24.60,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4474,
+        "cold_pooling": 0.521,
+        "fog_enhance": 0.585,
+        "level": "黄色预警",
+        "delta": 0.1744
+      },
+      "24.60,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4437,
+        "cold_pooling": 0.516,
+        "fog_enhance": 0.575,
+        "level": "黄色预警",
+        "delta": 0.1707
+      },
+      "24.60,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4848,
+        "cold_pooling": 0.633,
+        "fog_enhance": 0.692,
+        "level": "黄色预警",
+        "delta": 0.2118
+      },
+      "24.70,100.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4468,
+        "cold_pooling": 0.53,
+        "fog_enhance": 0.583,
+        "level": "黄色预警",
+        "delta": 0.1738
+      },
+      "24.70,101.00": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4409,
+        "cold_pooling": 0.507,
+        "fog_enhance": 0.565,
+        "level": "黄色预警",
+        "delta": 0.1678
+      },
+      "24.70,101.10": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.44,
+        "cold_pooling": 0.501,
+        "fog_enhance": 0.555,
+        "level": "黄色预警",
+        "delta": 0.167
+      },
+      "24.70,101.20": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.3938,
+        "cold_pooling": 0.323,
+        "fog_enhance": 0.395,
+        "level": "黄色预警",
+        "delta": 0.1208
+      },
+      "24.70,101.30": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4205,
+        "cold_pooling": 0.451,
+        "fog_enhance": 0.5,
+        "level": "黄色预警",
+        "delta": 0.1475
+      },
+      "24.70,101.40": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.445,
+        "cold_pooling": 0.521,
+        "fog_enhance": 0.574,
+        "level": "黄色预警",
+        "delta": 0.172
+      },
+      "24.70,101.50": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4214,
+        "cold_pooling": 0.438,
+        "fog_enhance": 0.493,
+        "level": "黄色预警",
+        "delta": 0.1484
+      },
+      "24.70,101.60": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.445,
+        "cold_pooling": 0.529,
+        "fog_enhance": 0.572,
+        "level": "黄色预警",
+        "delta": 0.172
+      },
+      "24.70,101.70": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4454,
+        "cold_pooling": 0.526,
+        "fog_enhance": 0.571,
+        "level": "黄色预警",
+        "delta": 0.1724
+      },
+      "24.70,101.80": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4498,
+        "cold_pooling": 0.546,
+        "fog_enhance": 0.588,
+        "level": "黄色预警",
+        "delta": 0.1768
+      },
+      "24.70,101.90": {
+        "base_prob": 0.273,
+        "enhanced_prob": 0.4021,
+        "cold_pooling": 0.412,
+        "fog_enhance": 0.446,
+        "level": "黄色预警",
+        "delta": 0.1291
+      }
+    },
+    "avg_base": 0.273,
+    "avg_enhanced": 0.4453,
+    "max_enhanced": 0.5123,
+    "red_alerts": 0
+  },
+  "m3_calibration_3d": {
+    "title": "M3: 历史校准模型 + 3D泥石流/粗糙度增强",
+    "description": "按灾害类型选择3D增强因子: 泥石流→debris_enhance, 洪水→channeling, 其他→综合",
+    "cases": [
+      {
+        "date": "2016-10-01",
+        "name": "",
+        "type": "塌方",
+        "severity": 2,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "2008-11-02",
+        "name": "",
+        "type": "泥石流/滑坡",
+        "severity": 3,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "2026-08-05",
+        "name": "",
+        "type": "泥石流",
+        "severity": 2,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "2026-08-13",
+        "name": "",
+        "type": "泥石流",
+        "severity": 2,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "2026-08-12",
+        "name": "",
+        "type": "塌方/落石",
+        "severity": 1,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "1989-07-06",
+        "name": "",
+        "type": "滑坡/泥石流",
+        "severity": 3,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "1979-08-08",
+        "name": "",
+        "type": "泥石流",
+        "severity": 1,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.581,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.081
+      },
+      {
+        "date": "2026-08-08",
+        "name": "",
+        "type": "地灾预警",
+        "severity": 1,
+        "orig_cal_prob": 0.5,
+        "enhanced_prob": 0.558,
+        "3d_key": "23.90,100.90",
+        "debris_enhance": 0.265,
+        "roughness_3d": 0.446,
+        "channeling": 0.168,
+        "delta": 0.058
+      }
+    ],
+    "avg_orig": 0.5,
+    "avg_enhanced": 0.5781
+  },
+  "m4_fenghe_3d": {
+    "title": "M4: 风和气候模型 + 3D地形-气候交互",
+    "description": "极端天气概率 × (1 + 地形交互因子), 高海拔+高风暴露→大风增强, 高冷池→浓雾增强",
+    "station_interactions": {
+      "ailaoshan": {
+        "station": "ailaoshan",
+        "3d_key": "24.50,101.00",
+        "elev": 1359,
+        "wind_expo": 0.122,
+        "channeling": 0.449,
+        "cold_pooling": 0.749,
+        "ridge_valley": -0.693,
+        "extreme_precip": {
+          "orig": 0.1,
+          "3d": 0.1273
+        },
+        "extreme_wind": {
+          "orig": 0.1,
+          "3d": 0.1208
+        },
+        "fog": {
+          "orig": 0.2,
+          "3d": 0.3165
+        },
+        "thunderstorm": {
+          "orig": 0.05,
+          "3d": 0.0567
+        }
+      },
+      "jingdong": {
+        "station": "jingdong",
+        "3d_key": "24.40,100.90",
+        "elev": 1603,
+        "wind_expo": 0.542,
+        "channeling": 0.062,
+        "cold_pooling": 0.494,
+        "ridge_valley": 0.196,
+        "extreme_precip": {
+          "orig": 0.1,
+          "3d": 0.1019
+        },
+        "extreme_wind": {
+          "orig": 0.1,
+          "3d": 0.1344
+        },
+        "fog": {
+          "orig": 0.2,
+          "3d": 0.2494
+        },
+        "thunderstorm": {
+          "orig": 0.05,
+          "3d": 0.0549
+        }
+      },
+      "xinping": {
+        "station": "xinping",
+        "3d_key": "24.10,101.90",
+        "elev": 1583,
+        "wind_expo": 0.341,
+        "channeling": 0.165,
+        "cold_pooling": 0.544,
+        "ridge_valley": -0.365,
+        "extreme_precip": {
+          "orig": 0.1,
+          "3d": 0.1123
+        },
+        "extreme_wind": {
+          "orig": 0.1,
+          "3d": 0.1254
+        },
+        "fog": {
+          "orig": 0.2,
+          "3d": 0.2763
+        },
+        "thunderstorm": {
+          "orig": 0.05,
+          "3d": 0.0525
+        }
+      },
+      "kunming": {
+        "station": "kunming",
+        "3d_key": "24.70,101.90",
+        "elev": 2425,
+        "wind_expo": 0.395,
+        "channeling": 0.055,
+        "cold_pooling": 0.412,
+        "ridge_valley": 0.554,
+        "extreme_precip": {
+          "orig": 0.1,
+          "3d": 0.1017
+        },
+        "extreme_wind": {
+          "orig": 0.1,
+          "3d": 0.1254
+        },
+        "fog": {
+          "orig": 0.2,
+          "3d": 0.2412
+        },
+        "thunderstorm": {
+          "orig": 0.05,
+          "3d": 0.0619
+        }
+      }
+    }
+  },
+  "m5_joint_3d": {
+    "title": "M5: 联合研判 + 3D综合地形风险",
+    "description": "每个场景按类型应用3D增强: 泥石流→debris, 浓雾→fog, 雷电→lightning, 大风→wind",
+    "scenarios": [
+      {
+        "id": "S1",
+        "name": "极端强降水-泥石流链生灾害",
+        "orig_risk": 0.9755,
+        "enhanced_risk": 0.99,
+        "orig_level": "极高",
+        "new_level": "极高",
+        "delta": 0.0145,
+        "terrain_note": "3D泥石流增强=0.179, 谷地通道增强泥石流路径",
+        "affected_areas": [
+          "哀牢山核心区(徐家坝-大雪锅山)",
+          "恩水公路沿线",
+          "者龙-水塘地带"
+        ],
+        "advice": ""
+      },
+      {
+        "id": "S2",
+        "name": "持续浓雾-能见度极低",
+        "orig_risk": 0.4442,
+        "enhanced_risk": 0.5591,
+        "orig_level": "高",
+        "new_level": "高",
+        "delta": 0.1149,
+        "terrain_note": "3D冷池增强=0.572, 凹地形聚集冷空气加剧浓雾",
+        "affected_areas": [
+          "哀牢山主脊(海拔>2400m)",
+          "金山丫口",
+          "徐家坝-石门峡路段"
+        ],
+        "advice": ""
+      },
+      {
+        "id": "S3",
+        "name": "强对流-雷电冰雹",
+        "orig_risk": 0.375,
+        "enhanced_risk": 0.4435,
+        "orig_level": "高",
+        "new_level": "高",
+        "delta": 0.0685,
+        "terrain_note": "3D雷电增强=0.289, 山脊+粗糙地形触发雷电",
+        "affected_areas": [
+          "新平-戛洒谷地",
+          "景东川河",
+          "哀牢山东坡"
+        ],
+        "advice": ""
+      },
+      {
+        "id": "S4",
+        "name": "极端大风-树木倒伏",
+        "orig_risk": 0.2051,
+        "enhanced_risk": 0.2525,
+        "orig_level": "中",
+        "new_level": "中",
+        "delta": 0.0474,
+        "terrain_note": "3D风暴露增强=0.279, 迎风坡+狭管效应增强风速",
+        "affected_areas": [
+          "哀牢山主脊线",
+          "金山丫口观景台",
+          "茶马古道高暴露段"
+        ],
+        "advice": ""
+      },
+      {
+        "id": "S5",
+        "name": "复合灾害-强降水+大风+浓雾",
+        "orig_risk": 0.5131,
+        "enhanced_risk": 0.6458,
+        "orig_level": "高",
+        "new_level": "极高",
+        "delta": 0.1327,
+        "terrain_note": "3D冷池增强=0.572, 凹地形聚集冷空气加剧浓雾",
+        "affected_areas": [
+          "哀牢山全境",
+          "恩水公路全段",
+          "所有景区"
+        ],
+        "advice": ""
+      },
+      {
+        "id": "S6",
+        "name": "干旱-森林火险",
+        "orig_risk": 0.4,
+        "enhanced_risk": 0.4365,
+        "orig_level": "高",
+        "new_level": "高",
+        "delta": 0.0365,
+        "terrain_note": "3D日照增强=0.608, 南坡+山脊日照强加剧火险",
+        "affected_areas": [
+          "哀牢山保护区",
+          "人工林区",
+          "景区周边"
+        ],
+        "advice": ""
+      }
+    ],
+    "orig_overall": 0.6924,
+    "enhanced_overall": 0.5546,
+    "overall_level": "I级/特别重大",
+    "delta": -0.1378
+  },
+  "road_3d_recalc": {
+    "ailaoshan-hw": {
+      "wind_expo": 0.21,
+      "cold_pooling": 0.561,
+      "channeling": 0.138,
+      "roughness_3d": 0.229,
+      "ridge_valley": -0.534,
+      "max_slope": 9.4,
+      "3d_risk_score": 0.278,
+      "level": "中等危险"
+    }
+  },
+  "3d_risk_summary": {
+    "wind_enhance": 0.279,
+    "fog_enhance": 0.572,
+    "debris_enhance": 0.179,
+    "lightning_enhance": 0.289,
+    "wind_enhance_max": 0.598,
+    "fog_enhance_max": 0.87,
+    "debris_enhance_max": 0.462,
+    "lightning_enhance_max": 0.639
+  },
+  "key_findings": [
+    "3D冷池效应使浓雾概率提升至44.5%，凹地形和谷地区域辐射雾风险极高",
+    "3D泥石流增强因子使历史案例校准概率提升至57.8%，谷地通道和粗糙地形加剧灾害",
+    "3D综合风险评分0.5546，建议启动I级应急响应",
+    "风暴露增强=0.279(最大0.598)，迎风坡风速可增强30-50%",
+    "冷池增强=0.572(最大0.870)，夜间至凌晨谷地浓雾概率极高",
+    "泥石流增强=0.179(最大0.462)，谷地通道为泥石流优先路径",
+    "雷电增强=0.289(最大0.639)，山脊和高峰为雷电优先击中区域"
+  ]
+}
