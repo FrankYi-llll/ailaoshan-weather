@@ -550,26 +550,26 @@
     const ctx = cv.getContext("2d");
     ctx.clearRect(0, 0, W, H);
     // 更深的半透明底 + 加粗彩色边框，提升对比度
-    ctx.fillStyle = "rgba(10,18,32,0.84)";
-    const r = 30;
+    ctx.fillStyle = "rgba(10,18,32,0.66)";
+    const r = 20;
     ctx.beginPath();
-    ctx.moveTo(r + 12, 20); ctx.arcTo(W - 12, 20, W - 12, H - 20, r);
-    ctx.arcTo(W - 12, H - 20, 12, H - 20, r); ctx.arcTo(12, H - 20, 12, 20, r); ctx.arcTo(12, 20, W - 12, 20, r);
+    ctx.moveTo(r + 12, 16); ctx.arcTo(W - 12, 16, W - 12, H - 16, r);
+    ctx.arcTo(W - 12, H - 16, 12, H - 16, r); ctx.arcTo(12, H - 16, 12, 16, r); ctx.arcTo(12, 16, W - 12, 16, r);
     ctx.closePath(); ctx.fill();
-    ctx.lineWidth = 7; ctx.strokeStyle = color; ctx.stroke();
+    ctx.lineWidth = 5; ctx.strokeStyle = color; ctx.stroke();
     // 文字发光/描边，远距离更清晰
-    ctx.shadowColor = "rgba(0,0,0,0.9)";
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = "rgba(0,0,0,0.85)";
+    ctx.shadowBlur = 5;
     ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 2;
     ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 60px 'PingFang SC','Microsoft YaHei',sans-serif";
+    ctx.font = "bold 46px 'PingFang SC','Microsoft YaHei',sans-serif";
     ctx.textBaseline = "middle";
-    ctx.fillText(main, W/2, sub ? 56 : 72);
+    ctx.fillText(main, W/2, sub ? 50 : 70);
     if(sub){
       ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "34px 'PingFang SC','Microsoft YaHei',sans-serif";
-      ctx.fillText(sub, W/2, 110);
+      ctx.font = "26px 'PingFang SC','Microsoft YaHei',sans-serif";
+      ctx.fillText(sub, W/2, 102);
     }
     // 重置阴影
     ctx.shadowColor = "transparent";
@@ -580,19 +580,19 @@
     const col = LABEL_COLORS[kind] || "#ffe082";
     // 根据类型和文字长度调整标签尺寸（sizeAttenuation=false 保证远距离也清晰可见）
     const mainLen = (main || "").length;
-    let sw = 2.0, sh = 0.36, yOff = 0.95;
-    if(kind === "peak"){ sw = 1.55; sh = 0.30; yOff = 0.85; }
-    else if(kind === "river" || kind === "road"){ sw = 1.45; sh = 0.28; yOff = 0.70; }
-    else if(kind === "region"){ sw = Math.min(3.6, 2.0 + mainLen * 0.14); sh = 0.38; yOff = 1.05; }
-    else if(kind === "county" && mainLen > 4){ sw = 1.75; }
+    let sw = 1.35, sh = 0.25, yOff = 0.85;
+    if(kind === "peak"){ sw = 1.05; sh = 0.22; yOff = 0.78; }
+    else if(kind === "river" || kind === "road"){ sw = 0.98; sh = 0.20; yOff = 0.64; }
+    else if(kind === "region"){ sw = Math.min(2.6, 1.45 + mainLen * 0.11); sh = 0.28; yOff = 0.92; }
+    else if(kind === "county" && mainLen > 4){ sw = 1.18; }
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeLabelTexture(main, sub, col), transparent: true, depthTest: true,
       sizeAttenuation: false
     }));
     sprite.position.set(p.x, p.y + yOff, p.z);
-    // sizeAttenuation=false：标签保持固定屏幕大小，离远也能看清；0.65 是世界单位到屏幕像素的折中比例
-    sprite.scale.set(sw * 0.65, sh * 0.65, 1);
-    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.65, y: sh * 0.65}};
+    // sizeAttenuation=false：标签保持固定屏幕大小；0.42 让正常视角下地名牌面更小巧、不遮挡地形
+    sprite.scale.set(sw * 0.42, sh * 0.42, 1);
+    sprite.userData = {lat, lon, main, sub, note, kind, baseScale: {x: sw * 0.42, y: sh * 0.42}};
     labelsGroup.add(sprite);
     // 引线（从标签底到地表）
     const lg = new THREE.BufferGeometry().setFromPoints([
@@ -708,7 +708,7 @@
         transparent: true, depthTest: true, sizeAttenuation: false
       }));
       tSprite.position.set(mid.x, mid.y + 0.75, mid.z);
-      tSprite.scale.set(1.35, 0.26, 1);
+      tSprite.scale.set(0.82, 0.16, 1);
       routesGroup.add(tSprite);
     });
   }
@@ -729,7 +729,7 @@
     const nTex = makeLabelTexture("N", "", "#ff5252");
     const nSprite = new THREE.Sprite(new THREE.SpriteMaterial({map: nTex, transparent: true, sizeAttenuation: false}));
     nSprite.position.y = 1.65;
-    nSprite.scale.set(0.35, 0.07, 1);
+    nSprite.scale.set(0.25, 0.05, 1);
     g.add(shaft, head, nSprite);
     // 放置于地形西北角外
     const hm = HM();
