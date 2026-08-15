@@ -5,18 +5,18 @@
  *   - 模型/数据 JSON：网络优先，失败回退缓存（弱网/离线可看上次数据）
  *   - 外部 CDN（three.js/echarts）：缓存优先，失败走网络
  * ===================================================================== */
-const CACHE = "ailaoshan-v2026081515";
+const CACHE = "ailaoshan-v2026081516";
 const CORE = [
   "./",
   "./index.html",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./js/site.js?v=2026081515",
-  "./js/gb.js?v=2026081515",
-  "./js/fx.js?v=2026081515",
-  "./js/app.js?v=2026081515",
-  "./js/terrain3d.js?v=2026081515",
+  "./js/site.js?v=2026081516",
+  "./js/gb.js?v=2026081516",
+  "./js/fx.js?v=2026081516",
+  "./js/app.js?v=2026081516",
+  "./js/terrain3d.js?v=2026081516",
   "./js/lib/three.min.js",
   "./js/lib/OrbitControls.js",
 ];

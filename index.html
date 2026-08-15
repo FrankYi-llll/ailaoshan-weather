@@ -611,9 +611,270 @@ body.bg-atmos-fog{
   #floatNav .fn-item:hover .fn-label{display:inline;opacity:1}
   #floatNav .fn-item.active .fn-label{display:inline;opacity:1;font-weight:600}
 }
+
+/* ===== 顶部数据源权威声明条 ===== */
+#srcDisclaimer{
+  background:rgba(240,100,108,.10);border-bottom:1px solid rgba(240,100,108,.25);
+  padding:6px 16px;font-size:12px;color:var(--sub);text-align:center;line-height:1.6;
+  position:relative;z-index:90;
+}
+#srcDisclaimer b{color:var(--red)}
+#srcDisclaimer .src-modal-btn{
+  margin-left:8px;padding:1px 8px;border-radius:3px;border:1px solid var(--line-strong);
+  background:rgba(150,204,170,.06);color:var(--teal);font-size:11px;cursor:pointer;font-family:var(--mono);
+  transition:background .2s;
+}
+#srcDisclaimer .src-modal-btn:hover{background:rgba(111,211,154,.14)}
+@media(max-width:760px){
+  #srcDisclaimer{font-size:11px;padding:5px 10px}
+}
+
+/* ===== 顶部固定风险警示横幅 ===== */
+#riskBanner{
+  position:sticky;top:0;z-index:85;
+  display:flex;align-items:center;gap:14px;
+  padding:10px 18px;font-size:13px;line-height:1.5;
+  transition:background .4s,border-color .4s;
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+#riskBanner .rb-icon{font-size:26px;flex-shrink:0;line-height:1}
+#riskBanner .rb-body{flex:1;min-width:0}
+#riskBanner .rb-level{font-size:16px;font-weight:700;letter-spacing:.5px}
+#riskBanner .rb-actions{font-size:12.5px;margin-top:3px;opacity:.92}
+#riskBanner .rb-value{font-family:var(--mono);font-size:22px;font-weight:700;flex-shrink:0}
+#riskBanner .rb-toggle{
+  flex-shrink:0;padding:4px 10px;border-radius:4px;border:1px solid var(--line-strong);
+  background:rgba(150,204,170,.06);color:var(--sub);font-size:11.5px;cursor:pointer;
+  font-family:var(--mono);transition:background .2s;
+}
+#riskBanner .rb-toggle:hover{background:rgba(150,204,170,.12)}
+#riskBanner.rb-low{background:rgba(46,204,113,.10)}
+#riskBanner.rb-low .rb-level,.riskBanner.rb-low .rb-value{color:#2ecc71}
+#riskBanner.rb-mid{background:rgba(247,209,84,.10)}
+#riskBanner.rb-mid .rb-level,#riskBanner.rb-mid .rb-value{color:#e3cf7d}
+#riskBanner.rb-high{background:rgba(232,163,92,.12)}
+#riskBanner.rb-high .rb-level,#riskBanner.rb-high .rb-value{color:#e8a35c}
+#riskBanner.rb-extreme{background:rgba(240,100,108,.14)}
+#riskBanner.rb-extreme .rb-level,#riskBanner.rb-extreme .rb-value{color:#f0646c}
+#riskBanner.rb-extreme{border-bottom-color:rgba(240,100,108,.30)}
+@media(max-width:760px){
+  #riskBanner{padding:8px 12px;gap:8px;font-size:12px}
+  #riskBanner .rb-icon{font-size:22px}
+  #riskBanner .rb-level{font-size:14px}
+  #riskBanner .rb-value{font-size:18px}
+  #riskBanner .rb-actions{font-size:11.5px}
+  #riskBanner .rb-toggle{display:none}
+}
+
+/* ===== 数据源详情弹窗 ===== */
+#srcModal{
+  position:fixed;inset:0;z-index:200;display:none;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;padding:20px;
+}
+#srcModal.show{display:flex}
+#srcModal .sm-card{
+  background:var(--panel-solid);border:1px solid var(--line-strong);border-radius:12px;
+  max-width:640px;width:100%;max-height:80vh;overflow-y:auto;padding:24px;
+}
+#srcModal .sm-card h3{font-size:16px;color:var(--teal);margin-bottom:12px}
+#srcModal .sm-close{
+  float:right;cursor:pointer;font-size:18px;color:var(--sub);padding:2px 8px;
+}
+#srcModal .sm-close:hover{color:var(--text)}
+#srcModal .sm-section{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+#srcModal .sm-section:last-child{border-bottom:none}
+#srcModal .sm-section h4{font-size:13px;color:var(--blue);margin-bottom:6px;font-family:var(--mono)}
+#srcModal .sm-section p{font-size:12.5px;color:var(--sub);line-height:1.8}
+#srcModal .sm-section .sm-warn{
+  background:rgba(240,100,108,.08);border:1px solid rgba(240,100,108,.20);
+  border-radius:6px;padding:10px 14px;font-size:12px;color:var(--sub);line-height:1.7;margin-top:8px;
+}
+
+/* ===== 视图切换器 ===== */
+#viewToggle{
+  display:flex;gap:0;margin:0 auto;border-radius:6px;overflow:hidden;
+  border:1px solid var(--line-strong);background:var(--panel);
+}
+#viewToggle .vt-btn{
+  padding:6px 16px;font-size:12.5px;font-family:var(--mono);cursor:pointer;
+  border:none;background:transparent;color:var(--sub);transition:background .2s,color .2s;
+}
+#viewToggle .vt-btn.active{background:rgba(111,211,154,.14);color:var(--teal);font-weight:600}
+#viewToggle .vt-btn:hover:not(.active){background:rgba(150,204,170,.06)}
+@media(max-width:760px){
+  #viewToggle .vt-btn{padding:5px 10px;font-size:11.5px}
+}
+
+/* 专业视图标记：大众视图下隐藏 */
+body.view-public .pro-only{display:none!important}
+body.view-public #calibPanel,
+body.view-public #fenghePanel,
+body.view-public #jointPanel,
+body.view-public #terrain3DPanel,
+body.view-public #recalc3DPanel,
+body.view-public #altVerifyPanel{display:none!important}
+
+/* ===== 安全科普板块 ===== */
+.safety-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:12px}
+.safety-card{
+  background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+}
+.safety-card .sc-icon{font-size:22px;margin-bottom:6px}
+.safety-card .sc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px}
+.safety-card .sc-body{font-size:12.5px;color:var(--sub);line-height:1.8}
+.safety-card .sc-body b{color:var(--teal)}
+.safety-card .sc-step{
+  display:flex;gap:8px;margin:4px 0;align-items:flex-start;
+}
+.safety-card .sc-step .sc-num{
+  flex-shrink:0;width:20px;height:20px;border-radius:50%;background:rgba(111,211,154,.15);
+  color:var(--teal);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+}
+@media(max-width:760px){.safety-grid{grid-template-columns:1fr}}
+
+/* ===== 应急联络清单 ===== */
+.emergency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.emg-card{
+  background:rgba(240,100,108,.06);border:1px solid rgba(240,100,108,.18);border-radius:8px;
+  padding:12px 14px;text-align:center;
+}
+.emg-card .ec-name{font-size:12.5px;color:var(--text);font-weight:600;margin-bottom:4px}
+.emg-card .ec-phone{font-size:16px;color:var(--red);font-family:var(--mono);font-weight:700}
+.emg-card .ec-desc{font-size:11.5px;color:var(--sub);margin-top:3px}
+@media(max-width:760px){.emergency-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.emergency-grid{grid-template-columns:1fr}}
+
+/* ===== 海拔气温换算工具 ===== */
+.alt-calc{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:10px;
+  background:rgba(98,196,232,.05);border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+}
+.alt-calc label{font-size:12.5px;color:var(--sub)}
+.alt-calc input[type=number]{
+  width:80px;padding:5px 8px;border-radius:4px;border:1px solid var(--line-strong);
+  background:var(--bg2);color:var(--text);font-family:var(--mono);font-size:14px;
+}
+.alt-calc input[type=range]{width:200px;accent-color:var(--teal)}
+.alt-calc .ac-result{
+  font-size:14px;color:var(--teal);font-family:var(--mono);font-weight:600;
+}
+.alt-calc .ac-hint{font-size:11.5px;color:var(--dim);width:100%;margin-top:4px}
+
+/* ===== 季节风险日历 ===== */
+.season-cal{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:12px}
+.season-cal .sc-month{
+  text-align:center;border-radius:6px;padding:10px 4px;font-size:11px;
+  border:1px solid var(--line);transition:transform .2s;cursor:default;
+}
+.season-cal .sc-month:hover{transform:translateY(-2px)}
+.season-cal .sc-month .sc-m-label{font-weight:600;color:var(--text);font-size:12px;margin-bottom:4px}
+.season-cal .sc-month .sc-m-bar{height:4px;border-radius:2px;margin:3px 0}
+.season-cal .sc-month .sc-m-tag{font-size:10px;color:var(--sub);margin-top:3px}
+@media(max-width:760px){
+  .season-cal{grid-template-columns:repeat(6,1fr);gap:3px}
+  .season-cal .sc-month{padding:8px 2px;font-size:10px}
+}
+
+/* ===== 工具栏（GPS/通知/分享/轻量化） ===== */
+#toolBar{
+  display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px;align-items:center;
+}
+#toolBar .tb-btn{
+  padding:6px 12px;border-radius:5px;border:1px solid var(--line-strong);
+  background:var(--panel);color:var(--sub);font-size:12px;cursor:pointer;
+  font-family:var(--mono);transition:background .2s,color .2s;
+  display:flex;align-items:center;gap:5px;
+}
+#toolBar .tb-btn:hover{background:rgba(111,211,154,.10);color:var(--teal)}
+#toolBar .tb-btn.active{background:rgba(111,211,154,.14);color:var(--teal);border-color:var(--teal)}
+#toolBar .tb-btn .tb-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--dim);transition:background .2s;
+}
+#toolBar .tb-btn.active .tb-dot{background:var(--teal);box-shadow:0 0 6px rgba(111,211,154,.6)}
+@media(max-width:760px){
+  #toolBar .tb-btn{padding:5px 8px;font-size:11px}
+}
+
+/* ===== 图表筛选标签 ===== */
+.chart-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chart-filters .cf-label{font-size:11.5px;color:var(--dim);margin-right:4px;font-family:var(--mono)}
+.chart-filters .cf-chip{
+  padding:3px 10px;border-radius:12px;border:1px solid var(--line);font-size:11.5px;
+  cursor:pointer;color:var(--sub);transition:background .2s,color .2s,border-color .2s;
+}
+.chart-filters .cf-chip:hover{background:rgba(150,204,170,.06)}
+.chart-filters .cf-chip.active{background:rgba(111,211,154,.14);color:var(--teal);border-color:var(--teal)}
+
+/* ===== GPS 定位信息卡 ===== */
+#gpsInfo{
+  display:none;margin-top:10px;padding:12px 16px;border-radius:8px;
+  background:rgba(98,196,232,.06);border:1px solid rgba(98,196,232,.20);
+}
+#gpsInfo.show{display:block}
+#gpsInfo .gi-title{font-size:13px;color:var(--blue);font-weight:600;margin-bottom:6px}
+#gpsInfo .gi-body{font-size:12.5px;color:var(--sub);line-height:1.8}
+#gpsInfo .gi-body b{color:var(--text)}
 </style>
 </head>
 <body>
+
+<!-- 顶部数据源权威声明 -->
+<div id="srcDisclaimer">
+  ⚠️ 本工具为<b>科研开源预报</b>，数据来自 Open-Meteo / ERA5 / MERIT DEM，非气象局或管护局官方发布。防灾决策、进山审批请以<b>哀牢山管护局、玉溪/楚雄气象局官方公告为准</b>。
+  <button class="src-modal-btn" onclick="document.getElementById('srcModal').classList.add('show')">📋 数据源详情</button>
+</div>
+
+<!-- 顶部固定风险警示横幅（由 JS 动态填充） -->
+<div id="riskBanner" class="rb-low">
+  <span class="rb-icon">✅</span>
+  <div class="rb-body">
+    <div class="rb-level">风险等级加载中…</div>
+    <div class="rb-actions">正在计算综合风险指数</div>
+  </div>
+  <span class="rb-value">—</span>
+  <span class="rb-toggle" onclick="document.getElementById('riskIndexPanel').scrollIntoView({behavior:'smooth'})">查看详情 →</span>
+</div>
+
+<!-- 数据源详情弹窗 -->
+<div id="srcModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="sm-card">
+    <span class="sm-close" onclick="this.closest('#srcModal').classList.remove('show')">✕</span>
+    <h3>📋 数据来源与模型局限性说明</h3>
+    <div class="sm-section">
+      <h4>🌐 Open-Meteo 气象预报</h4>
+      <p>• 全球数值天气预报 API，基于 GFS + ICON + ECMWF 等模型集成<br>
+      • 空间分辨率约 11km，时间分辨率 1 小时<br>
+      • <b style="color:var(--orange)">局限</b>：山区小尺度地形（峡谷、垭口）局地暴雨/浓雾误差较大，11km 网格无法捕捉哀牢山 2600m 相对高差导致的微气候差异</p>
+    </div>
+    <div class="sm-section">
+      <h4>📊 ERA5 历史再分析</h4>
+      <p>• ECMWF 第五代全球再分析数据集（2020–2026）<br>
+      • 空间分辨率 0.25°（约 27km），时间分辨率 1 小时<br>
+      • 用于训练 9 个机器学习模型（174,087 条小时记录）<br>
+      • <b style="color:var(--orange)">局限</b>：再分析数据本身已平滑化，极端天气事件（局地雷暴、短时暴雨）的强度可能被低估</p>
+    </div>
+    <div class="sm-section">
+      <h4>🏔 MERIT DEM 地形高程</h4>
+      <p>• 消除森林冠层、条纹、噪声误差的高精度全球地形<br>
+      • 重采样至 0.02°（约 2km），169×209 网格，35,321 顶点<br>
+      • 海拔范围 452–3078m<br>
+      • <b style="color:var(--orange)">局限</b>：2km 网格无法分辨百米级冲沟、陡崖，地形增强系数为统计近似</p>
+    </div>
+    <div class="sm-section">
+      <h4>⚠️ 重要安全提示</h4>
+      <div class="sm-warn">
+        本系统所有预报均为<b style="color:var(--text)">研究性产品</b>，存在以下固有不确定性：<br>
+        1. 山区小尺度地形预报天然误差：全球模型无法完全捕捉峡谷冷池、垭口大风、局地暴雨<br>
+        2. 单一数据源风险：当前仅依赖 Open-Meteo，未接入国内 FY-4 卫星、本地气象站实测<br>
+        3. 地质灾害模型为统计经验公式，非物理力学精确模拟<br>
+        <b style="color:var(--red)">实际防灾决策、进山审批、景区开放/关闭均以哀牢山管护局、玉溪/楚雄气象局官方公告为准。</b>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
   <header>
     <div>
@@ -623,6 +884,25 @@ body.bg-atmos-fog{
       <div class="meta" id="meta">正在加载模型与最新预报… <span style="color:var(--sub)">（本页每次刷新/打开都会重新拉取最新数据）</span></div>
     </div>
   </header>
+
+  <!-- 视图切换 + 工具栏 -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
+    <div id="viewToggle">
+      <button class="vt-btn active" data-view="public" onclick="setView('public')">🧭 大众出行</button>
+      <button class="vt-btn" data-view="pro" onclick="setView('pro')">🔬 专业研判</button>
+    </div>
+    <div id="toolBar">
+      <button class="tb-btn" id="btnGPS" onclick="toggleGPS()"><span class="tb-dot"></span>📍 定位</button>
+      <button class="tb-btn" id="btnNotify" onclick="toggleNotify()"><span class="tb-dot"></span>🔔 预警推送</button>
+      <button class="tb-btn" id="btnLite3D" onclick="toggleLite3D()"><span class="tb-dot"></span>⚡ 轻量3D</button>
+      <button class="tb-btn" onclick="shareRisk()">📤 分享风险</button>
+      <button class="tb-btn" onclick="manualRefresh()"><span class="tb-dot"></span>🔄 手动刷新</button>
+    </div>
+  </div>
+  <div id="gpsInfo">
+    <div class="gi-title">📍 您的定位</div>
+    <div class="gi-body" id="gpsBody">正在获取位置…</div>
+  </div>
 
   <!-- Hero：第一屏 3D 数字孪生 -->
   <section id="heroSection">
@@ -1090,9 +1370,113 @@ body.bg-atmos-fog{
     </div>
   </noscript>
 
+  <!-- ===== 安全科普与应急配套 ===== -->
+  <div class="panel" id="safetyPanel">
+    <h2>🛡 哀牢山户外安全科普与应急指引</h2>
+    <div class="desc">进山前必读：4 类突发灾害自救步骤 · 应急联络 · 海拔气温换算 · 信号盲区提示</div>
+
+    <h3 style="margin-top:14px;color:var(--orange)">📖 突发灾害自救步骤</h3>
+    <div class="safety-grid">
+      <div class="safety-card">
+        <div class="sc-icon">🌫</div>
+        <div class="sc-title">浓雾迷路</div>
+        <div class="sc-body">
+          <div class="sc-step"><span class="sc-num">1</span><span><b>停止前进</b>，原地等待能见度恢复（通常午后雾散）</span></div>
+          <div class="sc-step"><span class="sc-num">2</span><span>打开手机 GPS 确认位置，沿来路 <b>原路返回</b>，切勿抄近路</span></div>
+          <div class="sc-step"><span class="sc-num">3</span><span>如完全迷失，<b>找避风处等待救援</b>，节约体力与电量</span></div>
+          <div class="sc-step"><span class="sc-num">4</span><span>吹哨/闪灯发出求救信号（三短三长三短）</span></div>
+        </div>
+      </div>
+      <div class="safety-card">
+        <div class="sc-icon">🌊</div>
+        <div class="sc-title">山洪突至</div>
+        <div class="sc-body">
+          <div class="sc-step"><span class="sc-num">1</span><span><b>立即向高处跑</b>，远离河道、沟谷（洪水上涨仅需数分钟）</span></div>
+          <div class="sc-step"><span class="sc-num">2</span><span>不要涉水过河——即使水浅，流速和冲击力也致命</span></div>
+          <div class="sc-step"><span class="sc-num">3</span><span>如被困，爬上大树或坚固高地等待水退</span></div>
+          <div class="sc-step"><span class="sc-num">4</span><span>山洪通常持续 30 分钟～2 小时，<b>不要急于下山</b></span></div>
+        </div>
+      </div>
+      <div class="safety-card">
+        <div class="sc-icon">⚡</div>
+        <div class="sc-title">雷电来袭</div>
+        <div class="sc-body">
+          <div class="sc-step"><span class="sc-num">1</span><span><b>立即下撤</b>，远离山脊、垭口、孤立大树（雷电富集区）</span></div>
+          <div class="sc-step"><span class="sc-num">2</span><span>不要躲在岩缝/浅洞——雷电会沿岩壁传导</span></div>
+          <div class="sc-step"><span class="sc-num">3</span><span>找低洼处 <b>蹲下双脚并拢</b>，减少接触面积</span></div>
+          <div class="sc-step"><span class="sc-num">4</span><span>远离金属护栏、水渠、电线杆，取下金属饰品</span></div>
+        </div>
+      </div>
+      <div class="safety-card">
+        <div class="sc-icon">🥶</div>
+        <div class="sc-title">低温失温</div>
+        <div class="sc-body">
+          <div class="sc-step"><span class="sc-num">1</span><span>山顶夜间可降至 5°C 以下，<b>每升 1000m 降温约 6°C</b></span></div>
+          <div class="sc-step"><span class="sc-num">2</span><span>立即换下湿衣物，用 <b>保温毯/雨衣</b> 裹住身体</span></div>
+          <div class="sc-step"><span class="sc-num">3</span><span>喝热水/高糖食物补充热量，不要饮酒</span></div>
+          <div class="sc-step"><span class="sc-num">4</span><span>找避风处，两人以上可 <b>抱团取暖</b>，保持清醒</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:16px;color:var(--red)">📞 应急联络清单</h3>
+    <div class="emergency-grid">
+      <div class="emg-card"><div class="ec-name">通用报警</div><div class="ec-phone">110</div><div class="ec-desc">公安报警</div></div>
+      <div class="emg-card"><div class="ec-name">急救电话</div><div class="ec-phone">120</div><div class="ec-desc">医疗急救</div></div>
+      <div class="emg-card"><div class="ec-name">森林火警</div><div class="ec-phone">12119</div><div class="ec-desc">森林火灾/救援</div></div>
+      <div class="emg-card"><div class="ec-name">新平管护站</div><div class="ec-phone">0877-7011xxx</div><div class="ec-desc">戛洒/新平区域</div></div>
+      <div class="emg-card"><div class="ec-name">双柏管护站</div><div class="ec-phone">0878-7712xxx</div><div class="ec-desc">双柏区域</div></div>
+      <div class="emg-card"><div class="ec-name">镇沅管护站</div><div class="ec-phone">0879-5813xxx</div><div class="ec-desc">镇沅/千家寨区域</div></div>
+    </div>
+    <div class="verify-note" style="margin-top:10px">⚠️ 上列管护站电话为示例号码，进山前请向当地政府核实最新联系方式。建议出发前将电话存入手机并告知家人行程。</div>
+
+    <h3 style="margin-top:16px;color:var(--blue)">🌡 海拔气温换算工具</h3>
+    <div class="alt-calc">
+      <label>基地海拔(m)：<input type="number" id="altCalcBase" value="500" min="0" max="3000" step="50"></label>
+      <label>目标海拔(m)：<input type="range" id="altCalcTarget" value="3000" min="500" max="3100" step="50" oninput="calcAltTemp()"></label>
+      <span id="altCalcTargetVal" style="font-family:var(--mono);font-size:13px;color:var(--sub)">3000m</span>
+      <label>基地温度(°C)：<input type="number" id="altCalcTemp" value="28" min="-20" max="50" step="0.5" oninput="calcAltTemp()"></label>
+      <div class="ac-result" id="altCalcResult">—</div>
+      <div class="ac-hint">公式：每上升 1000m 降温约 6°C（标准大气递减率）。哀牢山从河谷(500m)到山顶(3100m)温差可达 15°C 以上。</div>
+    </div>
+
+    <h3 style="margin-top:16px;color:var(--orange)">📵 信号盲区提示</h3>
+    <div class="desc" style="background:rgba(232,163,92,.06);border-left:3px solid var(--orange);padding:12px 16px;border-radius:4px;line-height:1.9">
+      以下区域 <b style="color:var(--text)">基本无 4G/5G 信号</b>，进入前务必：<br>
+      • <b>下载离线地图</b>（高德/奥维互动地图）<br>
+      • 携带 <b>卫星电话或北斗短报文设备</b>（尤其金山原始森林、大雪锅山、千家寨核心区）<br>
+      • 结伴出行（至少 3 人），约定失联后的集合点和报警时限<br>
+      • 告知家人/管护站你的 <b>详细路线和预计返回时间</b><br>
+      盲区覆盖：金山原始森林步道全程 · 大雪锅山山顶区域 · 千家寨核心区 · 石门峡深处 · 茶马古道高海拔段
+    </div>
+  </div>
+
+  <!-- ===== 季节风险日历 ===== -->
+  <div class="panel" id="seasonPanel">
+    <h2>📅 哀牢山季节风险日历</h2>
+    <div class="desc">基于 5 年气候规律统计的月度灾害风险色块 · 高风险月份醒目标注</div>
+    <div class="season-cal" id="seasonCal"></div>
+    <div class="legend-row" style="margin-top:10px">
+      <span><i style="background:#2ecc71;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 低风险</span>
+      <span><i style="background:#e3cf7d;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 关注</span>
+      <span><i style="background:#e8a35c;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 较高</span>
+      <span><i style="background:#f0646c;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 高风险</span>
+    </div>
+    <div class="verify-note" style="margin-top:10px">
+      <b>🥾 徒步最佳月份</b>：11月–次年3月（旱季，降水少、能见度好、气温适宜）<br>
+      <b>⚠️ 高风险月份</b>：6–9月（汛期，暴雨/山洪/泥石流风险高）· 12–1月（高海拔低温霜冻、浓雾高发）
+    </div>
+  </div>
+
   <footer>
-    <p>🛡 <b>防护提示</b>：哀牢山地形陡峭、云雾多变，任何等级下都应在 <b>14:00 前完成下山</b>、远离河道与陡坡、保持手机信号；指数 ≥55（较高/预警）建议取消进山，≥75（预警）严禁进入保护区。</p>
-    <p style="margin-top:8px">模型基于 ERA5 再分析数据训练（2020-2026，含 2025-2026 增量数据，双模型交叉验证），实时预报来自 Open-Meteo，地形基于 MERIT DEM 精细重采样。本页为研究性预警，<b>实际出行/预警以中国气象局及哀牢山管护局官方发布为准</b>。进入保护区请严格遵守进山规范。</p>
+    <p>🛡 <b>分级强制行动清单</b>（按综合风险指数）：</p>
+    <p style="margin-top:6px;line-height:2">
+      <b style="color:#2ecc71">＜35 低风险</b>：正常游览，16:00 前下山，避开河谷低洼地带<br>
+      <b style="color:#e3cf7d">35–55 较高风险</b>：仅限短途平缓景区，禁止徒步野线，不进深山<br>
+      <b style="color:#e8a35c">55–74 预警级</b>：全线取消进山，仅镇区公路通行，已进山者立即下山<br>
+      <b style="color:#f0646c">≥75 极高危险</b>：全域封山，所有道路、景区、保护区禁止进入
+    </p>
+    <p style="margin-top:8px">模型基于 ERA5 再分析数据训练（2020-2026），实时预报来自 Open-Meteo，地形基于 MERIT DEM。本页为<b>研究性开源预报</b>，实际防灾/进山审批以<b>中国气象局及哀牢山管护局官方公告为准</b>。数据源详情请点击顶部「数据源详情」按钮。</p>
     <p style="margin-top:6px">数据源：Open-Meteo · 每次打开/刷新本页即获取最新数据</p>
   </footer>
 
@@ -1113,20 +1497,22 @@ body.bg-atmos-fog{
     <div class="fn-item" data-target="roadPanel" title="公路灾害预警"><span class="fn-dot"></span><span class="fn-label">公路预警</span></div>
     <div class="fn-item" data-target="roadSafetyPanel" title="道路出行安全评估"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
     <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
+    <div class="fn-item" data-target="safetyPanel" title="安全科普与应急指引"><span class="fn-dot"></span><span class="fn-label">安全科普</span></div>
+    <div class="fn-item" data-target="seasonPanel" title="季节风险日历"><span class="fn-dot"></span><span class="fn-label">风险日历</span></div>
     <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081515"></script>
-<script src="js/gb.js?v=2026081515"></script>
-<script src="js/fx.js?v=2026081515"></script>
-<script src="js/app.js?v=2026081515"></script>
-<script src="js/terrain3d.js?v=2026081515"></script>
+<script src="js/site.js?v=2026081516"></script>
+<script src="js/gb.js?v=2026081516"></script>
+<script src="js/fx.js?v=2026081516"></script>
+<script src="js/app.js?v=2026081516"></script>
+<script src="js/terrain3d.js?v=2026081516"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081515").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081516").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -1218,6 +1604,342 @@ if("serviceWorker" in navigator){
     window.addEventListener("scroll", onScroll, {passive:true});
     onScroll();
   }
+})();
+</script>
+
+<script>
+/* ===== 风险分级警示横幅更新 ===== */
+function updateRiskBanner(maxRI){
+  var banner = document.getElementById("riskBanner");
+  if(!banner) return;
+  var icon = banner.querySelector(".rb-icon");
+  var level = banner.querySelector(".rb-level");
+  var actions = banner.querySelector(".rb-actions");
+  var value = banner.querySelector(".rb-value");
+  banner.className = "rb-low";
+  if(maxRI >= 75){
+    banner.classList.add("rb-extreme");
+    icon.textContent = "🚫";
+    level.textContent = "极高危险 · 全域封山";
+    actions.innerHTML = "全域封山，所有道路、景区、保护区禁止进入。已进山者立即撤至安全区域。";
+    value.textContent = maxRI;
+  } else if(maxRI >= 55){
+    banner.classList.add("rb-high");
+    icon.textContent = "⚠️";
+    level.textContent = "预警级 · 全线取消进山";
+    actions.innerHTML = "全线取消进山，仅镇区公路通行。已进山者尽快下山至安全区域。";
+    value.textContent = maxRI;
+  } else if(maxRI >= 35){
+    banner.classList.add("rb-mid");
+    icon.textContent = "📍";
+    level.textContent = "较高风险 · 限制出行";
+    actions.innerHTML = "仅限短途平缓景区，禁止徒步野线，不进深山。16:00 前下山。";
+    value.textContent = maxRI;
+  } else {
+    icon.textContent = "✅";
+    level.textContent = "低风险 · 正常游览";
+    actions.innerHTML = "正常游览，16:00 前下山，避开河谷低洼地带。注意山区天气突变。";
+    value.textContent = maxRI;
+  }
+  // 触发浏览器通知
+  if(maxRI >= 55 && window.__notifyEnabled && Notification.permission === "granted"){
+    var title = maxRI >= 75 ? "哀牢山全域封山预警" : "哀牢山进山风险预警";
+    var body = "综合风险指数 " + maxRI + "，" + actions.textContent;
+    try { new Notification(title, {body:body, icon:"assets/ailaoshan_map.png"}); } catch(e){}
+  }
+}
+
+/* ===== 视图切换 ===== */
+function setView(mode){
+  document.querySelectorAll("#viewToggle .vt-btn").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-view") === mode);
+  });
+  if(mode === "public"){
+    document.body.classList.add("view-public");
+  } else {
+    document.body.classList.remove("view-public");
+  }
+  try { localStorage.setItem("ailaoshan_view", mode); } catch(e){}
+}
+(function(){
+  try {
+    var saved = localStorage.getItem("ailaoshan_view");
+    if(saved === "pro") setView("pro");
+  } catch(e){}
+})();
+
+/* ===== GPS 定位 ===== */
+function toggleGPS(){
+  var btn = document.getElementById("btnGPS");
+  var info = document.getElementById("gpsInfo");
+  if(btn.classList.contains("active")){
+    btn.classList.remove("active");
+    info.classList.remove("show");
+    return;
+  }
+  if(!navigator.geolocation){
+    alert("您的浏览器不支持定位功能");
+    return;
+  }
+  btn.classList.add("active");
+  info.classList.add("show");
+  document.getElementById("gpsBody").innerHTML = "正在获取位置…";
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat = pos.coords.latitude.toFixed(4);
+    var lon = pos.coords.longitude.toFixed(4);
+    var acc = Math.round(pos.coords.accuracy);
+    // 判断是否在哀牢山范围内
+    var inRange = (lat >= 23.8 && lat <= 24.8 && lon >= 100.8 && lon <= 101.4);
+    var html = "坐标：<b>" + lat + "°N, " + lon + "°E</b>（精度 ±" + acc + "m）<br>";
+    if(inRange){
+      // 估算海拔区间
+      var approxAlt = "";
+      if(lat < 24.0) approxAlt = "河谷低海拔区域（约 500–900m，戛洒镇附近）";
+      else if(lat > 24.5) approxAlt = "中高海拔区域（约 1800–3100m，保护区核心）";
+      else approxAlt = "中山过渡区域（约 900–1800m）";
+      html += "📍 您位于 <b>哀牢山区域内</b> · " + approxAlt + "<br>";
+      // 估算最近的风险格点
+      if(window.GRID && window.GRID.length){
+        var nearest = null, minDist = 1e9;
+        window.GRID.forEach(function(g){
+          var d = Math.pow(g.lat - lat, 2) + Math.pow(g.lon - lon, 2);
+          if(d < minDist){ minDist = d; nearest = g; }
+        });
+        if(nearest && nearest.riskIndex){
+          html += "📊 最近格点风险指数：<b style='color:" + (nearest.riskIndex.color||"#fff") + "'>" + nearest.riskIndex.value + "（" + nearest.riskIndex.level + "）</b><br>";
+          html += "🌡 当地温度约 <b>" + (nearest.temp||"—") + "°C</b> · 湿度 <b>" + Math.round((nearest.rh||0)) + "%</b>";
+        }
+      }
+    } else {
+      html += "⚠️ 您当前位置不在哀牢山核心区域内，仅供参考。";
+    }
+    document.getElementById("gpsBody").innerHTML = html;
+  }, function(err){
+    document.getElementById("gpsBody").innerHTML = "❌ 定位失败：" + (err.message||"请检查定位权限设置");
+    btn.classList.remove("active");
+    info.classList.remove("show");
+  }, {enableHighAccuracy:true, timeout:10000, maximumAge:60000});
+}
+
+/* ===== 浏览器通知 ===== */
+function toggleNotify(){
+  var btn = document.getElementById("btnNotify");
+  if(btn.classList.contains("active")){
+    btn.classList.remove("active");
+    window.__notifyEnabled = false;
+    return;
+  }
+  if(!("Notification" in window)){
+    alert("您的浏览器不支持通知功能");
+    return;
+  }
+  Notification.requestPermission().then(function(p){
+    if(p === "granted"){
+      btn.classList.add("active");
+      window.__notifyEnabled = true;
+      try { new Notification("哀牢山预警推送已开启", {body:"综合风险指数 ≥55 时将自动推送预警通知", icon:"assets/ailaoshan_map.png"}); } catch(e){}
+    } else {
+      alert("通知权限被拒绝，请在浏览器设置中允许通知");
+    }
+  });
+}
+
+/* ===== 3D 轻量化模式 ===== */
+function toggleLite3D(){
+  var btn = document.getElementById("btnLite3D");
+  btn.classList.toggle("active");
+  var lite = btn.classList.contains("active");
+  window.__lite3D = lite;
+  if(window.__setLite3D){
+    window.__setLite3D(lite);
+  } else {
+    // 直接控制：减少粒子/阴影
+    var container = document.getElementById("three3DContainer");
+    if(container){
+      container.style.opacity = lite ? "0.85" : "1";
+    }
+  }
+  if(lite){
+    // 关闭动态天气粒子
+    if(window.__weatherFx) window.__weatherFx(false);
+  } else {
+    if(window.__weatherFx) window.__weatherFx(true);
+  }
+}
+
+/* ===== 分享风险 ===== */
+function shareRisk(){
+  var banner = document.getElementById("riskBanner");
+  var level = banner ? banner.querySelector(".rb-level").textContent : "未知";
+  var value = banner ? banner.querySelector(".rb-value").textContent : "—";
+  var actions = banner ? banner.querySelector(".rb-actions").textContent : "";
+  var meta = document.getElementById("meta");
+  var time = new Date().toLocaleString("zh-CN");
+  var text = "🏔 哀牢山天气预警\n" +
+    "风险等级：" + level + "（指数 " + value + "）\n" +
+    "行动建议：" + actions + "\n" +
+    "更新时间：" + time + "\n" +
+    "查看详情：https://frankyi-llll.github.io/ailaoshan-weather/";
+  if(navigator.share){
+    navigator.share({title:"哀牢山天气预警", text:text, url:"https://frankyi-llll.github.io/ailaoshan-weather/"})
+      .catch(function(){});
+  } else {
+    // 复制到剪贴板
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(text).then(function(){
+        alert("✅ 风险信息已复制到剪贴板，可粘贴转发给同行驴友");
+      }).catch(function(){
+        prompt("请复制以下内容：", text);
+      });
+    } else {
+      prompt("请复制以下内容：", text);
+    }
+  }
+}
+
+/* ===== 手动刷新（带冷却） ===== */
+var __refreshCooldown = 0;
+function manualRefresh(){
+  if(__refreshCooldown > 0){
+    var btn = event && event.target ? event.target : null;
+    if(btn) btn.textContent = "⏳ 冷却中 " + __refreshCooldown + "s";
+    return;
+  }
+  __refreshCooldown = 30;
+  var btn = document.querySelector("#toolBar .tb-btn:last-child");
+  var origText = btn ? btn.innerHTML : "";
+  var timer = setInterval(function(){
+    __refreshCooldown--;
+    if(btn) btn.innerHTML = '<span class="tb-dot"></span>⏳ 冷却 ' + __refreshCooldown + "s";
+    if(__refreshCooldown <= 0){
+      clearInterval(timer);
+      if(btn) btn.innerHTML = origText;
+    }
+  }, 1000);
+  // 调用主刷新
+  if(typeof main === "function"){
+    main();
+  } else {
+    location.reload();
+  }
+}
+
+/* ===== 海拔气温换算工具 ===== */
+function calcAltTemp(){
+  var base = parseFloat(document.getElementById("altCalcBase").value) || 0;
+  var target = parseFloat(document.getElementById("altCalcTarget").value) || 0;
+  var temp = parseFloat(document.getElementById("altCalcTemp").value) || 0;
+  document.getElementById("altCalcTargetVal").textContent = target + "m";
+  var diff = (target - base) / 1000 * 6;
+  var result = (temp - diff).toFixed(1);
+  var hint = "";
+  if(result < 0) hint = "（注意冰冻风险，需防寒保暖）";
+  else if(result < 10) hint = "（需厚外套/冲锋衣）";
+  else if(result < 18) hint = "（需薄外套）";
+  else if(result > 30) hint = "（注意防暑降温）";
+  document.getElementById("altCalcResult").textContent = "目标温度 ≈ " + result + "°C " + hint;
+}
+calcAltTemp();
+
+/* ===== 季节风险日历 ===== */
+function renderSeasonCal(){
+  var el = document.getElementById("seasonCal");
+  if(!el) return;
+  var data = [
+    {m:"1月", rain:"#2ecc71", fog:"#f0646c", thunder:"#2ecc71", debris:"#2ecc71", idx:25, tag:"浓雾高发"},
+    {m:"2月", rain:"#2ecc71", fog:"#e8a35c", thunder:"#2ecc71", debris:"#2ecc71", idx:20, tag:"浓雾"},
+    {m:"3月", rain:"#2ecc71", fog:"#e3cf7d", thunder:"#e3cf7d", debris:"#2ecc71", idx:25, tag:"大雾高发"},
+    {m:"4月", rain:"#e3cf7d", fog:"#e3cf7d", thunder:"#e3cf7d", debris:"#2ecc71", idx:35, tag:"初对流"},
+    {m:"5月", rain:"#e8a35c", fog:"#e3cf7d", thunder:"#e8a35c", debris:"#e3cf7d", idx:50, tag:"雨季前"},
+    {m:"6月", rain:"#f0646c", fog:"#e3cf7d", thunder:"#f0646c", debris:"#e8a35c", idx:70, tag:"汛期开始"},
+    {m:"7月", rain:"#f0646c", fog:"#e3cf7d", thunder:"#f0646c", debris:"#f0646c", idx:80, tag:"暴雨高发"},
+    {m:"8月", rain:"#f0646c", fog:"#e3cf7d", thunder:"#f0646c", debris:"#f0646c", idx:85, tag:"最高风险"},
+    {m:"9月", rain:"#e8a35c", fog:"#e3cf7d", thunder:"#e8a35c", debris:"#e8a35c", idx:60, tag:"汛期末"},
+    {m:"10月", rain:"#e3cf7d", fog:"#e3cf7d", thunder:"#e3cf7d", debris:"#2ecc71", idx:35, tag:"雨季结束"},
+    {m:"11月", rain:"#2ecc71", fog:"#e3cf7d", thunder:"#2ecc71", debris:"#2ecc71", idx:20, tag:"徒步佳期"},
+    {m:"12月", rain:"#2ecc71", fog:"#e8a35c", thunder:"#2ecc71", debris:"#2ecc71", idx:25, tag:"浓雾/霜冻"}
+  ];
+  el.innerHTML = data.map(function(d){
+    return '<div class="sc-month" style="border-color:'+d.idx>=70?'rgba(240,100,108,.25)':'var(--line)'+'">'+
+      '<div class="sc-m-label">'+d.m+'</div>'+
+      '<div class="sc-m-bar" style="background:'+d.rain+'" title="降水风险"></div>'+
+      '<div class="sc-m-bar" style="background:'+d.fog+'" title="浓雾风险"></div>'+
+      '<div class="sc-m-bar" style="background:'+d.thunder+'" title="雷电风险"></div>'+
+      '<div class="sc-m-bar" style="background:'+d.debris+'" title="泥石流风险"></div>'+
+      '<div class="sc-m-tag" style="color:'+(d.idx>=70?'#f0646c':d.idx>=50?'#e8a35c':'#2ecc71')+'">'+d.tag+'</div>'+
+    '</div>';
+  }).join("");
+}
+renderSeasonCal();
+
+/* ===== 自动刷新定时器 ===== */
+(function(){
+  var interval = 30 * 60 * 1000; // 默认 30 分钟
+  function checkAutoRefresh(){
+    // 如果综合风险 ≥55，缩短到 10 分钟
+    var banner = document.getElementById("riskBanner");
+    if(banner && (banner.classList.contains("rb-high") || banner.classList.contains("rb-extreme"))){
+      interval = 10 * 60 * 1000;
+    } else {
+      interval = 30 * 60 * 1000;
+    }
+  }
+  setInterval(function(){
+    checkAutoRefresh();
+    // 只在页面可见时自动刷新
+    if(!document.hidden && typeof main === "function"){
+      console.log("[自动刷新] 触发定时刷新，间隔 " + (interval/60000) + " 分钟");
+      main();
+    }
+  }, interval);
+  // 监听风险等级变化调整间隔
+  var oldClass = "";
+  setInterval(checkAutoRefresh, 5000);
+})();
+
+/* ===== 离线模式检测 ===== */
+window.addEventListener("online", function(){
+  console.log("[网络] 已恢复在线");
+  if(typeof main === "function" && document.hidden === false){
+    main();
+  }
+});
+window.addEventListener("offline", function(){
+  console.log("[网络] 已离线");
+  var meta = document.getElementById("meta");
+  if(meta){
+    meta.innerHTML += '<br><span style="color:var(--orange)">⚠️ 当前离线，显示的是缓存数据。进山前务必联网刷新获取最新预报。</span>';
+  }
+});
+
+/* ===== 图表筛选标签 ===== */
+(function(){
+  var chartPanel = document.getElementById("chartPanel");
+  if(!chartPanel) return;
+  var btnGroup = chartPanel.querySelector(".btn-group");
+  if(!btnGroup) return;
+  var filterDiv = document.createElement("div");
+  filterDiv.className = "chart-filters";
+  filterDiv.style.marginTop = "8px";
+  filterDiv.innerHTML = '<span class="cf-label">筛选：</span>'+
+    '<span class="cf-chip active" data-filter="all">全部</span>'+
+    '<span class="cf-chip" data-filter="thunder">强对流</span>'+
+    '<span class="cf-chip" data-filter="fog">浓雾</span>'+
+    '<span class="cf-chip" data-filter="rain">降水</span>'+
+    '<span class="cf-chip" data-filter="temp">温度</span>'+
+    '<span class="cf-chip" data-filter="wind">风速</span>';
+  btnGroup.parentNode.insertBefore(filterDiv, btnGroup.nextSibling);
+  filterDiv.querySelectorAll(".cf-chip").forEach(function(chip){
+    chip.addEventListener("click", function(){
+      filterDiv.querySelectorAll(".cf-chip").forEach(function(c){c.classList.remove("active")});
+      chip.classList.add("active");
+      window.__chartFilter = chip.getAttribute("data-filter");
+      // 触发图表重绘
+      if(window.__chartSeries && typeof renderChart === "function"){
+        renderChart(window.__chartSeries);
+      }
+    });
+  });
 })();
 </script>
 </body>

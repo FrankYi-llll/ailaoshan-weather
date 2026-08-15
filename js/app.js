@@ -817,6 +817,8 @@ function renderAdvice(grid, roads, series){
     '<div><div style="font-weight:700;color:'+it.color+';font-size:14px;margin-bottom:3px">'+it.title+'</div>'+
     '<div style="font-size:12.5px;color:var(--sub);line-height:1.7">'+it.text+'</div></div></div>'
   ).join("");
+  // 更新顶部风险横幅
+  if(typeof updateRiskBanner === "function") updateRiskBanner(maxRI);
 }
 
 /* ---------- 渲染: 综合风险指数总表 ---------- */
@@ -1612,6 +1614,17 @@ function renderChart(series){
   const cloud = series.map(s=>s.cloud);
   const tmp = series.map(s=>s.temp);
   const isT = chartType==="thunder";
+  // 图表筛选
+  const cf = window.__chartFilter || "all";
+  const showAll = (cf === "all");
+  const showThunder = showAll || cf === "thunder";
+  const showFog = showAll || cf === "fog";
+  const showRain = showAll || cf === "rain";
+  const showTemp = showAll || cf === "temp";
+  const showWind = showAll || cf === "wind";
+  const showHumidity = showAll;
+  const ws = series.map(s=>s.ws);
+  const wg = series.map(s=>s.wg);
   const option = {
     backgroundColor:"transparent",
     tooltip:{trigger:"axis", axisPointer:{type:"cross"}, formatter:p=>{
@@ -1624,7 +1637,7 @@ function renderChart(series){
       h += '💨 风速 '+s.ws+'m/s · 阵风 '+s.wg+'m/s';
       return h;
     }},
-    legend:{data:[isT?"强对流概率":"浓雾概率","降水","湿度","气温"], textStyle:{color:"#8fa3c0"}, top:6},
+    legend:{data:[showThunder?"强对流概率":(showFog?"浓雾概率":""), showRain?"降水":"", showHumidity?"湿度":"", showTemp?"气温":"", showWind?"风速/阵风":""].filter(Boolean), textStyle:{color:"#8fa3c0"}, top:6},
     grid:{left:48, right:52, top:48, bottom:28},
     xAxis:{type:"category", data:times, axisLine:{lineStyle:{color:"#243349"}}, axisLabel:{color:"#8fa3c0", fontSize:10}},
     yAxis:[
@@ -1632,17 +1645,18 @@ function renderChart(series){
       {type:"value", name:"mm / % / °C", min:0, max:100, axisLine:{lineStyle:{color:"#243349"}}, axisLabel:{color:"#8fa3c0"}, splitLine:{show:false}}
     ],
     series:[
-      {name:isT?"强对流概率":"浓雾概率", type:"line", data:(isT?ps:fs), smooth:true, symbol:"none",
+      (showThunder||showFog) ? {name:isT?"强对流概率":"浓雾概率", type:"line", data:(isT?ps:fs), smooth:true, symbol:"none",
        lineStyle:{width:3, color:(isT?"#ff9f43":"#4aa3ff")},
        areaStyle:{color:{type:"linear", x:0, y:0, x2:0, y2:1,
          colorStops:[
            {offset:0, color:(isT?"rgba(255,159,67,.35)":"rgba(74,163,255,.35)")},
            {offset:1, color:(isT?"rgba(255,159,67,.05)":"rgba(74,163,255,.05)")}
-         ]}}},
-      {name:"降水", type:"bar", yAxisIndex:1, data:pre, itemStyle:{color:"rgba(74,163,255,.55)"}, barWidth:"40%"},
-      {name:"湿度", type:"line", yAxisIndex:1, data:rha, smooth:true, symbol:"none", lineStyle:{width:2, color:"#2ecc71"}},
-      {name:"气温", type:"line", yAxisIndex:1, data:tmp, smooth:true, symbol:"none", lineStyle:{width:2, color:"#ff6b6b"}}
-    ]
+         ]}}} : null,
+      showRain ? {name:"降水", type:"bar", yAxisIndex:1, data:pre, itemStyle:{color:"rgba(74,163,255,.55)"}, barWidth:"40%"} : null,
+      showHumidity ? {name:"湿度", type:"line", yAxisIndex:1, data:rha, smooth:true, symbol:"none", lineStyle:{width:2, color:"#2ecc71"}} : null,
+      showTemp ? {name:"气温", type:"line", yAxisIndex:1, data:tmp, smooth:true, symbol:"none", lineStyle:{width:2, color:"#ff6b6b"}} : null,
+      showWind ? {name:"风速/阵风", type:"line", yAxisIndex:1, data:ws, smooth:true, symbol:"none", lineStyle:{width:1.5, color:"#e8a35c", type:"dashed"}} : null
+    ].filter(Boolean)
   };
   weatherChart.setOption(option);
 }
