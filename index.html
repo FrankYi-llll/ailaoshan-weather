@@ -734,12 +734,8 @@ body.bg-atmos-fog{
 
 /* 专业视图标记：大众视图下隐藏 */
 body.view-public .pro-only{display:none!important}
-body.view-public #calibPanel,
-body.view-public #fenghePanel,
-body.view-public #jointPanel,
-body.view-public #terrain3DPanel,
-body.view-public #recalc3DPanel,
-body.view-public #altVerifyPanel{display:none!important}
+.term-tip{display:inline-block;margin-left:3px;font-size:11px;color:var(--dim);cursor:help;border-bottom:1px dotted var(--dim);line-height:1}
+.term-tip:hover{color:var(--teal);border-color:var(--teal)}
 
 /* ===== 安全科普板块 ===== */
 .safety-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:12px}
@@ -1061,12 +1057,12 @@ body.view-public #altVerifyPanel{display:none!important}
           <div class="hc-desc" id="heroWeatherDesc">加载中…</div>
         </div>
         <div class="hero-card">
-          <div class="hc-title">哀牢山徒步指数</div>
+          <div class="hc-title">哀牢山徒步指数 <span class="term-tip" title="根据温度、降水、能见度、风力、紫外线综合计算的徒步舒适度，5星为最佳">?</span></div>
           <div class="hc-stars" id="heroStars">★★★★★</div>
           <div class="hc-desc" id="heroHikingDesc">温度适宜 · 降雨较少 · 能见度良好</div>
         </div>
         <div class="hero-card">
-          <div class="hc-title">云海 / 云雾概率</div>
+          <div class="hc-title">云海 / 云雾概率 <span class="term-tip" title="根据空气湿度、昼夜温差和风速估算出现云海的可能性，数值越高越容易出现">?</span></div>
           <div class="hc-value" id="heroCloudSea">—<small>%</small></div>
           <div class="hc-bar"><i id="heroCloudSeaBar" style="width:0%"></i></div>
           <div class="hc-desc" id="heroCloudSeaDesc">湿度+温差+风速综合</div>
@@ -1082,8 +1078,8 @@ body.view-public #altVerifyPanel{display:none!important}
   </section>
 
   <div class="panel" id="riskIndexPanel">
-    <h2>📊 综合风险指数总表 <span class="badge" id="riskCount">—</span></h2>
-    <div class="desc">综合指数 = 40%×强对流 + 15%×浓雾 + 30%×地形敏感性 + 15%×坡度 · 30 格点 + 主要公路统一排序 · 每次刷新实时更新</div>
+    <h2>📊 今日进山风险一览 <span class="badge" id="riskCount">—</span></h2>
+    <div class="desc">0-100分，分数越高风险越大 · ≥75分建议不要进山 · 55-74分谨慎出行 · 35-54分留意天气 · &lt;35分适合游览 <span class="term-tip" title="综合强对流、浓雾、地形坡度、历史灾害等多因素计算">?</span></div>
     <div class="legend-row">
       <span><i style="background:#2ecc71"></i>低 &lt;35</span>
       <span><i style="background:#f7d154"></i>关注 35-55</span>
@@ -1099,31 +1095,31 @@ body.view-public #altVerifyPanel{display:none!important}
     <div class="verify-note" id="riskTips"></div>
   </div>
 
-  <div class="panel" id="warnCenterPanel">
+  <div class="panel pro-only" id="warnCenterPanel">
     <h2><span class="sec-no">SYS-01</span>🚨 实时预警中心</h2>
     <div class="desc">9 模型 + 3D 地形增强 · 六类风险当前最高等级与未来 24h 峰值</div>
     <div class="warn-grid" id="warnCenterContent"><div class="loading">计算中…</div></div>
   </div>
 
   <div class="panel" id="weatherPanel">
-    <h2><span class="sec-no">SYS-02</span>🌡 实况天气与气象要素</h2>
-    <div class="desc">哀牢山区域 30 格点平均值 · 每次刷新实时拉取 Open-Meteo 最新预报 · 下方为当前时刻与未来 24h 概要</div>
+    <h2><span class="sec-no">SYS-02</span>🌡 当前天气实况</h2>
+    <div class="desc">哀牢山区域实时天气 · 温度 / 湿度 / 降水 / 能见度 / 风力 / 云海概率 <span class="term-tip" title="数据来自 Open-Meteo 全球气象预报，覆盖哀牢山 30 个网格点">?</span></div>
     <div class="summary" id="weatherSummary"><div class="loading">加载中…</div></div>
   </div>
 
   <div class="panel" id="ecoIndexPanel">
     <h2><span class="sec-no">SYS-02B</span>🌿 哀牢山生态体验指数</h2>
-    <div class="desc">把气象数据转化为徒步、观云海、森林浴的直观指数 · 基于实时温度/湿度/降水/能见度/风速/紫外线综合计算</div>
+    <div class="desc">把气象数据转化为徒步、观云海、森林浴的直观指数 · 星级越高体验越好 <span class="term-tip" title="基于实时温度、湿度、降水、能见度、风速、紫外线综合计算">?</span></div>
     <div class="eco-grid" id="ecoIndexContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
-  <div class="panel" id="altitudePanel">
+  <div class="panel pro-only" id="altitudePanel">
     <h2><span class="sec-no">SYS-03</span>⛰ 按海拔层天气差异</h2>
     <div class="desc">温度随海拔每升 1000m 约降 6.5°C，风速/湿度/浓雾概率随海拔升高而增强。下表基于各海拔代表点实时预报 + 地形校正。</div>
     <div class="alt-grid" id="altitudeContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
-  <div class="panel" id="chartPanel">
+  <div class="panel pro-only" id="chartPanel">
     <h2>📈 未来 72h 强对流/浓雾概率与气象要素</h2>
     <div class="desc">曲线 = 30 格点逐小时强对流/浓雾概率最大值 · 柱状 = 降水 · 面积 = 湿度/云量 · 鼠标悬停看逐小时详情</div>
     <div class="btn-group">
@@ -1135,7 +1131,7 @@ body.view-public #altVerifyPanel{display:none!important}
 
   <div class="panel" id="advicePanel">
     <h2>🧭 出行建议与智能规划</h2>
-    <div class="desc">基于综合风险指数、强对流/浓雾概率、地形敏感性自动生成建议 · 下方可输入徒步计划生成分段避险方案</div>
+    <div class="desc">基于安全风险指数自动生成建议 · 下方可输入徒步计划生成分段避险方案 <span class="term-tip" title="安全风险指数0-100分，分数越高风险越大，≥75分建议不要进山">?</span></div>
     <div id="adviceContent"><div class="loading">加载中…</div></div>
     <h3 style="margin-top:16px">🤖 AI 智能出行方案</h3>
     <div class="ai-input">
@@ -1164,7 +1160,7 @@ body.view-public #altVerifyPanel{display:none!important}
 
   <div class="panel" id="poiPanel">
     <h2>📍 景点聚焦与路线推荐 <span class="badge" id="poiBadge">点击 → 3D 聚焦</span></h2>
-    <div class="desc">点击景点按钮可在 3D 地形中飞行聚焦 · 下方表格按实时风险排序并推荐徒步路线</div>
+    <div class="desc">点击景点按钮可在 3D 地形中飞行聚焦 · 推荐指数 = 安全风险 + 海拔 + 景点类型综合评分 <span class="term-tip" title="分数越高越推荐游览，基于实时天气和地形风险计算">?</span></div>
     <div class="poi-grid" id="poiGrid"><div class="loading">加载中…</div></div>
     <div id="poiDetail" style="display:none;margin-top:12px"></div>
     <div class="summary" id="routeSummary" style="margin-top:14px"><div class="loading">计算中…</div></div>
@@ -1233,7 +1229,7 @@ body.view-public #altVerifyPanel{display:none!important}
 
   <div class="panel" id="roadPanel">
     <h2>🚗 道路出行安全 <span class="badge" id="roadCount">—</span></h2>
-    <div class="desc">综合公路灾害预警（大雾/泥石流/山洪/塌方）与道路出行安全评估（阳光/能见度/风力/降水），每次刷新实时更新</div>
+    <div class="desc">主要公路大雾、泥石流、山洪、塌方风险评级 · 出行前必看 <span class="term-tip" title="结合实时降水和地形敏感性计算，等级越高风险越大">?</span></div>
     <div style="overflow-x:auto"><table>
       <thead><tr><th>路段</th><th>综合风险</th><th>大雾</th><th>泥石流</th><th>山洪</th><th>塌方</th><th>最需警惕 / 建议</th></tr></thead>
       <tbody id="roadTbody"></tbody>
@@ -1242,7 +1238,7 @@ body.view-public #altVerifyPanel{display:none!important}
     <div id="roadSafetyContent"><div class="loading">加载中…</div></div>
   </div>
 
-  <div class="panel" id="altVerifyPanel">
+  <div class="panel pro-only" id="altVerifyPanel">
     <h2>🔁 双模型交叉验证</h2>
     <div class="desc" id="altDesc">加载中…</div>
     <div class="grid2">
@@ -1267,7 +1263,7 @@ body.view-public #altVerifyPanel{display:none!important}
     </div>
   </div>
 
-  <div class="panel" id="calibPanel" style="display:none">
+  <div class="panel pro-only" id="calibPanel" style="display:none">
     <h2>📚 历史灾害关联复核</h2>
     <div class="desc" id="calibNote">加载中…</div>
     <div class="summary" id="calibSummary"><div class="loading">计算中…</div></div>
@@ -1278,7 +1274,7 @@ body.view-public #altVerifyPanel{display:none!important}
     </table></div>
   </div>
 
-  <div class="panel" id="fenghePanel" style="display:none">
+  <div class="panel pro-only" id="fenghePanel" style="display:none">
     <h2>🌀 风和气象模型 · 气候规律与极端天气概率</h2>
     <div class="desc" id="fengheNote">加载中…</div>
     <div class="summary" id="fengheSummary"><div class="loading">计算中…</div></div>
@@ -1295,7 +1291,7 @@ body.view-public #altVerifyPanel{display:none!important}
     <div class="verify-note" id="fengheInsight"></div>
   </div>
 
-  <div class="panel" id="jointPanel" style="display:none">
+  <div class="panel pro-only" id="jointPanel" style="display:none">
     <h2>🔬 多模型联合研判报告</h2>
     <div class="desc" id="jointNote">加载中…</div>
     <div class="summary" id="jointSummary"><div class="loading">计算中…</div></div>
@@ -1315,7 +1311,7 @@ body.view-public #altVerifyPanel{display:none!important}
     </table></div>
   </div>
 
-  <div class="panel" id="terrain3DPanel" style="display:none">
+  <div class="panel pro-only" id="terrain3DPanel" style="display:none">
     <h2>🏔️ 3D全景地形建模与多模型重算</h2>
     <div class="desc" id="terrain3DNote">加载中…</div>
     <div class="summary" id="terrain3DSummary"><div class="loading">计算中…</div></div>
@@ -1345,7 +1341,7 @@ body.view-public #altVerifyPanel{display:none!important}
     <div class="desc" id="heat3DDesc" style="margin-top:6px"></div>
   </div>
 
-  <div class="panel" id="recalc3DPanel" style="display:none">
+  <div class="panel pro-only" id="recalc3DPanel" style="display:none">
     <h2>🔬 3D地形驱动多模型重算结果</h2>
     <div class="desc" id="recalc3DNote">加载中…</div>
     <div class="summary" id="recalc3DSummary"><div class="loading">计算中…</div></div>
@@ -1592,16 +1588,16 @@ body.view-public #altVerifyPanel{display:none!important}
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081525"></script>
-<script src="js/gb.js?v=2026081525"></script>
-<script src="js/fx.js?v=2026081525"></script>
-<script src="js/app.js?v=2026081525"></script>
-<script src="js/terrain3d.js?v=2026081525"></script>
+<script src="js/site.js?v=2026081526"></script>
+<script src="js/gb.js?v=2026081526"></script>
+<script src="js/fx.js?v=2026081526"></script>
+<script src="js/app.js?v=2026081526"></script>
+<script src="js/terrain3d.js?v=2026081526"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081525").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081526").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;

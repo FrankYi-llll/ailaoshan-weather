@@ -506,7 +506,7 @@ function renderEcoIndex(series, aq, csp){
       '<div class="eco-tags"><span class="eco-tag">温度 ' + cur.temp + '°C</span><span class="eco-tag">24h降水 ' + Math.round(totalP*10)/10 + 'mm</span><span class="eco-tag">能见度 ' + (visKm != null ? visKm + 'km' : '—') + '</span></div>'+
     '</div>'+
     '<div class="eco-card cloud">'+
-      '<div class="eco-title">云海 / 云雾概率</div>'+
+      '<div class="eco-title">云海 / 云雾概率 <span class="term-tip" title="根据空气湿度、昼夜温差和风速估算，数值越高越容易出现云海景观">?</span></div>'+
       '<div class="eco-value" style="color:' + cspColor + '">' + cspVal + '<small>%</small></div>'+
       '<div class="eco-bar"><i style="width:' + cspVal + '%;background:' + cspColor + '"></i></div>'+
       '<div class="eco-desc">' + cspText + ' · 湿度 ' + Math.round(cur.rh) + '% + 昼夜温差 ' + Math.round((maxT-minT)*10)/10 + '°C + 风速 ' + cur.ws + 'm/s</div>'+
@@ -734,15 +734,16 @@ function renderAdvice(grid, roads, series){
       '<div class="hike-score">'+
         '<div class="hs-stars" style="color:'+vColor+'">'+starStr+'</div>'+
         '<div class="hs-big" style="color:'+vColor+'">'+maxRI+'</div>'+
-        '<div class="hs-label">综合风险指数 / 100</div>'+
+        '<div class="hs-label">安全风险指数 / 100 <span class="term-tip" title="0-100分，分数越高风险越大，≥75分建议不要进山">?</span></div>'+
+        '<div style="font-size:11px;color:var(--sub);margin-top:4px">徒步适宜度：'+starStr+'</div>'+
       '</div>'+
       '<div class="hike-main">'+
         '<div class="hs-verdict" style="color:'+vColor+'">'+verdict+'</div>'+
         '<div class="hs-items">'+
           '<span>🌡 体感 <b>'+feelT+'°C</b>（区域均温 '+curT+'°C）</span>'+
           '<span>🌧 24h降水 <b>'+Math.round(totalP*10)/10+'mm</b></span>'+
-          '<span>🌫 浓雾峰值 <b>'+Math.round(maxF*100)+'%</b> · 湿度 '+Math.round(curRh)+'%</span>'+
-          '<span>🌩 强对流峰值 <b>'+Math.round(maxP*100)+'%</b></span>'+
+          '<span>🌫 浓雾峰值 <b>'+Math.round(maxF*100)+'%</b> <span class="term-tip" title="空气中水汽含量高时容易形成浓雾，影响能见度">?</span></span>'+
+          '<span>🌩 强对流峰值 <b>'+Math.round(maxP*100)+'%</b> <span class="term-tip" title="雷电、短时暴雨、冰雹等突发恶劣天气的可能性">?</span></span>'+
           '<span>💨 阵风峰值 <b>'+Math.round(maxWg*10)/10+'m/s</b></span>'+
           '<span>🏔 高海拔注意 <b>每升1000m约降6.5°C</b></span>'+
         '</div>'+
@@ -832,7 +833,7 @@ function renderRisk(grid, roads){
     if(t.flash>=60) tags.push("山洪敏感");
     if(t.debris>=60) tags.push("泥石流敏感");
     if(t.slump>=60) tags.push("塌方敏感");
-    const calTag = (ri.calibProb!=null && ri.calibProb>=25) ? '历史复核 '+ri.calibProb+'%' : '';
+    const calTag = (ri.calibProb!=null && ri.calibProb>=25) ? '历史复核 <span class="term-tip" title="该风险等级与哀牢山历史真实灾害案例的匹配程度">?</span> '+ri.calibProb+'%' : '';
     entries.push({key:gridPlaceName(g.lat, g.lon), type:g.elev+"m 格点", ri:ri.value, lv:ri.level,
       tags:tags.join("·")+(calTag?' · '+calTag:''), agree: g.agree, adv:advText(ri.level), raw:ri.rawValue, calib:ri.calibProb, lat:g.lat, lon:g.lon});
   });
@@ -855,7 +856,7 @@ function renderRisk(grid, roads){
   $("riskTbody").innerHTML = entries.slice(0,15).map(e=>{
     const sub = (e.lat!=null ? '<div style="font-size:10px;color:var(--sub);margin-top:1px">'+e.lat.toFixed(2)+'N, '+e.lon.toFixed(2)+'E</div>' : '');
     return '<tr><td><b>'+e.key+'</b>'+sub+'</td><td style="font-size:11.5px;color:var(--sub)">'+e.type+'</td>'+
-      '<td>'+riskBar(e.ri)+(e.calib!=null?'<div class="tags" style="margin-top:2px">历史复核 '+e.calib+'%</div>':'')+'</td>'+
+      '<td>'+riskBar(e.ri)+(e.calib!=null?'<div class="tags" style="margin-top:2px">历史复核 <span class="term-tip" title="该风险等级与哀牢山历史真实灾害案例的匹配程度，数值越高说明历史上类似天气越容易出事">?</span> '+e.calib+'%</div>':'')+'</td>'+
       '<td><span class="pill '+pillCls(e.lv)+'">'+e.lv+'</span></td>'+
       '<td class="tags">'+e.tags+'</td>'+
       '<td>'+(e.agree==null?'—':'<span class="'+(e.agree?'agree-yes':'agree-no')+'">'+(e.agree?'✓ 一致':'✗ 分歧')+'</span>')+'</td>'+
