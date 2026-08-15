@@ -97,9 +97,9 @@ window.addEventListener("unhandledrejection", function(e){
  * ============================================================ */
 :root{
   --bg:#050d09; --bg2:#0a1811;
-  --panel:rgba(12,30,21,.66); --panel-solid:#0c1e15; --panel-hi:rgba(20,44,30,.82);
-  --line:rgba(150,204,170,.13); --line-strong:rgba(150,204,170,.28);
-  --text:#d8e7db; --sub:#7fa08a; --dim:#52705d;
+  --panel:rgba(12,30,21,.75); --panel-solid:#0c1e15; --panel-hi:rgba(20,44,30,.85);
+  --line:rgba(150,204,170,.18); --line-strong:rgba(150,204,170,.36);
+  --text:#eaf5ee; --sub:#9bc4b0; --dim:#6e9080;
   --blue:#62c4e8; --teal:#6fd39a; --orange:#e8a35c; --yellow:#e3cf7d; --red:#f0646c;
   --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,"Courier New",monospace;
 }
@@ -111,7 +111,7 @@ body{
     linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  line-height:1.65;
+  line-height:1.7;
   background-attachment:fixed;
 }
 /* 微妙地形等高线纹理 */
@@ -128,14 +128,14 @@ header{border-bottom:1px solid var(--line);padding:16px 0 14px;margin-bottom:16p
   position:relative}
 header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:linear-gradient(90deg, transparent, var(--teal), transparent);opacity:.35}
-.brand-id{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;opacity:.85;
+.brand-id{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;opacity:.9;
   animation:brandPulse 4s ease-in-out infinite}
 @keyframes brandPulse{0%,100%{opacity:.7}50%{opacity:1}}
 header h1{font-size:24px;font-weight:700;letter-spacing:.5px;margin-top:2px}
 header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px}
-.meta{font-size:11.5px;color:var(--sub);margin-top:6px;font-family:var(--mono)}
+.meta{font-size:12px;color:var(--sub);margin-top:6px;font-family:var(--mono)}
 /* ---- 通用 ---- */
-.badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-family:var(--mono);
+.badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11.5px;font-family:var(--mono);
   background:rgba(111,211,154,.12);color:var(--teal);border:1px solid rgba(111,211,154,.35);margin-left:6px}
 .badge.red{background:rgba(240,100,108,.14);color:var(--red);border-color:rgba(240,100,108,.42)}
 .panel{
@@ -159,28 +159,28 @@ header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px
 .panel h2{font-size:16px;font-weight:600;letter-spacing:.4px;margin-bottom:6px;
   display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .panel h2 .sec-no{font-family:var(--mono);font-size:11px;color:var(--teal);opacity:.8;font-weight:400}
-.desc{font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.7}
-.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--sub);margin:10px 0}
+.desc{font-size:12.5px;color:var(--sub);margin-bottom:12px;line-height:1.75}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin:10px 0}
 .legend-row span{display:inline-flex;align-items:center;gap:5px}
 .legend-row i{width:13px;height:13px;border-radius:2px;display:inline-block}
 .legend-row i.line{height:3px;border-radius:1px}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-th{background:rgba(150,204,170,.05);color:var(--sub);font-size:10.5px;letter-spacing:.6px;
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:rgba(150,204,170,.06);color:var(--sub);font-size:11.5px;letter-spacing:.6px;
   text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;font-family:var(--mono)}
-td{padding:8px 10px;border-bottom:1px solid rgba(150,204,170,.08);vertical-align:top}
+td{padding:8px 10px;border-bottom:1px solid rgba(150,204,170,.12);vertical-align:top}
 tr:hover td{background:rgba(150,204,170,.03)}
 .pill{display:inline-block;padding:2px 9px;border-radius:3px;font-size:11px;color:#04130a;font-weight:700}
 .pill.low{background:#6fd39a}.pill.watch{background:#e3cf7d}.pill.high{background:#e8a35c}.pill.warn{background:#f0646c}
 .risk-bar{display:inline-block;height:10px;border-radius:2px;background:rgba(255,255,255,.09);position:relative;min-width:110px;vertical-align:middle;margin-right:8px}
 .risk-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
-.tags{font-size:11px;color:var(--dim)}
+.tags{font-size:12px;color:var(--sub)}
 .agree-yes{color:var(--teal);font-weight:700}
 .agree-no{color:var(--red);font-weight:700}
 .summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-.sum-item{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:8px 14px;font-size:11.5px;color:var(--sub)}
+.sum-item{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:8px 14px;font-size:12px;color:var(--sub)}
 .sum-item b{font-size:19px;display:block;margin-top:2px;color:var(--text);font-family:var(--mono)}
 .rs-factor{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-size:12px}
-.rs-factor span{color:var(--dim);display:block;margin-bottom:2px}
+.rs-factor span{color:var(--sub);display:block;margin-bottom:2px}
 .rs-factor b{font-size:14px;display:block}
 #mapWrap{position:relative;width:100%;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#04110b}
 #mapImg{display:block;width:100%;height:auto}
@@ -192,7 +192,7 @@ tr:hover td{background:rgba(150,204,170,.03)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}.legend-row{gap:8px}}
 .verify-note{font-size:12px;color:var(--sub);background:rgba(150,204,170,.04);border-left:3px solid var(--teal);padding:10px 12px;border-radius:4px;margin-top:12px}
-footer{border-top:1px solid var(--line);padding-top:16px;font-size:11px;color:var(--dim);text-align:center}
+footer{border-top:1px solid var(--line);padding-top:16px;font-size:12px;color:var(--sub);text-align:center}
 footer b{color:var(--orange)}
 .btn-group{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .risk-btn{padding:6px 15px;border-radius:4px;border:1px solid var(--line-strong);background:transparent;color:var(--sub);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.4px;transition:all .15s}
@@ -205,7 +205,7 @@ footer b{color:var(--orange)}
 .rms-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-color,var(--teal));opacity:.7}
 .rms-label{font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:4px}
 .rms-value{font-size:22px;font-weight:700;line-height:1.2;color:var(--text)}
-.rms-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.rms-sub{font-size:12px;color:var(--sub);margin-top:2px}
 .rms-dist{display:flex;align-items:center;gap:6px;font-size:12px}
 .rms-dist span{display:inline-flex;align-items:center;gap:3px}
 .rms-dist i{width:10px;height:10px;border-radius:2px;display:inline-block}
@@ -285,10 +285,10 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
   background:linear-gradient(180deg, rgba(10,24,17,.88), rgba(5,13,9,.94));
   border-left:1px solid var(--line);backdrop-filter:blur(10px)}
 .hero-card{background:rgba(150,204,170,.06);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
-.hero-card .hc-title{font-size:11px;color:var(--sub);letter-spacing:1.5px;font-family:var(--mono);text-transform:uppercase;margin-bottom:8px}
+.hero-card .hc-title{font-size:12px;color:var(--sub);letter-spacing:1.5px;font-family:var(--mono);text-transform:uppercase;margin-bottom:8px}
 .hero-card .hc-value{font-family:var(--mono);font-size:32px;font-weight:700;color:#fff;line-height:1.05}
 .hero-card .hc-value small{font-size:14px;color:var(--sub);font-weight:400}
-.hero-card .hc-desc{font-size:11.5px;color:var(--sub);margin-top:6px;line-height:1.5}
+.hero-card .hc-desc{font-size:12px;color:var(--sub);margin-top:6px;line-height:1.55}
 .hero-card .hc-stars{color:var(--orange);font-size:18px;letter-spacing:2px;margin:4px 0}
 .hero-card .hc-bar{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:8px 0 4px}
 .hero-card .hc-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg, var(--teal), var(--blue))}
@@ -321,7 +321,7 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 .eco-card .eco-stars{color:var(--orange);font-size:20px;letter-spacing:3px;margin:6px 0}
 .eco-card .eco-bar{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:10px 0 6px}
 .eco-card .eco-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg, var(--teal), var(--blue))}
-.eco-card .eco-desc{font-size:11.5px;color:var(--sub);line-height:1.6;margin-top:8px}
+.eco-card .eco-desc{font-size:12px;color:var(--sub);line-height:1.6;margin-top:8px}
 .eco-card .eco-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .eco-card .eco-tag{font-size:10.5px;padding:2px 8px;border-radius:3px;background:rgba(150,204,170,.1);color:var(--sub);border:1px solid var(--line)}
 /* ---- 新增：海拔天气差异（阶梯式剖面） ---- */
@@ -334,16 +334,16 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 .alt-card.mid::before{background:#e3cf7d}
 .alt-card.high::before{background:#e8a35c}
 .alt-card .alt-elev{font-family:var(--mono);font-size:22px;font-weight:700;color:#fff;text-align:center}
-.alt-card .alt-elev small{display:block;font-size:10px;color:var(--sub);font-weight:400;margin-top:2px}
+.alt-card .alt-elev small{display:block;font-size:11px;color:var(--sub);font-weight:400;margin-top:2px}
 .alt-card .alt-name{font-size:14px;font-weight:700;color:#fff}
 .alt-card .alt-meta{font-family:var(--mono);font-size:10.5px;color:var(--sub);margin:2px 0 0}
 .alt-card .alt-temp{font-family:var(--mono);font-size:28px;font-weight:700;color:#fff;line-height:1.05;text-align:center}
 .alt-card .alt-temp small{font-size:13px;color:var(--sub);font-weight:400}
-.alt-card .alt-feel{font-size:11px;color:var(--sub);text-align:center;margin-top:2px}
-.alt-card .alt-metrics{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--sub);justify-content:flex-end}
+.alt-card .alt-feel{font-size:12px;color:var(--sub);text-align:center;margin-top:2px}
+.alt-card .alt-metrics{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--sub);justify-content:flex-end}
 .alt-card .alt-metrics b{color:var(--text);font-family:var(--mono);font-weight:600}
 .alt-card .alt-risk{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:700}
-.alt-card .alt-wear{font-size:11px;color:var(--sub);border-top:1px dashed rgba(150,204,170,.15);padding-top:6px;margin-top:6px;grid-column:1/-1}
+.alt-card .alt-wear{font-size:12px;color:var(--sub);border-top:1px dashed rgba(150,204,170,.15);padding-top:6px;margin-top:6px;grid-column:1/-1}
 .alt-card .alt-wear b{color:var(--sub)}
 @media(max-width:900px){
   .alt-card{grid-template-columns:80px 1fr;gap:8px}
@@ -358,20 +358,20 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 @media(max-width:900px){#twinLayers{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){#twinLayers{grid-template-columns:1fr}}
 .src-card{background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
-.src-card .src-tag{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase}
+.src-card .src-tag{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase}
 .src-card .src-title{font-size:13px;font-weight:700;color:#fff;margin:4px 0 6px}
-.src-card ul{list-style:none;font-size:11.5px;color:var(--sub);line-height:1.8}
+.src-card ul{list-style:none;font-size:12px;color:var(--sub);line-height:1.8}
 .src-card li::before{content:"— ";color:var(--dim)}
 .src-card li b{color:var(--text);font-weight:600}
 /* ---- 登山建议大卡 ---- */
 .hike-card{display:flex;gap:18px;align-items:stretch;background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-bottom:12px;flex-wrap:wrap}
 .hike-score{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:120px;border-right:1px dashed rgba(150,204,170,.18);padding-right:18px}
 .hike-score .hs-stars{font-size:26px;letter-spacing:2px;line-height:1.2}
-.hike-score .hs-label{font-size:11px;color:var(--sub);margin-top:4px;font-family:var(--mono)}
+.hike-score .hs-label{font-size:12px;color:var(--sub);margin-top:4px;font-family:var(--mono)}
 .hike-score .hs-big{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1.1}
 .hike-main{flex:1;min-width:220px}
 .hike-main .hs-verdict{font-size:14.5px;font-weight:700;margin-bottom:8px}
-.hike-main .hs-items{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:11.5px;color:var(--sub)}
+.hike-main .hs-items{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--sub)}
 .hike-main .hs-items b{color:var(--text);font-family:var(--mono)}
 @media(max-width:600px){.hike-card{flex-direction:column}.hike-score{border-right:none;border-bottom:1px dashed rgba(150,204,170,.18);padding-right:0;padding-bottom:12px}}
 /* ============================================================
@@ -1029,16 +1029,16 @@ body.bg-atmos-fog{
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081513"></script>
-<script src="js/gb.js?v=2026081513"></script>
-<script src="js/fx.js?v=2026081513"></script>
-<script src="js/app.js?v=2026081513"></script>
-<script src="js/terrain3d.js?v=2026081513"></script>
+<script src="js/site.js?v=2026081514"></script>
+<script src="js/gb.js?v=2026081514"></script>
+<script src="js/fx.js?v=2026081514"></script>
+<script src="js/app.js?v=2026081514"></script>
+<script src="js/terrain3d.js?v=2026081514"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081513").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081514").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
