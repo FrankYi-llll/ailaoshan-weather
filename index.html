@@ -408,6 +408,7 @@ body.bg-atmos-fog{
     <div id="heroBody">
       <div id="hero3DWrap">
         <div id="three3DContainer">
+          <div id="weather3DBadge" style="position:absolute;top:10px;left:10px;z-index:5;background:rgba(5,13,9,.72);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:11.5px;color:var(--teal);font-family:var(--mono);pointer-events:none;display:none"></div>
           <div id="three3DTooltip"></div>
           <div id="three3DClickInfo">
             <span class="ci-close" onclick="window.closeClickInfo && window.closeClickInfo()">✕</span>
@@ -850,16 +851,16 @@ body.bg-atmos-fog{
   </footer>
 </div>
 
-<script src="js/site.js?v=2026081504"></script>
-<script src="js/gb.js?v=2026081504"></script>
-<script src="js/fx.js?v=2026081504"></script>
-<script src="js/app.js?v=2026081504"></script>
-<script src="js/terrain3d.js?v=2026081504"></script>
+<script src="js/site.js?v=2026081505"></script>
+<script src="js/gb.js?v=2026081505"></script>
+<script src="js/fx.js?v=2026081505"></script>
+<script src="js/app.js?v=2026081505"></script>
+<script src="js/terrain3d.js?v=2026081505"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装） */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("sw.js?v=2026081504").catch(()=>{});
+    navigator.serviceWorker.register("sw.js?v=2026081505").catch(()=>{});
   });
 }
 </script>

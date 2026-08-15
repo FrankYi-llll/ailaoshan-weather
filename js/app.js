@@ -356,6 +356,15 @@ function renderWeather(series, aq){
     card("☁️","当前云量", cur.cloud, "%");
   renderHero(series, aq, csp);
   renderEcoIndex(series, aq, csp);
+
+  /* ---- 天气驱动 3D 场景联动 ---- */
+  if(window.applyWeatherTo3D){
+    window.applyWeatherTo3D({
+      temp: cur.temp, rh: cur.rh, precip: cur.precip || 0,
+      cloud: cur.cloud || 0, vis: cur.vis, ws: cur.ws || 0,
+      wg: cur.wg || 0, code: cur.code || 800
+    });
+  }
 }
 
 /* ---------- Hero 第一屏数据绑定 ---------- */
@@ -566,7 +575,7 @@ function renderAltitudeWeather(){
     if(band.elev >= 2500) wear = "<b>必备</b>冲锋衣/抓绒 · 防风手套 · 头灯 · 保温杯 · 防晒（高海拔紫外线强）";
     else if(band.elev >= 1800) wear = "<b>推荐</b>薄冲锋衣+速干衣 · 防滑登山鞋 · 雨具 · 帽子";
     else wear = "<b>轻装</b>速干衣 · 防滑鞋 · 雨伞/雨衣 · 注意河谷闷热与蚊虫";
-    return '<div class="alt-card '+band.key+'">'+
+    return '<div class="alt-card '+band.key+'" style="cursor:pointer" onclick="window.flyToPlace('+band.lat+','+band.lon+',\''+band.place+'\','+band.elev+')">'+
       '<div class="alt-elev">'+band.elev+'m<small>'+band.name.split("·")[0]+'</small></div>'+
       '<div>'+
         '<div class="alt-name">'+band.name+'</div>'+
@@ -585,6 +594,7 @@ function renderAltitudeWeather(){
         '<span>阵风 <b>'+Math.round(maxWg*10)/10+'m/s</b></span>'+
         '<span>24h降水 <b>'+Math.round(totalP*10)/10+'mm</b></span>'+
         '<span>浓雾峰值 <b>'+Math.round(w.peakF*100)+'%</b></span>'+
+        '<span style="color:var(--teal);cursor:pointer">📍 3D 查看 →</span>'+
       '</div>'+
       '<div class="alt-wear">🧥 着装建议：'+wear+'</div>'+
     '</div>';

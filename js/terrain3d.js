@@ -14,9 +14,11 @@
   const $ = id => document.getElementById(id);
 
   let scene = null, camera = null, renderer = null, controls = null, raycaster = null;
-  let terrainMesh = null, labelsGroup = null, roadsGroup = null, riversGroup = null,
+  let terrainMesh = null, terrainMaterial = null, labelsGroup = null, roadsGroup = null, riversGroup = null,
       treesGroup = null, contoursLine = null, forbiddenGroup = null, routesGroup = null,
-      cloudsGroup = null;
+      cloudsGroup = null, rainGroup = null;
+  let sunLight = null, hemiLight = null, fillLight = null, camLight = null;
+  let weatherState = { temp:20, rh:60, precip:0, cloud:30, vis:10, ws:2, code:800 };
   let initialized = false, tourMode = false;
   let mouse = new THREE.Vector2(), hoverTimer = null;
   let tourCurves = [];        // 路线相机飞行用（buildTourRoutes 填充）
@@ -123,23 +125,23 @@
     controls.autoRotateSpeed = 0.35;
 
     /* ---- 光照：左上 45° 主太阳 + 半球天空/地面环境 + 弱补光 ---- */
-    const sun = new THREE.DirectionalLight(0xfff2d8, 1.55);
-    sun.position.set(-6.5, 11, -4.2);              // 左(-X) 上(+Y) 后(-Z) → 西北方向光源
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
-    sun.shadow.camera.left = -7; sun.shadow.camera.right = 7;
-    sun.shadow.camera.top = 7; sun.shadow.camera.bottom = -7;
-    sun.shadow.camera.near = 0.5; sun.shadow.camera.far = 30;
-    sun.shadow.bias = -0.0006;
-    scene.add(sun);
+    sunLight = new THREE.DirectionalLight(0xfff2d8, 1.55);
+    sunLight.position.set(-6.5, 11, -4.2);              // 左(-X) 上(+Y) 后(-Z) → 西北方向光源
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.set(2048, 2048);
+    sunLight.shadow.camera.left = -7; sunLight.shadow.camera.right = 7;
+    sunLight.shadow.camera.top = 7; sunLight.shadow.camera.bottom = -7;
+    sunLight.shadow.camera.near = 0.5; sunLight.shadow.camera.far = 30;
+    sunLight.shadow.bias = -0.0006;
+    scene.add(sunLight);
 
-    const hemi = new THREE.HemisphereLight(0x8fb8ff, 0x3d3225, 0.65);
-    scene.add(hemi);
-    const fill = new THREE.DirectionalLight(0x7a9ac0, 0.38); // 右下补光
-    fill.position.set(5, 3, 4);
-    scene.add(fill);
+    hemiLight = new THREE.HemisphereLight(0x8fb8ff, 0x3d3225, 0.65);
+    scene.add(hemiLight);
+    fillLight = new THREE.DirectionalLight(0x7a9ac0, 0.38); // 右下补光
+    fillLight.position.set(5, 3, 4);
+    scene.add(fillLight);
     // 相机补光：始终朝向地形中心，保证用户当前视角的山体正面有光
-    const camLight = new THREE.DirectionalLight(0xcfe8ff, 0.42);
+    camLight = new THREE.DirectionalLight(0xcfe8ff, 0.42);
     camLight.position.copy(camera.position);
     scene.add(camLight);
 
@@ -161,14 +163,14 @@
     camera.position.set(tCenter.x - tDiag * 0.75, tCenter.y + tDiag * 0.65, tCenter.z - tDiag * 0.75);
 
     // 同步调整太阳光位置与阴影相机范围（匹配真实地形尺度）
-    sun.position.set(-tDiag * 0.7, tDiag * 1.1, -tDiag * 0.45);
-    sun.shadow.camera.near = tDiag * 0.05;
-    sun.shadow.camera.far = tDiag * 3.5;
-    sun.shadow.camera.left = -tDiag * 1.2;
-    sun.shadow.camera.right = tDiag * 1.2;
-    sun.shadow.camera.top = tDiag * 1.2;
-    sun.shadow.camera.bottom = -tDiag * 1.2;
-    fill.position.set(tDiag * 0.45, tDiag * 0.35, tDiag * 0.4);
+    sunLight.position.set(-tDiag * 0.7, tDiag * 1.1, -tDiag * 0.45);
+    sunLight.shadow.camera.near = tDiag * 0.05;
+    sunLight.shadow.camera.far = tDiag * 3.5;
+    sunLight.shadow.camera.left = -tDiag * 1.2;
+    sunLight.shadow.camera.right = tDiag * 1.2;
+    sunLight.shadow.camera.top = tDiag * 1.2;
+    sunLight.shadow.camera.bottom = -tDiag * 1.2;
+    fillLight.position.set(tDiag * 0.45, tDiag * 0.35, tDiag * 0.4);
 
     /* ---- 等高线 ---- */
     contoursLine = buildContours();
@@ -191,6 +193,12 @@
     cloudsGroup = new THREE.Group();
     scene.add(cloudsGroup);
     buildClouds();
+
+    /* ---- 3D 雨粒子（默认隐藏，天气联动时激活） ---- */
+    rainGroup = new THREE.Group();
+    rainGroup.visible = false;
+    scene.add(rainGroup);
+    buildRain();
 
     /* ---- 地名标签 + 禁区 ---- */
     labelsGroup = new THREE.Group();
@@ -244,13 +252,32 @@
     renderer.setAnimationLoop(()=>{
       controls.update();
       camLight.position.copy(camera.position);
-      // 云雾缓慢漂移
+      // 云雾漂移（受风速影响）
       if(cloudsGroup){
         const t = performance.now();
         for(const c of cloudsGroup.children){
-          c.position.x = c.userData.baseX + Math.sin(t * c.userData.driftSpeed + c.userData.driftPhase) * 1.4;
-          c.position.z = c.userData.baseZ + Math.cos(t * c.userData.driftSpeed * 0.7 + c.userData.driftPhase) * 1.0;
+          const mul = c.userData.driftSpeedMul || 1.0;
+          c.position.x = c.userData.baseX + Math.sin(t * c.userData.driftSpeed * mul + c.userData.driftPhase) * 1.4;
+          c.position.z = c.userData.baseZ + Math.cos(t * c.userData.driftSpeed * 0.7 * mul + c.userData.driftPhase) * 1.0;
         }
+      }
+      // 雨粒子下落
+      if(rainGroup && rainGroup.visible && rainGroup.children[0]){
+        const pts = rainGroup.children[0];
+        const pos = pts.geometry.attributes.position;
+        const vel = pts.userData.velocities;
+        const yTop = pts.userData.yTop, yBot = pts.userData.yBot;
+        const windX = pts.userData.windOffset || 0;
+        for(let i = 0; i < vel.length; i++){
+          pos.array[i*3+1] -= vel[i];
+          pos.array[i*3]   += windX;
+          if(pos.array[i*3+1] < yBot){
+            pos.array[i*3+1] = yTop;
+            pos.array[i*3]   = (Math.random() - 0.5) * pts.userData.range * 2;
+            pos.array[i*3+2] = (Math.random() - 0.5) * pts.userData.range * 2;
+          }
+        }
+        pos.needsUpdate = true;
       }
       renderer.render(scene, camera);
     });
@@ -288,11 +315,14 @@
     g.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     g.setIndex(indices);
     g.computeVertexNormals();
-    // 自定义着色器：顶点色 + 多光源（太阳光/天空/地面/轮廓光）+ 雾效
+    // 自定义着色器：顶点色 + 多光源（太阳光/天空/地面/轮廓光）+ 雾效 + 天气联动
     const m = new THREE.ShaderMaterial({
       uniforms: {
         fogColor: {value: new THREE.Color(0x4a6b8a)},
-        fogDensity: {value: 0.0075}
+        fogDensity: {value: 0.0075},
+        sunIntensity: {value: 1.0},
+        ambientIntensity: {value: 1.0},
+        wetness: {value: 0.0}
       },
       vertexShader: `
         attribute vec3 color;
@@ -312,6 +342,9 @@
       fragmentShader: `
         uniform vec3 fogColor;
         uniform float fogDensity;
+        uniform float sunIntensity;
+        uniform float ambientIntensity;
+        uniform float wetness;
         varying vec3 vColor;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
@@ -337,9 +370,9 @@
           float occlusion = 0.78 + 0.22 * max(n.y, 0.0);
 
           // 提升基础亮度，避免背光面死黑
-          vec3 ambient  = vec3(0.50, 0.52, 0.56);
-          vec3 sunCol   = vec3(1.00, 0.94, 0.82) * sunDiff * 1.18;
-          vec3 skyCol   = vec3(0.46, 0.58, 0.80) * skyDiff * 0.65;
+          vec3 ambient  = vec3(0.50, 0.52, 0.56) * ambientIntensity;
+          vec3 sunCol   = vec3(1.00, 0.94, 0.82) * sunDiff * 1.18 * sunIntensity;
+          vec3 skyCol   = vec3(0.46, 0.58, 0.80) * skyDiff * 0.65 * ambientIntensity;
           vec3 groundCol= vec3(0.44, 0.34, 0.20) * groundDiff * 0.32;
           vec3 rimCol   = vec3(0.64, 0.76, 0.92) * rim * 0.32;
 
@@ -347,6 +380,9 @@
           // 颜色提亮，整体饱和度略降
           vec3 col = vColor * lit * occlusion + rimCol;
           col = pow(col, vec3(0.86));
+
+          // 湿润效果：雨天地面变暗，带轻微蓝青色调
+          col = mix(col, col * vec3(0.58, 0.62, 0.68), wetness);
 
           // 6) 雾效混合
           float fogFactor = 1.0 - exp(-fogDensity * fogDensity * vFogDepth * vFogDepth);
@@ -362,6 +398,7 @@
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.name = "terrain";
+    terrainMaterial = m;  // 保存材质引用供天气联动更新 uniform
     return mesh;
   }
 
@@ -618,6 +655,141 @@
       cloudsGroup.add(sp);
     }
   }
+
+  /* ---------- 3D 雨粒子系统 ---------- */
+  function buildRain(){
+    const N = 1500;
+    const positions = new Float32Array(N * 3);
+    const velocities = new Float32Array(N);
+    const hm = HM();
+    const cx = 0, cz = 0;
+    const range = 14;  // 覆盖范围
+    const yTop = 9, yBot = -1;
+    for(let i = 0; i < N; i++){
+      positions[i*3]   = cx + (Math.random() - 0.5) * range * 2;
+      positions[i*3+1] = yBot + Math.random() * (yTop - yBot);
+      positions[i*3+2] = cz + (Math.random() - 0.5) * range * 2;
+      velocities[i] = 0.12 + Math.random() * 0.10;  // 下落速度
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    const m = new THREE.PointsMaterial({
+      color: 0xb8d4f0, size: 0.06, transparent: true, opacity: 0.55,
+      depthWrite: false, sizeAttenuation: true
+    });
+    const pts = new THREE.Points(g, m);
+    pts.userData.velocities = velocities;
+    pts.userData.yTop = yTop;
+    pts.userData.yBot = yBot;
+    pts.userData.range = range;
+    pts.frustumCulled = false;
+    rainGroup.add(pts);
+  }
+
+  /* ---------- 天气驱动 3D 场景联动（核心创新） ----------
+   * 将实时气象数据映射到 3D 场景：
+   *   能见度 → 雾密度 + 背景色
+   *   云量   → 太阳光强度/色温 + 云层不透明度
+   *   降水   → 雨粒子 + 地形湿润着色 + 场景整体变暗
+   *   风速   → 云层漂移速度 + 雨粒子倾斜
+   * ---------------------------------------------------------------- */
+  window.applyWeatherTo3D = function(w){
+    if(!initialized || !scene) return;
+    if(!w) return;
+    weatherState = w;
+
+    const vis    = w.vis != null ? w.vis : 10;       // km
+    const cloud  = w.cloud != null ? w.cloud : 30;   // %
+    const precip = w.precip != null ? w.precip : 0;  // mm/h
+    const ws     = w.ws != null ? w.ws : 2;          // m/s
+    const rh     = w.rh != null ? w.rh : 60;         // %
+
+    // 1) 雾密度：能见度越低雾越浓
+    let fogD;
+    if(vis >= 10)      fogD = 0.005;
+    else if(vis >= 5)  fogD = 0.010 + (10 - vis) * 0.003;
+    else if(vis >= 2)  fogD = 0.025 + (5 - vis) * 0.012;
+    else               fogD = 0.065 + (2 - vis) * 0.040;
+    fogD = Math.min(fogD, 0.18);
+
+    // 2) 场景背景色 & 雾色：晴天亮蓝灰 → 阴天灰蓝 → 雨天暗灰蓝 → 雾天乳灰
+    let bgR, bgG, bgB;
+    const cloudFactor = cloud / 100;
+    const rainFactor = Math.min(precip / 10, 1);
+    const fogFactor = vis < 2 ? 1 : vis < 5 ? 0.5 : 0;
+    // 基色 0x4a6b8a = (74, 107, 138)
+    bgR = 74 - cloudFactor * 18 - rainFactor * 22 + fogFactor * 40;
+    bgG = 107 - cloudFactor * 12 - rainFactor * 18 + fogFactor * 35;
+    bgB = 138 - cloudFactor * 8  - rainFactor * 10 + fogFactor * 25;
+    const bgColor = new THREE.Color(bgR/255, bgG/255, bgB/255);
+    scene.background = bgColor;
+    scene.fog.color = bgColor;
+    scene.fog.density = fogD;
+
+    // 3) 太阳光强度 & 色温
+    const sunInt = Math.max(0.15, 1.0 - cloudFactor * 0.65 - rainFactor * 0.25);
+    const ambInt = Math.max(0.35, 1.0 - cloudFactor * 0.30 - rainFactor * 0.15);
+    if(sunLight){
+      sunLight.intensity = 1.55 * sunInt;
+      // 色温：晴天暖白 → 阴天冷灰
+      const sr = Math.round(255 - cloudFactor * 35 - rainFactor * 20);
+      const sg = Math.round(242 - cloudFactor * 30 - rainFactor * 15);
+      const sb = Math.round(216 - cloudFactor * 10 + rainFactor * 20);
+      sunLight.color.setRGB(sr/255, sg/255, sb/255);
+    }
+    if(hemiLight) hemiLight.intensity = 0.65 * ambInt;
+
+    // 4) 地形着色器 uniform 同步
+    if(terrainMaterial){
+      terrainMaterial.uniforms.fogColor.value = bgColor;
+      terrainMaterial.uniforms.fogDensity.value = fogD;
+      terrainMaterial.uniforms.sunIntensity.value = sunInt;
+      terrainMaterial.uniforms.ambientIntensity.value = ambInt;
+      // 湿润度：降水越大越湿
+      terrainMaterial.uniforms.wetness.value = Math.min(precip / 8, 0.85);
+    }
+
+    // 5) 云层：不透明度 & 高度随天气变化
+    if(cloudsGroup){
+      const cloudOp = 0.30 + cloudFactor * 0.45 + rainFactor * 0.15;  // 0.30 ~ 0.90
+      const cloudLower = rainFactor * 0.8 + fogFactor * 1.2;           // 云层下降量
+      for(const sp of cloudsGroup.children){
+        sp.material.opacity = Math.min(cloudOp, 0.95);
+        sp.userData.driftSpeedMul = 1.0 + ws * 0.08;  // 风速影响漂移速度
+        // 云层下降：降低 y 坐标
+        if(sp.userData.baseY == null) sp.userData.baseY = sp.position.y;
+        sp.position.y = sp.userData.baseY - cloudLower;
+      }
+    }
+
+    // 6) 雨粒子：降水 > 0.1mm 时显示
+    if(rainGroup){
+      rainGroup.visible = precip > 0.1;
+      if(rainGroup.visible && rainGroup.children[0]){
+        const pts = rainGroup.children[0];
+        const mat = pts.material;
+        // 降水强度影响粒子数量（通过透明度模拟）和大小
+        mat.opacity = Math.min(0.3 + precip * 0.06, 0.7);
+        mat.size = 0.04 + Math.min(precip * 0.008, 0.06);
+        // 风速影响雨倾斜（通过偏移 x）
+        pts.userData.windOffset = ws * 0.003;
+      }
+    }
+
+    // 7) 天气状态徽章
+    const badge = $("weather3DBadge");
+    if(badge){
+      let icon = "☀️", label = "晴朗";
+      if(precip > 0.1){ icon = "🌧️"; label = precip > 5 ? "大雨" : "有雨"; }
+      else if(vis < 2){ icon = "🌫️"; label = "大雾"; }
+      else if(cloud > 80){ icon = "☁️"; label = "阴天"; }
+      else if(cloud > 40){ icon = "⛅"; label = "多云"; }
+      badge.style.display = "block";
+      badge.innerHTML = icon + " " + label + " · " + Math.round(w.temp||0) + "°C · 能见度 " + (vis != null ? vis + "km" : "—") +
+        " · 云量 " + Math.round(cloud) + "%" +
+        (precip > 0.1 ? " · 降水 " + Math.round(precip*10)/10 + "mm/h" : "");
+    }
+  };
 
   /* ---------- 地名悬浮标签（CanvasTexture Sprite + 引线） ---------- */
   const LABEL_COLORS = {
