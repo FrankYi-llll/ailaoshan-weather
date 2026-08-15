@@ -1503,16 +1503,16 @@ body.view-public #altVerifyPanel{display:none!important}
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081516"></script>
-<script src="js/gb.js?v=2026081516"></script>
-<script src="js/fx.js?v=2026081516"></script>
-<script src="js/app.js?v=2026081516"></script>
-<script src="js/terrain3d.js?v=2026081516"></script>
+<script src="js/site.js?v=2026081517"></script>
+<script src="js/gb.js?v=2026081517"></script>
+<script src="js/fx.js?v=2026081517"></script>
+<script src="js/app.js?v=2026081517"></script>
+<script src="js/terrain3d.js?v=2026081517"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081516").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081517").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -1860,7 +1860,8 @@ function renderSeasonCal(){
     {m:"12月", rain:"#2ecc71", fog:"#e8a35c", thunder:"#2ecc71", debris:"#2ecc71", idx:25, tag:"浓雾/霜冻"}
   ];
   el.innerHTML = data.map(function(d){
-    return '<div class="sc-month" style="border-color:'+d.idx>=70?'rgba(240,100,108,.25)':'var(--line)'+'">'+
+    var borderColor = d.idx>=70 ? 'rgba(240,100,108,.25)' : 'var(--line)';
+    return '<div class="sc-month" style="border-color:'+borderColor+'">'+
       '<div class="sc-m-label">'+d.m+'</div>'+
       '<div class="sc-m-bar" style="background:'+d.rain+'" title="降水风险"></div>'+
       '<div class="sc-m-bar" style="background:'+d.fog+'" title="浓雾风险"></div>'+
