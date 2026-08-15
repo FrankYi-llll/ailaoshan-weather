@@ -1204,28 +1204,9 @@ function renderHikingRoutes(){
   }).join("");
 }
 
-/* ---------- 渲染: 历史灾害关联校准面板 ---------- */
+/* ---------- 渲染: 历史灾害关联校准面板（已删除） ---------- */
 function renderCalibration(){
-  if(!CALIB){ $("calibPanel").style.display="none"; return; }
-  $("calibPanel").style.display="block";
-  // 统计
-  const gridBoosted = GRID.filter(g=>g.riskIndex && g.riskIndex.calibProb>=25).length;
-  const roadBoosted = ROADS.filter(r=>r.risk_index.calibProb>=25).length;
-  const topCases = (CALIB.cases||[]).sort((a,b)=>b.severity-a.severity).slice(0,5);
-  const sevName = {0:"无/轻微",1:"中",2:"高",3:"极端"};
-  $("calibSummary").innerHTML =
-    '<div class="sum-item">📚 历史案例 <b>'+(CALIB.cases?CALIB.cases.length:0)+'</b></div>'+
-    '<div class="sum-item">🔺 格点被历史复核上调 <b style="color:'+(gridBoosted?"#ff9f43":"var(--text)")+'">'+gridBoosted+'</b></div>'+
-    '<div class="sum-item">🚧 路段被历史复核上调 <b style="color:'+(roadBoosted?"#ff9f43":"var(--text)")+'">'+roadBoosted+'</b></div>';
-  $("calibCases").innerHTML = topCases.map(c=>
-    '<tr><td><b>'+c.date+'</b></td><td>'+c.title+'</td><td>'+c.type+'</td>'+
-    '<td><span class="pill '+pillCls(c.severity>=3?"预警":c.severity>=2?"较高":"关注")+'">'+sevName[c.severity]+'</span></td>'+
-    '<td class="tags">24h '+c.precip.p24+'mm · 坡度 '+c.terrain.slope.toFixed(1)+'° · 地形敏 '+Math.max(c.terrain.flash,c.terrain.debris,c.terrain.slump).toFixed(0)+'</td></tr>'
-  ).join("");
-  $("calibNote").innerHTML =
-    '校准逻辑：从 '+CALIB.cases.length+' 个真实灾害案例提取「降水强度·地形敏感性·季节·地质静态因子」与实际严重度的关系，'+
-    '用 Logistic 回归计算当前条件与历史灾害的相似概率，再按 <b>70% 原始模型 + 30% 历史校准</b> 融合为最终风险指数。'+
-    '当历史复核概率 ≥25% 时会在风险表中标注。';
+  // 面板已删除，不再渲染
 }
 
 /* ---------- 渲染: 地图(SVG 覆盖精细底图) ---------- */
@@ -1668,142 +1649,14 @@ function setChart(t){
   if(window.__chartSeries) renderChart(window.__chartSeries);
 }
 
-/* ---------- 渲染: 风和气象模型面板 ---------- */
+/* ---------- 渲染: 风和气象模型面板（已删除） ---------- */
 function renderFenghe(){
-  if(!FENGHE) return;
-  $("fenghePanel").style.display = "";
-  const fh = FENGHE;
-  const priors = fh.fenghe_priors || {};
-  const anomaly = fh.region_anomaly || {};
-  const mc = fh.extreme_scenarios || {};
-  const stations = fh.station_comparison || [];
-
-  // 摘要
-  const riskIdx = (priors.climate_risk_index||0);
-  const riskLv = priors.risk_level || "—";
-  const riskColor = riskLv==="极高"?"#ff4d4f":riskLv==="高"?"#ff9f43":riskLv==="中"?"#f7d154":"#2ecc71";
-  $("fengheNote").innerHTML = `${fh.model_name||"风和气象模型"} v${fh.version||"1.0"} · 学习区域: 哀牢山/玉溪/普洱/昆明 · 数据: ${fh.data_period||"2020-2026"} · 共 ${fh.total_records||0} 条小时级记录`;
-  $("fengheSummary").innerHTML = `
-    <div class="sum-item" style="border-color:${riskColor}">气候风险指数<b style="color:${riskColor}">${(riskIdx*100).toFixed(1)}</b></div>
-    <div class="sum-item">风险等级<b style="color:${riskColor}">${riskLv}</b></div>
-    <div class="sum-item">极端降水<b>${((priors.extreme_precip_prior||0)*100).toFixed(1)}%</b></div>
-    <div class="sum-item">极端大风<b>${((priors.extreme_wind_prior||0)*100).toFixed(1)}%</b></div>
-    <div class="sum-item">浓雾概率<b>${((priors.extreme_fog_prior||0)*100).toFixed(1)}%</b></div>
-    <div class="sum-item">强对流概率<b>${((priors.thunderstorm_prior||0)*100).toFixed(1)}%</b></div>
-    <div class="sum-item">降水异常<b>${(anomaly.precip||0).toFixed(2)}σ</b></div>
-    <div class="sum-item">温度异常<b>${(anomaly.temp||0).toFixed(2)}σ</b></div>
-  `;
-
-  // 各站点极端天气概率表
-  const pct = v => v!=null ? (v*100).toFixed(1)+"%" : "—";
-  const sigma = v => v!=null ? (v>=0?"+":"")+v.toFixed(2)+"σ" : "—";
-  $("fengheStationTbody").innerHTML = stations.map(s => `
-    <tr>
-      <td>${s.region||""}</td>
-      <td>${s.station||""}</td>
-      <td>${s.elev||""}m</td>
-      <td><span class="pill ${s.extreme_precip_prob>=0.5?"warn":s.extreme_precip_prob>=0.2?"high":s.extreme_precip_prob>=0.1?"watch":"low"}">${pct(s.extreme_precip_prob)}</span></td>
-      <td><span class="pill ${s.extreme_wind_prob>=0.15?"high":s.extreme_wind_prob>=0.1?"watch":"low"}">${pct(s.extreme_wind_prob)}</span></td>
-      <td><span class="pill ${s.extreme_fog_prob>=0.2?"warn":s.extreme_fog_prob>=0.1?"high":s.extreme_fog_prob>=0.05?"watch":"low"}">${pct(s.extreme_fog_prob)}</span></td>
-      <td><span class="pill ${s.thunderstorm_prob>=0.05?"high":s.thunderstorm_prob>=0.03?"watch":"low"}">${pct(s.thunderstorm_prob)}</span></td>
-      <td style="color:${(s.anomaly_precip||0)<-0.5?"#4aa3ff":(s.anomaly_precip||0)>0.5?"#ff9f43":"#8fa3c0"}">${sigma(s.anomaly_precip)}</td>
-      <td style="color:${(s.anomaly_temp||0)>0.3?"#ff9f43":"#8fa3c0"}">${sigma(s.anomaly_temp)}</td>
-    </tr>
-  `).join("");
-
-  // 蒙特卡洛模拟表
-  const mcRows = [];
-  if(mc.weekly_max_precip){
-    const w = mc.weekly_max_precip;
-    mcRows.push(`<tr><td>周最大日降水(mm)</td><td>${w.mean||"—"}</td><td>${w.p90||"—"}</td><td>${w.p95||"—"}</td><td>${w.p99||"—"}</td><td>${w.max||"—"}</td></tr>`);
-  }
-  if(mc.weekly_max_wind){
-    const w = mc.weekly_max_wind;
-    const fmt = v => v&&!isNaN(v) ? v : "—";
-    mcRows.push(`<tr><td>周最大阵风(m/s)</td><td>${fmt(w.mean)}</td><td>${fmt(w.p90)}</td><td>${fmt(w.p95)}</td><td>—</td><td>${fmt(w.max)}</td></tr>`);
-  }
-  if(mc.weekly_fog_days){
-    const w = mc.weekly_fog_days;
-    mcRows.push(`<tr><td>周浓雾天数</td><td>${w.mean||"—"}</td><td>${w.p90||"—"}</td><td>—</td><td>—</td><td>${w.max||"—"}</td></tr>`);
-  }
-  if(mc.weekly_thunderstorm_days){
-    const w = mc.weekly_thunderstorm_days;
-    mcRows.push(`<tr><td>周强对流天数</td><td>${w.mean||"—"}</td><td>${w.p90||"—"}</td><td>—</td><td>—</td><td>${w.max||"—"}</td></tr>`);
-  }
-  $("fengheMCTbody").innerHTML = mcRows.join("");
-
-  // 洞察
-  const extProb = mc.extreme_event_probability || 0;
-  $("fengheInsight").innerHTML = `蒙特卡洛1000次模拟显示，未来一周内发生至少一次极端事件（日降水>50mm 或 阵风>20m/s 或 浓雾≥3天）的概率为 <b style="color:${extProb>=0.8?"#ff4d4f":"#ff9f43"}">${(extProb*100).toFixed(1)}%</b>。`+
-    (anomaly.precip!=null ? ` 近期降水${anomaly.precip<-0.5?"显著偏少":anomaly.precip>0.5?"显著偏多":"接近常年"}(${anomaly.precip.toFixed(2)}σ)。` : "")+
-    (anomaly.temp!=null ? ` 气温${anomaly.temp>0.3?"偏高":anomaly.temp<-0.3?"偏低":"接近常年"}(${anomaly.temp.toFixed(2)}σ)。` : "");
+  // 面板已删除，不再渲染
 }
 
-/* ---------- 渲染: 多模型联合研判面板 ---------- */
+/* ---------- 渲染: 多模型联合研判面板（已删除） ---------- */
 function renderJoint(){
-  if(!JOINT) return;
-  $("jointPanel").style.display = "";
-  const j = JOINT;
-  const ca = j.comprehensive_assessment || {};
-  const scenarios = j.emergency_scenarios || [];
-  const findings = ca.key_findings || [];
-  const recs = j.recommendations || [];
-  const cal = j.seasonal_risk_calendar || {};
-
-  // 摘要
-  const riskScore = ca.overall_risk_score || 0;
-  const riskLevel = ca.overall_risk_level || "—";
-  const riskColor = riskLevel.includes("I级")?"#ff4d4f":riskLevel.includes("II级")?"#ff9f43":riskLevel.includes("III级")?"#f7d154":"#2ecc71";
-  $("jointNote").innerHTML = `${j.report_title||"多模型联合研判"} · ${j.report_period||""} · 生成时间: ${j.generated_at||""}`;
-  $("jointSummary").innerHTML = `
-    <div class="sum-item" style="border-color:${riskColor}">综合风险评分<b style="color:${riskColor}">${(riskScore*100).toFixed(1)}</b></div>
-    <div class="sum-item">综合风险等级<b style="color:${riskColor}">${riskLevel}</b></div>
-    <div class="sum-item">建议措施<b style="font-size:13px;color:${riskColor}">${ca.recommended_action||""}</b></div>
-    <div class="sum-item">高风险场景<b>${ca.high_risk_scenario_count||0}</b></div>
-    <div class="sum-item">极端风险场景<b>${ca.extreme_risk_scenario_count||0}</b></div>
-    <div class="sum-item">模型一致性<b style="color:${(ca.multi_model_consensus||{}).model_agreement==="高"?"#ff4d4f":"#ff9f43"}">${(ca.multi_model_consensus||{}).model_agreement||"—"}</b></div>
-  `;
-
-  // 场景表
-  const lvlColor = lv => lv==="极高"?"#ff4d4f":lv==="高"?"#ff9f43":lv==="中"?"#f7d154":"#2ecc71";
-  $("jointScenariosTbody").innerHTML = scenarios.map(s => `
-    <tr>
-      <td><b>${s.id}</b></td>
-      <td>${s.name}</td>
-      <td style="font-size:11px;color:var(--sub)">${s.trigger||""}</td>
-      <td>${((s.fenghe_prior||0)*100).toFixed(1)}%</td>
-      <td>${((s.model_adjusted||0)*100).toFixed(1)}%</td>
-      <td><span class="pill ${s.risk_level==="极高"?"warn":s.risk_level==="高"?"high":s.risk_level==="中"?"watch":"low"}">${(s.combined_risk*100).toFixed(1)}%</span></td>
-      <td style="color:${lvlColor(s.risk_level)};font-weight:700">${s.risk_level}</td>
-      <td style="font-size:11px">${(s.affected_areas||[]).join("、")}</td>
-      <td style="font-size:11px;color:var(--sub)">${s.timeline||""}</td>
-      <td style="font-size:11px">${s.recommendation||""}</td>
-    </tr>
-  `).join("");
-
-  // 关键发现
-  $("jointFindings").innerHTML = findings.map(f => `<p style="margin:4px 0">• ${f}</p>`).join("");
-
-  // 建议措施
-  $("jointRecs").innerHTML = recs.map(r => `<p style="margin:4px 0">${r}</p>`).join("");
-
-  // 季节性风险日历
-  const months = Object.keys(cal).sort((a,b)=>parseInt(a)-parseInt(b));
-  $("jointCalTbody").innerHTML = months.map(m => {
-    const r = cal[m];
-    const ri = r.climate_risk_index || 0;
-    const lv = r.risk_level || "—";
-    const lc = lv==="极高"?"#ff4d4f":lv==="高"?"#ff9f43":lv==="中"?"#f7d154":"#2ecc71";
-    return `<tr>
-      <td><b>${m}月</b></td>
-      <td><span class="pill ${r.precip_risk>=0.1?"high":r.precip_risk>=0.05?"watch":"low"}">${(r.precip_risk*100).toFixed(1)}%</span></td>
-      <td><span class="pill ${r.wind_risk>=0.1?"high":"low"}">${(r.wind_risk*100).toFixed(1)}%</span></td>
-      <td><span class="pill ${r.fog_risk>=0.1?"high":r.fog_risk>=0.05?"watch":"low"}">${(r.fog_risk*100).toFixed(1)}%</span></td>
-      <td><span class="pill ${r.thunder_risk>=0.1?"high":r.thunder_risk>=0.05?"watch":"low"}">${(r.thunder_risk*100).toFixed(1)}%</span></td>
-      <td><b style="color:${lc}">${(ri*100).toFixed(1)}</b></td>
-      <td style="color:${lc};font-weight:700">${lv}</td>
-    </tr>`;
-  }).join("");
+  // 面板已删除，不再渲染
 }
 
 /* ---------- 3D全景地形渲染 ---------- */

@@ -957,13 +957,6 @@ body.view-public .pro-only{display:none!important}
       • <b style="color:var(--orange)">局限</b>：山区小尺度地形（峡谷、垭口）局地暴雨/浓雾误差较大，11km 网格无法捕捉哀牢山 2600m 相对高差导致的微气候差异</p>
     </div>
     <div class="sm-section">
-      <h4>📊 ERA5 历史再分析</h4>
-      <p>• ECMWF 第五代全球再分析数据集（2020–2026）<br>
-      • 空间分辨率 0.25°（约 27km），时间分辨率 1 小时<br>
-      • 用于训练 9 个机器学习模型（174,087 条小时记录）<br>
-      • <b style="color:var(--orange)">局限</b>：再分析数据本身已平滑化，极端天气事件（局地雷暴、短时暴雨）的强度可能被低估</p>
-    </div>
-    <div class="sm-section">
       <h4>🏔 MERIT DEM 地形高程</h4>
       <p>• 消除森林冠层、条纹、噪声误差的高精度全球地形<br>
       • 重采样至 0.02°（约 2km），169×209 网格，35,321 顶点<br>
@@ -1263,54 +1256,6 @@ body.view-public .pro-only{display:none!important}
     </div>
   </div>
 
-  <div class="panel pro-only" id="calibPanel" style="display:none">
-    <h2>📚 历史灾害关联复核</h2>
-    <div class="desc" id="calibNote">加载中…</div>
-    <div class="summary" id="calibSummary"><div class="loading">计算中…</div></div>
-    <h3 style="margin-top:14px">历史高影响案例（用于训练校准模型）</h3>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>日期</th><th>案例</th><th>类型</th><th>实际严重度</th><th>关键特征</th></tr></thead>
-      <tbody id="calibCases"></tbody>
-    </table></div>
-  </div>
-
-  <div class="panel pro-only" id="fenghePanel" style="display:none">
-    <h2>🌀 风和气象模型 · 气候规律与极端天气概率</h2>
-    <div class="desc" id="fengheNote">加载中…</div>
-    <div class="summary" id="fengheSummary"><div class="loading">计算中…</div></div>
-    <h3 style="margin-top:14px">极端天气概率（8月 · 基于5年气候规律学习）</h3>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>区域</th><th>站点</th><th>海拔</th><th>极端降水</th><th>极端大风</th><th>浓雾</th><th>强对流</th><th>降水异常</th><th>温度异常</th></tr></thead>
-      <tbody id="fengheStationTbody"></tbody>
-    </table></div>
-    <h3 style="margin-top:14px">蒙特卡洛情景模拟（1000次 · 未来一周）</h3>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>指标</th><th>均值</th><th>P90</th><th>P95</th><th>P99</th><th>最大值</th></tr></thead>
-      <tbody id="fengheMCTbody"></tbody>
-    </table></div>
-    <div class="verify-note" id="fengheInsight"></div>
-  </div>
-
-  <div class="panel pro-only" id="jointPanel" style="display:none">
-    <h2>🔬 多模型联合研判报告</h2>
-    <div class="desc" id="jointNote">加载中…</div>
-    <div class="summary" id="jointSummary"><div class="loading">计算中…</div></div>
-    <h3 style="margin-top:14px">紧急状况场景模拟</h3>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>编号</th><th>场景</th><th>触发条件</th><th>风和先验</th><th>模型调整</th><th>综合风险</th><th>等级</th><th>影响区域</th><th>时间线</th><th>建议</th></tr></thead>
-      <tbody id="jointScenariosTbody"></tbody>
-    </table></div>
-    <h3 style="margin-top:14px">关键发现</h3>
-    <div id="jointFindings" class="desc"></div>
-    <h3 style="margin-top:14px">建议措施</h3>
-    <div id="jointRecs" class="desc"></div>
-    <h3 style="margin-top:14px">季节性风险日历</h3>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>月份</th><th>降水风险</th><th>大风风险</th><th>浓雾风险</th><th>强对流风险</th><th>气候风险指数</th><th>等级</th></tr></thead>
-      <tbody id="jointCalTbody"></tbody>
-    </table></div>
-  </div>
-
   <div class="panel pro-only" id="terrain3DPanel" style="display:none">
     <h2>🏔️ 3D全景地形建模与多模型重算</h2>
     <div class="desc" id="terrain3DNote">加载中…</div>
@@ -1391,7 +1336,7 @@ body.view-public .pro-only{display:none!important}
     <h2>🔬 关于本系统与数据来源</h2>
     <div class="desc">覆盖云南新平（戛洒镇）、双柏、镇沅等哀牢山核心区域 · 9 模型交叉验证 + 169×209 精细 DEM + Three.js 3D 可视化 · 浏览器端实时计算，每次刷新获取最新预报</div>
     <div class="desc" style="background:rgba(98,196,232,.04);border-left:3px solid var(--blue);padding:10px 16px;border-radius:4px;margin:10px 0;line-height:1.8">
-      关注区域：大雪锅山(3137m) · 金山丫口 · 石门峡 · 茶马古道 · 金山原始森林 · 千家寨 · 徐家坝 · 哀牢山国家级自然保护区核心区等。数据基于 Open-Meteo 实时预报与 ERA5 历史再分析（2020–2026）训练。
+      关注区域：大雪锅山(3137m) · 金山丫口 · 石门峡 · 茶马古道 · 金山原始森林 · 千家寨 · 徐家坝 · 哀牢山国家级自然保护区核心区等。实时预报来自 Open-Meteo，地形基于 MERIT DEM。
     </div>
     <div class="src-grid">
       <div class="src-card">
@@ -1415,7 +1360,7 @@ body.view-public .pro-only{display:none!important}
         <div class="src-title">机器学习模型</div>
         <ul>
           <li><b>9 个模型</b>：强对流/浓雾/道路安全/地形校准/联合研判等</li>
-          <li>ERA5 训练 · 双模型交叉验证 · 浏览器端实时推理</li>
+          <li>双模型交叉验证 · 浏览器端实时推理</li>
         </ul>
       </div>
       <div class="src-card">
@@ -1538,23 +1483,6 @@ body.view-public .pro-only{display:none!important}
     </div>
   </div>
 
-  <!-- ===== 季节风险日历 ===== -->
-  <div class="panel" id="seasonPanel">
-    <h2>📅 哀牢山季节风险日历</h2>
-    <div class="desc">基于 5 年气候规律统计的月度灾害风险色块 · 高风险月份醒目标注</div>
-    <div class="season-cal" id="seasonCal"></div>
-    <div class="legend-row" style="margin-top:10px">
-      <span><i style="background:#2ecc71;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 低风险</span>
-      <span><i style="background:#e3cf7d;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 关注</span>
-      <span><i style="background:#e8a35c;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 较高</span>
-      <span><i style="background:#f0646c;height:4px;width:20px;border-radius:2px;display:inline-block"></i> 高风险</span>
-    </div>
-    <div class="verify-note" style="margin-top:10px">
-      <b>🥾 徒步最佳月份</b>：11月–次年3月（旱季，降水少、能见度好、气温适宜）<br>
-      <b>⚠️ 高风险月份</b>：6–9月（汛期，暴雨/山洪/泥石流风险高）· 12–1月（高海拔低温霜冻、浓雾高发）
-    </div>
-  </div>
-
   <footer>
     <p>🛡 <b>分级出行建议</b>（按综合风险指数）：</p>
     <p style="margin-top:6px;line-height:2">
@@ -1563,7 +1491,7 @@ body.view-public .pro-only{display:none!important}
       <b style="color:#e8a35c">55–74 较高风险</b>：建议暂缓进山，如需出行仅走镇区公路，已进山者尽早下山<br>
       <b style="color:#f0646c">≥75 高风险</b>：建议避免进山活动，关注官方预警公告
     </p>
-    <p style="margin-top:8px">模型基于 ERA5 再分析数据训练（2020-2026），实时预报来自 Open-Meteo，地形基于 MERIT DEM。本页为<b>研究性开源预报</b>，实际防灾/进山审批以<b>中国气象局及哀牢山管护局官方公告为准</b>。数据源详情请点击顶部「数据源详情」按钮。</p>
+    <p style="margin-top:8px">实时预报来自 Open-Meteo，地形基于 MERIT DEM。本页为<b>研究性开源预报</b>，实际防灾/进山审批以<b>中国气象局及哀牢山管护局官方公告为准</b>。数据源详情请点击顶部「数据源详情」按钮。</p>
     <p style="margin-top:6px">数据源：Open-Meteo · 每次打开/刷新本页即获取最新数据</p>
   </footer>
 
@@ -1588,16 +1516,16 @@ body.view-public .pro-only{display:none!important}
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081526"></script>
-<script src="js/gb.js?v=2026081526"></script>
-<script src="js/fx.js?v=2026081526"></script>
-<script src="js/app.js?v=2026081526"></script>
-<script src="js/terrain3d.js?v=2026081526"></script>
+<script src="js/site.js?v=2026081527"></script>
+<script src="js/gb.js?v=2026081527"></script>
+<script src="js/fx.js?v=2026081527"></script>
+<script src="js/app.js?v=2026081527"></script>
+<script src="js/terrain3d.js?v=2026081527"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081526").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081527").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
