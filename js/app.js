@@ -643,7 +643,7 @@ async function renderAltitudeWeather(){
     let bestI=0, bd=1e9;
     band.series.forEach((s,i)=>{
       const tt = new Date(s.t.replace(" ","T")+":00");
-      const diff = Math.abs((tt - now).total_seconds());
+      const diff = Math.abs(tt - now);  // JS Date 相减为毫秒
       if(diff < bd){ bd = diff; bestI = i; }
     });
     const cur = band.series[bestI];
