@@ -185,7 +185,11 @@ async function fetchOneBatch(pts, retries){
   for(let attempt=0; attempt<retries; attempt++){
     try{
       if(attempt>0) await sleep((Math.pow(2, attempt) + Math.random()) * 1000);
-      const resp = await fetch(url, {cache:"no-store"});
+      // 超时保护：15秒未响应则中止
+      const ctrl = new AbortController();
+      const timer = setTimeout(function(){ ctrl.abort(); }, 15000);
+      const resp = await fetch(url, {cache:"no-store", signal:ctrl.signal});
+      clearTimeout(timer);
       if(!resp.ok){
         lastErr = new Error("Open-Meteo HTTP " + resp.status);
         if(resp.status === 429) continue;
@@ -213,7 +217,10 @@ async function fetchOneBatch(pts, retries){
           uv: g.hourly.uv_index ? g.hourly.uv_index[k] : null,
         })),
       }));
-    }catch(e){ lastErr = e; }
+    }catch(e){
+      if(e.name === "AbortError") lastErr = new Error("Open-Meteo 请求超时（15秒）");
+      else lastErr = e;
+    }
   }
   throw lastErr || new Error("批次请求失败");
 }
@@ -398,7 +405,10 @@ async function fetchAirQuality(){
       timezone: "Asia/Shanghai",
     });
     const url = "https://air-quality-api.open-meteo.com/v1/air-quality?" + params.toString();
-    const resp = await fetch(url, {cache:"no-store"});
+    const ctrl = new AbortController();
+    const timer = setTimeout(function(){ ctrl.abort(); }, 10000);
+    const resp = await fetch(url, {cache:"no-store", signal:ctrl.signal});
+    clearTimeout(timer);
     if(!resp.ok) return null;
     const j = await resp.json();
     const out = AQ_POINTS.map((p,i)=>{

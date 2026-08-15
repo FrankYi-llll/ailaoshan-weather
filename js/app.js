@@ -5,6 +5,27 @@
  * ===================================================================== */
 "use strict";
 
+/* ---- 加固：带超时+重试的 JSON fetch ---- */
+async function fetchJSON(url, retries){
+  retries = retries || 2;
+  let lastErr;
+  for(let attempt=0; attempt<=retries; attempt++){
+    try{
+      if(attempt>0) await new Promise(r=>setTimeout(r, 600*attempt));
+      const ctrl = new AbortController();
+      const timer = setTimeout(function(){ ctrl.abort(); }, 12000);
+      const resp = await fetch(url, {cache:"no-store", signal:ctrl.signal});
+      clearTimeout(timer);
+      if(!resp.ok) throw new Error("HTTP "+resp.status);
+      return await resp.json();
+    }catch(e){
+      lastErr = e;
+      if(e.name === "AbortError") lastErr = new Error("请求超时");
+    }
+  }
+  throw lastErr;
+}
+
 const $ = id => document.getElementById(id);
 let TERR = null, MODEL_T = null, MODEL_F = null, MODEL_R = null, CALIB = null, GRID = null, ROADS = [], riskType = "thunder", FENGHE = null, JOINT = null, TERRAIN3D = null, HEIGHT_MAP = null, RECALC3D = null, heat3DType = "elev", rot3D = {rx:-0.32, ry:0.6, scale:1.0};
 let TREE_IMGS = {conifer:null, broad:null, shrub:null, loaded:false, loading:false};
@@ -2510,16 +2531,16 @@ async function main(){
   if(window.__enableSkeleton) window.__enableSkeleton();
   try{
     const [t, f, terr, calib, fenghe, joint, terr3d, heightMap, recalc3d, roadModel] = await Promise.all([
-      fetch("models/thunder_gb.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("models/fog_gb.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("data/terrain_web.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("models/calibration_model.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
-      fetch("models/fenghe_model.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
-      fetch("models/joint_assessment.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
-      fetch("models/terrain_3d.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
-      fetch("models/terrain_height.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
-      fetch("models/terrain_3d_recalc.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
-      fetch("models/road_gb.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),
+      fetchJSON("models/thunder_gb.json", 2),
+      fetchJSON("models/fog_gb.json", 2),
+      fetchJSON("data/terrain_web.json", 2),
+      fetchJSON("models/calibration_model.json", 1).catch(()=>null),
+      fetchJSON("models/fenghe_model.json", 1).catch(()=>null),
+      fetchJSON("models/joint_assessment.json", 1).catch(()=>null),
+      fetchJSON("models/terrain_3d.json", 1).catch(()=>null),
+      fetchJSON("models/terrain_height.json", 1).catch(()=>null),
+      fetchJSON("models/terrain_3d_recalc.json", 1).catch(()=>null),
+      fetchJSON("models/road_gb.json", 1).catch(()=>null),
     ]);
     MODEL_T = t; MODEL_F = f; MODEL_R = roadModel; TERR = terr; CALIB = calib; FENGHE = fenghe; JOINT = joint; TERRAIN3D = terr3d; HEIGHT_MAP = heightMap; RECALC3D = recalc3d;
     // 暴露给 terrain3d.js（独立 IIFE 脚本访问全局）

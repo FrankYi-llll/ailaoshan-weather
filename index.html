@@ -5,6 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
+<script>
+/* ====================================================================
+ * 全局错误防护层 — 必须最先执行，防止任何未捕获异常导致白屏
+ * ==================================================================== */
+window.__fatalErrors = [];
+window.addEventListener("error", function(e){
+  // 忽略跨域脚本的 ResourceError（error:0 ""）
+  if(!e.message && !e.filename && e.colno === 0 && e.lineno === 0) return;
+  var msg = e.message || "未知错误";
+  window.__fatalErrors.push({msg:msg, file:e.filename, line:e.lineno, t:Date.now()});
+  console.error("[全局错误]", msg, e.filename+":"+e.lineno);
+  // 防止页面卡在骨架屏状态：如果 main() 已失败则显示错误提示
+  var meta = document.getElementById("meta");
+  if(meta && meta.textContent.indexOf("加载") >= 0){
+    meta.innerHTML = '⚠️ 页面运行中遇到错误：'+msg+'。请 <a href="javascript:location.reload()" style="color:var(--blue)">刷新重试</a>';
+  }
+});
+window.addEventListener("unhandledrejection", function(e){
+  var reason = e.reason;
+  var msg = (reason && reason.message) ? reason.message : String(reason);
+  console.error("[未捕获 Promise]", msg);
+  // Open-Meteo 429/网络错误由 main() 的 catch 块处理，这里只兜底
+  if(msg.indexOf("429") < 0 && msg.indexOf("fetch") < 0){
+    window.__fatalErrors.push({msg:"Promise: "+msg, t:Date.now()});
+  }
+});
+/* ---- ECharts CDN fallback：主 CDN 挂了自动切备用 ---- */
+(function(){
+  window.__echartsReady = false;
+  window.addEventListener("load", function(){
+    if(typeof echarts === "undefined"){
+      console.warn("[ECharts] 主 CDN 失败，尝试备用 CDN…");
+      var s = document.createElement("script");
+      s.src = "https://unpkg.com/echarts@5.4.3/dist/echarts.min.js";
+      s.onload = function(){ window.__echartsReady = true; console.log("[ECharts] 备用 CDN 加载成功"); };
+      s.onerror = function(){ console.error("[ECharts] 备用 CDN 也失败，图表功能不可用"); };
+      document.head.appendChild(s);
+    } else {
+      window.__echartsReady = true;
+    }
+  });
+})();
+</script>
 <title>哀牢山智能生态气象三维可视化系统 - 实时灾害预警 · 强对流/浓雾/山洪/道路安全</title>
 <meta name="description" content="哀牢山智能生态气象三维可视化系统：基于9个机器学习模型预测未来24小时强对流、浓雾、山洪、泥石流、塌方及道路出行安全风险，DEM驱动的Three.js三维数字孪生地形，支持按海拔层温差预报、云海概率、紫外线与空气质量监测。覆盖新平、双柏、镇沅、大雪锅山、金山丫口等区域。">
 <meta name="keywords" content="哀牢山天气,哀牢山天气预报,哀牢山,哀牢山智能生态气象三维可视化系统,天气预警,云南新平,戛洒镇,大雪锅山,金山丫口,石门峡,茶马古道,金山原始森林,强对流,浓雾,山洪,泥石流,塌方,道路安全,云海概率,镇沅,双柏,哀牢山国家级自然保护区">
@@ -904,16 +947,37 @@ body.bg-atmos-fog{
   </footer>
 </div>
 
-<script src="js/site.js?v=2026081508"></script>
-<script src="js/gb.js?v=2026081508"></script>
-<script src="js/fx.js?v=2026081508"></script>
-<script src="js/app.js?v=2026081508"></script>
-<script src="js/terrain3d.js?v=2026081508"></script>
+<script src="js/site.js?v=2026081509"></script>
+<script src="js/gb.js?v=2026081509"></script>
+<script src="js/fx.js?v=2026081509"></script>
+<script src="js/app.js?v=2026081509"></script>
+<script src="js/terrain3d.js?v=2026081509"></script>
 <script>
-/* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装） */
+/* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
-  window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("sw.js?v=2026081508").catch(()=>{});
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js?v=2026081509").then(function(reg){
+      // 检测 SW 更新
+      reg.addEventListener("updatefound", function(){
+        var nw = reg.installing;
+        if(!nw) return;
+        nw.addEventListener("statechange", function(){
+          if(nw.state === "installed" && navigator.serviceWorker.controller){
+            // 新版本已就绪，提示用户刷新
+            var banner = document.createElement("div");
+            banner.style.cssText = "position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,13,9,.96);border-top:1px solid var(--teal);padding:12px 20px;display:flex;align-items:center;gap:14px;font-size:13px;color:var(--text);backdrop-filter:blur(10px)";
+            banner.innerHTML = '<span>🔄 系统已更新到最新版本，刷新页面以完成升级</span>'+
+              '<button onclick="location.reload()" style="margin-left:auto;padding:6px 18px;border-radius:4px;border:none;background:var(--teal);color:#04130a;font-weight:700;cursor:pointer">立即刷新</button>'+
+              '<span onclick="this.parentElement.remove()" style="cursor:pointer;color:var(--dim);padding:2px 8px">✕</span>';
+            document.body.appendChild(banner);
+          }
+        });
+      });
+    }).catch(function(){});
+    // controllerchange：新 SW 已接管
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      // 静默处理，不强制刷新（上面 banner 已提示）
+    });
   });
 }
 </script>

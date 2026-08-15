@@ -22,9 +22,13 @@
     document.body.appendChild(cv);
     rainCanvas = cv;
     rainCtx = cv.getContext("2d");
+    let resizeTimer = null;
     const resize = ()=>{
-      cv.width = window.innerWidth * devicePixelRatio;
-      cv.height = window.innerHeight * devicePixelRatio;
+      if(resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{
+        cv.width = window.innerWidth * devicePixelRatio;
+        cv.height = window.innerHeight * devicePixelRatio;
+      }, 150);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -96,17 +100,23 @@
     for(let i=0;i<N;i++) rainDrops.push(make());
     const step = ()=>{
       if(!rainRunning) return;
-      const w = cv.width, h = cv.height;
-      ctx.clearRect(0, 0, w, h);
-      ctx.strokeStyle = "rgba(160,190,220,0.5)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for(const d of rainDrops){
-        d.y += d.sp; d.x += d.sp * 0.08;
-        if(d.y - d.len > h || d.x > w + 20){ Object.assign(d, make()); }
-        ctx.moveTo(d.x, d.y - d.len); ctx.lineTo(d.x, d.y);
+      try{
+        const w = cv.width, h = cv.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = "rgba(160,190,220,0.5)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for(const d of rainDrops){
+          d.y += d.sp; d.x += d.sp * 0.08;
+          if(d.y - d.len > h || d.x > w + 20){ Object.assign(d, make()); }
+          ctx.moveTo(d.x, d.y - d.len); ctx.lineTo(d.x, d.y);
+        }
+        ctx.stroke();
+      }catch(e){
+        console.error("[fx] 雨滴渲染异常:", e);
+        stopRain();
+        return;
       }
-      ctx.stroke();
       rainRAF = requestAnimationFrame(step);
     };
     rainRAF = requestAnimationFrame(step);

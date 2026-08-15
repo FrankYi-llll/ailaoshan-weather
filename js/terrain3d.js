@@ -110,6 +110,21 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.insertBefore(renderer.domElement, container.firstChild);
 
+    /* ---- WebGL 上下文丢失/恢复：防止 GPU 重置或标签页切回时 3D 崩溃 ---- */
+    renderer.domElement.addEventListener("webglcontextlost", function(e){
+      e.preventDefault();
+      console.warn("[terrain3d] WebGL 上下文丢失，暂停渲染");
+      if(renderer) renderer.setAnimationLoop(null);
+    });
+    renderer.domElement.addEventListener("webglcontextrestored", function(){
+      console.log("[terrain3d] WebGL 上下文恢复，重新加载资源");
+      try{
+        if(scene && camera){
+          renderer.setAnimationLoop(animLoop);
+        }
+      }catch(err){ console.error("[terrain3d] 恢复渲染失败:", err); }
+    });
+
     /* ---- 相机控制器：旋转/缩放/平移 ---- */
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -248,39 +263,50 @@
 
     window.addEventListener("resize", onResize);
 
-    /* ---- 渲染循环 ---- */
-    renderer.setAnimationLoop(()=>{
-      controls.update();
-      camLight.position.copy(camera.position);
-      // 云雾漂移（受风速影响）
-      if(cloudsGroup){
-        const t = performance.now();
-        for(const c of cloudsGroup.children){
-          const mul = c.userData.driftSpeedMul || 1.0;
-          c.position.x = c.userData.baseX + Math.sin(t * c.userData.driftSpeed * mul + c.userData.driftPhase) * 1.4;
-          c.position.z = c.userData.baseZ + Math.cos(t * c.userData.driftSpeed * 0.7 * mul + c.userData.driftPhase) * 1.0;
-        }
-      }
-      // 雨粒子下落
-      if(rainGroup && rainGroup.visible && rainGroup.children[0]){
-        const pts = rainGroup.children[0];
-        const pos = pts.geometry.attributes.position;
-        const vel = pts.userData.velocities;
-        const yTop = pts.userData.yTop, yBot = pts.userData.yBot;
-        const windX = pts.userData.windOffset || 0;
-        for(let i = 0; i < vel.length; i++){
-          pos.array[i*3+1] -= vel[i];
-          pos.array[i*3]   += windX;
-          if(pos.array[i*3+1] < yBot){
-            pos.array[i*3+1] = yTop;
-            pos.array[i*3]   = (Math.random() - 0.5) * pts.userData.range * 2;
-            pos.array[i*3+2] = (Math.random() - 0.5) * pts.userData.range * 2;
+    /* ---- 渲染循环（带错误保护，防止单帧异常导致整个循环挂掉） ---- */
+    function animLoop(){
+      try{
+        controls.update();
+        camLight.position.copy(camera.position);
+        // 云雾漂移（受风速影响）
+        if(cloudsGroup){
+          const t = performance.now();
+          for(const c of cloudsGroup.children){
+            const mul = c.userData.driftSpeedMul || 1.0;
+            c.position.x = c.userData.baseX + Math.sin(t * c.userData.driftSpeed * mul + c.userData.driftPhase) * 1.4;
+            c.position.z = c.userData.baseZ + Math.cos(t * c.userData.driftSpeed * 0.7 * mul + c.userData.driftPhase) * 1.0;
           }
         }
-        pos.needsUpdate = true;
+        // 雨粒子下落
+        if(rainGroup && rainGroup.visible && rainGroup.children[0]){
+          const pts = rainGroup.children[0];
+          const pos = pts.geometry.attributes.position;
+          const vel = pts.userData.velocities;
+          const yTop = pts.userData.yTop, yBot = pts.userData.yBot;
+          const windX = pts.userData.windOffset || 0;
+          for(let i = 0; i < vel.length; i++){
+            pos.array[i*3+1] -= vel[i];
+            pos.array[i*3]   += windX;
+            if(pos.array[i*3+1] < yBot){
+              pos.array[i*3+1] = yTop;
+              pos.array[i*3]   = (Math.random() - 0.5) * pts.userData.range * 2;
+              pos.array[i*3+2] = (Math.random() - 0.5) * pts.userData.range * 2;
+            }
+          }
+          pos.needsUpdate = true;
+        }
+        renderer.render(scene, camera);
+      }catch(err){
+        console.error("[terrain3d] 渲染循环异常:", err);
+        // 连续异常时降级：暂停渲染循环避免刷屏
+        if(!animLoop._errCount) animLoop._errCount = 0;
+        if(++animLoop._errCount > 5){
+          renderer.setAnimationLoop(null);
+          console.error("[terrain3d] 连续异常超过5次，已暂停渲染");
+        }
       }
-      renderer.render(scene, camera);
-    });
+    }
+    renderer.setAnimationLoop(animLoop);
   }
 
   /* ---------- 地形网格（顶点海拔着色） ---------- */
@@ -1286,14 +1312,19 @@
     next();
   };
 
-  /* ---------- 窗口尺寸 ---------- */
+  /* ---------- 窗口尺寸（debounce 防抖，避免连续 resize 卡顿） ---------- */
+  var resizeTimer = null;
   function onResize(){
-    const c = $("three3DContainer");
-    if(!c || !renderer) return;
-    const w = c.clientWidth, h = c.clientHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
+    if(resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){
+      const c = $("three3DContainer");
+      if(!c || !renderer) return;
+      const w = c.clientWidth, h = c.clientHeight;
+      if(w < 10 || h < 10) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, 150);
   }
 
   /* ---------- 对外入口（renderTerrain3D 调用，幂等） ---------- */
@@ -1318,4 +1349,23 @@
       container.innerHTML = `<div class="desc" style="padding:20px">⚠ 3D 地形初始化失败：${err.message}</div>`;
     }
   };
+
+  /* ---- 页面卸载时清理 Three.js 资源，防止 WebGL 内存泄漏 ---- */
+  window.addEventListener("beforeunload", function(){
+    try{
+      if(renderer){
+        renderer.setAnimationLoop(null);
+        renderer.dispose();
+      }
+      if(scene){
+        scene.traverse(function(obj){
+          if(obj.geometry) obj.geometry.dispose();
+          if(obj.material){
+            if(Array.isArray(obj.material)) obj.material.forEach(function(m){ m.dispose(); });
+            else obj.material.dispose();
+          }
+        });
+      }
+    }catch(e){ /* 静默 */ }
+  });
 })();
