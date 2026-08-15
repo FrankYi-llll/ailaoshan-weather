@@ -783,21 +783,6 @@ body.view-public .pro-only{display:none!important}
 }
 .alt-calc .ac-hint{font-size:11.5px;color:var(--dim);width:100%;margin-top:4px}
 
-/* ===== 季节风险日历 ===== */
-.season-cal{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:12px}
-.season-cal .sc-month{
-  text-align:center;border-radius:6px;padding:10px 4px;font-size:11px;
-  border:1px solid var(--line);transition:transform .2s;cursor:default;
-}
-.season-cal .sc-month:hover{transform:translateY(-2px)}
-.season-cal .sc-month .sc-m-label{font-weight:600;color:var(--text);font-size:12px;margin-bottom:4px}
-.season-cal .sc-month .sc-m-bar{height:4px;border-radius:2px;margin:3px 0}
-.season-cal .sc-month .sc-m-tag{font-size:10px;color:var(--sub);margin-top:3px}
-@media(max-width:760px){
-  .season-cal{grid-template-columns:repeat(6,1fr);gap:3px}
-  .season-cal .sc-month{padding:8px 2px;font-size:10px}
-}
-
 /* ===== 工具栏（GPS/通知/分享/轻量化） ===== */
 #toolBar{
   display:flex;gap:6px;flex-wrap:wrap;align-items:center;
@@ -1511,7 +1496,6 @@ body.view-public .pro-only{display:none!important}
     <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
     <div class="fn-item pro-only" data-target="triModelPanel" title="三模型交叉比对"><span class="fn-dot"></span><span class="fn-label">三模型比对</span></div>
     <div class="fn-item" data-target="safetyPanel" title="安全科普与应急指引"><span class="fn-dot"></span><span class="fn-label">安全科普</span></div>
-    <div class="fn-item" data-target="seasonPanel" title="季节风险日历"><span class="fn-dot"></span><span class="fn-label">风险日历</span></div>
     <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
   </nav>
 </div>
@@ -1894,38 +1878,6 @@ function calcAltTemp(){
   document.getElementById("altCalcResult").textContent = "目标温度 ≈ " + result + "°C " + hint;
 }
 calcAltTemp();
-
-/* ===== 季节风险日历 ===== */
-function renderSeasonCal(){
-  var el = document.getElementById("seasonCal");
-  if(!el) return;
-  var data = [
-    {m:"1月", rain:"#2ecc71", fog:"#f0646c", thunder:"#2ecc71", debris:"#2ecc71", idx:25, tag:"浓雾高发"},
-    {m:"2月", rain:"#2ecc71", fog:"#e8a35c", thunder:"#2ecc71", debris:"#2ecc71", idx:20, tag:"浓雾"},
-    {m:"3月", rain:"#2ecc71", fog:"#e3cf7d", thunder:"#e3cf7d", debris:"#2ecc71", idx:25, tag:"大雾高发"},
-    {m:"4月", rain:"#e3cf7d", fog:"#e3cf7d", thunder:"#e3cf7d", debris:"#2ecc71", idx:35, tag:"初对流"},
-    {m:"5月", rain:"#e8a35c", fog:"#e3cf7d", thunder:"#e8a35c", debris:"#e3cf7d", idx:50, tag:"雨季前"},
-    {m:"6月", rain:"#f0646c", fog:"#e3cf7d", thunder:"#f0646c", debris:"#e8a35c", idx:70, tag:"汛期开始"},
-    {m:"7月", rain:"#f0646c", fog:"#e3cf7d", thunder:"#f0646c", debris:"#f0646c", idx:80, tag:"暴雨高发"},
-    {m:"8月", rain:"#f0646c", fog:"#e3cf7d", thunder:"#f0646c", debris:"#f0646c", idx:85, tag:"最高风险"},
-    {m:"9月", rain:"#e8a35c", fog:"#e3cf7d", thunder:"#e8a35c", debris:"#e8a35c", idx:60, tag:"汛期末"},
-    {m:"10月", rain:"#e3cf7d", fog:"#e3cf7d", thunder:"#e3cf7d", debris:"#2ecc71", idx:35, tag:"雨季结束"},
-    {m:"11月", rain:"#2ecc71", fog:"#e3cf7d", thunder:"#2ecc71", debris:"#2ecc71", idx:20, tag:"徒步佳期"},
-    {m:"12月", rain:"#2ecc71", fog:"#e8a35c", thunder:"#2ecc71", debris:"#2ecc71", idx:25, tag:"浓雾/霜冻"}
-  ];
-  el.innerHTML = data.map(function(d){
-    var borderColor = d.idx>=70 ? 'rgba(240,100,108,.25)' : 'var(--line)';
-    return '<div class="sc-month" style="border-color:'+borderColor+'">'+
-      '<div class="sc-m-label">'+d.m+'</div>'+
-      '<div class="sc-m-bar" style="background:'+d.rain+'" title="降水风险"></div>'+
-      '<div class="sc-m-bar" style="background:'+d.fog+'" title="浓雾风险"></div>'+
-      '<div class="sc-m-bar" style="background:'+d.thunder+'" title="雷电风险"></div>'+
-      '<div class="sc-m-bar" style="background:'+d.debris+'" title="泥石流风险"></div>'+
-      '<div class="sc-m-tag" style="color:'+(d.idx>=70?'#f0646c':d.idx>=50?'#e8a35c':'#2ecc71')+'">'+d.tag+'</div>'+
-    '</div>';
-  }).join("");
-}
-renderSeasonCal();
 
 /* ===== 自动刷新定时器 ===== */
 (function(){
