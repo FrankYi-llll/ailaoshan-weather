@@ -564,10 +564,14 @@ function weatherAt(lat, lon){
 window.__weatherAt = weatherAt;   // 供 terrain3d.js 点击查询
 
 /* ---------- 渲染: 按海拔层天气差异 ---------- */
+// 坐标严格匹配 GRID 99 个格点中海拔最接近的，避免 IDW 在近距离点拿同一格点导致差异消失
+// 历史问题：原坐标 (23.939,101.50)/(23.945,101.51)/(24.08,101.60) 都落在 23.90,101.50（659m）和 24.10,101.60（1768m），
+// 导致山顶/原始森林/河谷用了相同格点，温度差异被压平。
+// elev=景区标称海拔（UI 显示），gridElev=GRID 实际格点海拔（IDW 基准）
 const ALT_BANDS = [
-  {key:"high", name:"高海拔 · 山顶草甸",  place:"金山丫口 / 大雪锅山", lat:23.939, lon:101.50, elev:2700, veg:"苔藓矮林 / 山顶草甸 / 云海"},
-  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:23.945, lon:101.51, elev:2400, veg:"湿性常绿阔叶林 / 石板路环线"},
-  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",   lat:24.08,  lon:101.60, elev:560,  veg:"河谷雨林 / 花腰傣风情小镇"},
+  {key:"high", name:"高海拔 · 山顶草甸",  place:"金山丫口 / 大雪锅山", lat:24.20, lon:101.30, elev:2700, gridElev:2765, veg:"苔藓矮林 / 山顶草甸 / 云海"},
+  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:24.10, lon:101.30, elev:2400, gridElev:2648, veg:"湿性常绿阔叶林 / 石板路环线"},
+  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",   lat:24.00, lon:101.50, elev:560,  gridElev:688,  veg:"河谷雨林 / 花腰傣风情小镇"},
 ];
 function renderAltitudeWeather(){
   const el = $("altitudeContent");
@@ -582,16 +586,15 @@ function renderAltitudeWeather(){
     const minT = Math.min(...t24), maxT = Math.max(...t24);
     const totalP = next24.reduce((a,s)=>a+s.precip, 0);
     const maxWg = Math.max(...next24.map(s=>s.wg||0));
-    // 温度校正到标称海拔
-    const baseElev = w.elev || band.elev;
-    const dT = (baseElev - band.elev) * lr;
+    // 温度校正到景区标称海拔：cur.temp 来自 GRID 实际格点（gridElev），需校正到标称海拔 elev
+    const dT = (band.gridElev - band.elev) * lr;
     const tempNow = Math.round((cur.temp + dT) * 10) / 10;
     const feel = Math.round((cur.temp + dT - (cur.ws||0) * 1.1) * 10) / 10;
     const risk = Math.max(w.peakP, w.peakF);
     const rlv = risk >= 0.6 ? "预警" : risk >= 0.45 ? "较高" : risk >= 0.30 ? "关注" : "低";
     const rcol = rlv === "预警" ? "#f0646c" : rlv === "较高" ? "#e8a35c" : rlv === "关注" ? "#e3cf7d" : "#6fd39a";
     const tempCol = tempNow >= 22 ? "#e8a35c" : tempNow <= 8 ? "#62c4e8" : "#fff";
-    // 着装建议
+    // 着装建议（按景区标称海拔）
     let wear;
     if(band.elev >= 2500) wear = "<b>必备</b>冲锋衣/抓绒 · 防风手套 · 头灯 · 保温杯 · 防晒（高海拔紫外线强）";
     else if(band.elev >= 1800) wear = "<b>推荐</b>薄冲锋衣+速干衣 · 防滑登山鞋 · 雨具 · 帽子";
