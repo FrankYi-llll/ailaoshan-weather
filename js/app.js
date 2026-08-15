@@ -354,6 +354,140 @@ function renderWeather(series, aq){
     card("🌧","24h降水", Math.round(totalP*10)/10, " mm", totalP>=25?"#ff4d4f":totalP>=10?"#ff9f43":"var(--text)")+
     card("💧","24h最高湿", Math.round(maxRh), "%")+
     card("☁️","当前云量", cur.cloud, "%");
+  renderHero(series, aq, csp);
+  renderEcoIndex(series, aq, csp);
+}
+
+/* ---------- Hero 第一屏数据绑定 ---------- */
+function renderHero(series, aq, csp){
+  if(!series || !series.length) return;
+  const cur = series[0];
+  const next24 = series.slice(0, 24);
+  const maxT = Math.max(...next24.map(s=>s.temp));
+  const minT = Math.min(...next24.map(s=>s.temp));
+  const totalP = next24.reduce((a,s)=>a+(s.precip||0), 0);
+  const maxWg = Math.max(...next24.map(s=>s.wg||0));
+  const visKm = cur.vis;
+  // 当前天气
+  const heroTemp = $("heroTemp");
+  if(heroTemp) heroTemp.innerHTML = cur.temp + "<small>°C</small>";
+  const heroDesc = $("heroWeatherDesc");
+  if(heroDesc){
+    const wText = [];
+    if(cur.precip > 0.1) wText.push("有降水");
+    else if(cur.cloud > 70) wText.push("多云");
+    else if(cur.cloud > 30) wText.push("少云");
+    else wText.push("晴朗");
+    wText.push("湿度 " + Math.round(cur.rh) + "%");
+    wText.push("风速 " + cur.ws + "m/s");
+    heroDesc.textContent = wText.join(" · ");
+  }
+  // 哀牢山徒步指数：温度/降水/能见度/风速 综合评分
+  let score = 0;
+  const tOk = cur.temp >= 8 && cur.temp <= 26;
+  const pOk = totalP < 5;
+  const vOk = visKm == null || visKm >= 3;
+  const wOk = maxWg < 12;
+  if(tOk) score++;
+  if(pOk) score++;
+  if(vOk) score++;
+  if(wOk) score++;
+  if(cur.uv != null && cur.uv < 7) score++;
+  const stars = "★★★★★".slice(0, score) + "☆☆☆☆☆".slice(0, 5 - score);
+  const heroStars = $("heroStars");
+  if(heroStars) heroStars.textContent = stars;
+  const heroHikingDesc = $("heroHikingDesc");
+  if(heroHikingDesc){
+    const reasons = [];
+    reasons.push(tOk ? "温度适宜" : (cur.temp < 8 ? "气温偏低" : "气温偏高"));
+    reasons.push(pOk ? "降雨较少" : "有明显降水");
+    reasons.push(vOk ? "能见度良好" : "能见度较差");
+    heroHikingDesc.textContent = reasons.join(" · ");
+  }
+  // 云海概率
+  const heroCsp = $("heroCloudSea");
+  if(heroCsp) heroCsp.innerHTML = (csp != null ? csp : "—") + "<small>%</small>";
+  const heroCspBar = $("heroCloudSeaBar");
+  if(heroCspBar) heroCspBar.style.width = (csp != null ? csp : 0) + "%";
+  const heroCspDesc = $("heroCloudSeaDesc");
+  if(heroCspDesc) heroCspDesc.textContent = csp >= 70 ? "适合观云海" : csp >= 45 ? "可能出现云雾" : "云海概率较低";
+  // 推荐路线：根据风险与天气动态推荐
+  const heroRoute = $("heroRoute");
+  const heroRouteDesc = $("heroRouteDesc");
+  if(heroRoute && heroRouteDesc){
+    const risk = Math.max(...next24.map(s=>s.p||0), ...next24.map(s=>s.f||0));
+    if(risk >= 0.6){ heroRoute.textContent = "暂缓进山"; heroRouteDesc.textContent = "强对流/浓雾风险较高，建议取消"; }
+    else if(totalP >= 10){ heroRoute.textContent = "戛洒镇周边"; heroRouteDesc.textContent = "低海拔 · 雨天备选"; }
+    else if(csp >= 70){ heroRoute.textContent = "金山丫口"; heroRouteDesc.textContent = "云海概率高 · 日出首选"; }
+    else { heroRoute.textContent = "金山森林"; heroRouteDesc.textContent = "半日轻松 · 原始森林"; }
+  }
+  // 元信息
+  const heroMeta = $("heroMeta");
+  if(heroMeta) heroMeta.innerHTML = "99 格点 · 9 模型 · DEM 三维<br>" + new Date().toLocaleString("zh-CN", {month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit"});
+}
+
+/* ---------- 生态体验指数（徒步/云海/森林舒适度） ---------- */
+function renderEcoIndex(series, aq, csp){
+  const el = $("ecoIndexContent");
+  if(!el || !series || !series.length) return;
+  const cur = series[0];
+  const next24 = series.slice(0, 24);
+  const maxT = Math.max(...next24.map(s=>s.temp));
+  const minT = Math.min(...next24.map(s=>s.temp));
+  const totalP = next24.reduce((a,s)=>a+(s.precip||0), 0);
+  const maxWg = Math.max(...next24.map(s=>s.wg||0));
+  const visKm = cur.vis;
+
+  // 1) 哀牢山徒步指数
+  let hScore = 0;
+  const hReasons = [];
+  if(cur.temp >= 8 && cur.temp <= 26){ hScore++; hReasons.push("温度适宜"); } else { hReasons.push(cur.temp < 8 ? "气温偏低" : "气温偏高"); }
+  if(totalP < 5){ hScore++; hReasons.push("降雨较少"); } else { hReasons.push("有明显降水"); }
+  if(visKm == null || visKm >= 3){ hScore++; hReasons.push("能见度良好"); } else { hReasons.push("能见度较差"); }
+  if(maxWg < 12){ hScore++; hReasons.push("风力温和"); } else { hReasons.push("阵风较强"); }
+  if(cur.uv != null && cur.uv < 7){ hScore++; hReasons.push("紫外线适中"); }
+  const hStars = "★★★★★".slice(0, hScore) + "☆☆☆☆☆".slice(0, 5 - hScore);
+  const hLevel = hScore >= 4 ? "非常适合" : hScore >= 3 ? "适合" : hScore >= 2 ? "一般" : "不建议";
+
+  // 2) 云雾/云海指数
+  const cspVal = csp != null ? csp : 0;
+  const cspText = cspVal >= 70 ? "极易出现云海" : cspVal >= 50 ? "可能出现云雾" : cspVal >= 30 ? "局部有雾" : "云雾较少";
+  const cspColor = cspVal >= 70 ? "#62c4e8" : cspVal >= 50 ? "#6fd39a" : cspVal >= 30 ? "#e3cf7d" : "var(--sub)";
+
+  // 3) 森林舒适度（负氧离子/湿度/温度综合）
+  let fScore = 0;
+  const fTags = [];
+  if(cur.rh >= 60 && cur.rh <= 85){ fScore++; fTags.push("空气湿润"); }
+  else if(cur.rh > 85){ fTags.push("湿度过高"); }
+  else { fTags.push("空气偏干"); }
+  if(cur.temp >= 15 && cur.temp <= 24){ fScore++; fTags.push("温度舒适"); }
+  else { fTags.push(cur.temp < 15 ? "偏凉" : "偏热"); }
+  if(aq && aq[0] && aq[0].series && aq[0].series[0] && aq[0].series[0].aqi != null && aq[0].series[0].aqi <= 50){ fScore++; fTags.push("空气清新"); }
+  else { fTags.push("空气一般"); }
+  if(cur.uv != null && cur.uv < 5){ fScore++; fTags.push("紫外线弱"); }
+  const fLevel = fScore >= 3 ? "极佳" : fScore >= 2 ? "良好" : "一般";
+
+  el.innerHTML =
+    '<div class="eco-card hiking">'+
+      '<div class="eco-title">哀牢山徒步指数</div>'+
+      '<div class="eco-stars">' + hStars + '</div>'+
+      '<div class="eco-value">' + hLevel + '<small> / 5</small></div>'+
+      '<div class="eco-desc">' + hReasons.join(" · ") + '</div>'+
+      '<div class="eco-tags"><span class="eco-tag">温度 ' + cur.temp + '°C</span><span class="eco-tag">24h降水 ' + Math.round(totalP*10)/10 + 'mm</span><span class="eco-tag">能见度 ' + (visKm != null ? visKm + 'km' : '—') + '</span></div>'+
+    '</div>'+
+    '<div class="eco-card cloud">'+
+      '<div class="eco-title">云海 / 云雾概率</div>'+
+      '<div class="eco-value" style="color:' + cspColor + '">' + cspVal + '<small>%</small></div>'+
+      '<div class="eco-bar"><i style="width:' + cspVal + '%;background:' + cspColor + '"></i></div>'+
+      '<div class="eco-desc">' + cspText + ' · 湿度 ' + Math.round(cur.rh) + '% + 昼夜温差 ' + Math.round((maxT-minT)*10)/10 + '°C + 风速 ' + cur.ws + 'm/s</div>'+
+      '<div class="eco-tags"><span class="eco-tag">最佳观赏：清晨 5:30-8:30</span><span class="eco-tag">推荐点位：金山丫口</span></div>'+
+    '</div>'+
+    '<div class="eco-card forest">'+
+      '<div class="eco-title">森林舒适度</div>'+
+      '<div class="eco-value">' + fLevel + '<small> / 4</small></div>'+
+      '<div class="eco-desc">负氧离子浓度预估较高，原始森林环境' + (fScore >= 3 ? '非常适合森林浴与徒步' : '适合短途游览') + '</div>'+
+      '<div class="eco-tags">' + fTags.map(t=>'<span class="eco-tag">' + t + '</span>').join('') + '</div>'+
+    '</div>';
 }
 
 /* ---------- 任意经纬度的天气插值（IDW，供 3D 点击/海拔层使用） ---------- */
@@ -401,9 +535,9 @@ window.__weatherAt = weatherAt;   // 供 terrain3d.js 点击查询
 
 /* ---------- 渲染: 按海拔层天气差异 ---------- */
 const ALT_BANDS = [
-  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",   lat:24.08,  lon:101.60, elev:560,  veg:"河谷雨林 / 花腰傣风情小镇"},
-  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:23.945, lon:101.51, elev:2400, veg:"湿性常绿阔叶林 / 石板路环线"},
   {key:"high", name:"高海拔 · 山顶草甸",  place:"金山丫口 / 大雪锅山", lat:23.939, lon:101.50, elev:2700, veg:"苔藓矮林 / 山顶草甸 / 云海"},
+  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:23.945, lon:101.51, elev:2400, veg:"湿性常绿阔叶林 / 石板路环线"},
+  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",   lat:24.08,  lon:101.60, elev:560,  veg:"河谷雨林 / 花腰傣风情小镇"},
 ];
 function renderAltitudeWeather(){
   const el = $("altitudeContent");
@@ -433,10 +567,17 @@ function renderAltitudeWeather(){
     else if(band.elev >= 1800) wear = "<b>推荐</b>薄冲锋衣+速干衣 · 防滑登山鞋 · 雨具 · 帽子";
     else wear = "<b>轻装</b>速干衣 · 防滑鞋 · 雨伞/雨衣 · 注意河谷闷热与蚊虫";
     return '<div class="alt-card '+band.key+'">'+
-      '<div class="alt-name">'+band.name+'</div>'+
-      '<div class="alt-meta">'+band.place+' · 标称 '+band.elev+'m · 实际 '+(w.elev||band.elev)+'m</div>'+
-      '<div class="alt-temp" style="color:'+tempCol+'">'+tempNow+'<small>°C</small></div>'+
-      '<div class="alt-feel">体感 '+feel+'°C · 今日 '+minT+'~'+maxT+'°C</div>'+
+      '<div class="alt-elev">'+band.elev+'m<small>'+band.name.split("·")[0]+'</small></div>'+
+      '<div>'+
+        '<div class="alt-name">'+band.name+'</div>'+
+        '<div class="alt-meta">'+band.place+' · '+band.veg+'</div>'+
+        '<div style="margin-top:8px"><span class="alt-risk" style="background:'+rcol+';color:#04130a">'+rlv+'</span>'+
+        '<span class="alt-risk" style="background:rgba(150,204,170,.12);color:var(--sub);margin-left:6px">强对流 '+Math.round(w.peakP*100)+'%</span></div>'+
+      '</div>'+
+      '<div>'+
+        '<div class="alt-temp" style="color:'+tempCol+'">'+tempNow+'<small>°C</small></div>'+
+        '<div class="alt-feel">体感 '+feel+'°C · 今日 '+minT+'~'+maxT+'°C</div>'+
+      '</div>'+
       '<div class="alt-metrics">'+
         '<span>湿度 <b>'+Math.round(cur.rh)+'%</b></span>'+
         '<span>云量 <b>'+Math.round(cur.cloud)+'%</b></span>'+
@@ -445,8 +586,6 @@ function renderAltitudeWeather(){
         '<span>24h降水 <b>'+Math.round(totalP*10)/10+'mm</b></span>'+
         '<span>浓雾峰值 <b>'+Math.round(w.peakF*100)+'%</b></span>'+
       '</div>'+
-      '<div><span class="alt-risk" style="background:'+rcol+';color:#04130a">风险等级 '+rlv+'</span>'+
-      '<span class="alt-risk" style="background:rgba(150,204,170,.12);color:var(--sub);margin-left:6px">强对流峰值 '+Math.round(w.peakP*100)+'%</span></div>'+
       '<div class="alt-wear">🧥 着装建议：'+wear+'</div>'+
     '</div>';
   }).join("");
@@ -756,13 +895,95 @@ function renderPOI(){
     const c = lvCol(risk);
     const tagCls = wp.elev>=2500?"cold":wp.type==="base"?"hot":"";
     const openCls = wp.open ? "" : " disabled";
-    return '<button class="poi-btn'+openCls+'" style="'+(wp.open?"":"opacity:.55")+'" onclick="window.flyToPlace && window.flyToPlace('+wp.lat+','+wp.lon+',\''+wp.name.replace(/'/g,"\\'")+'\','+wp.elev+')">'+
+    return '<button class="poi-btn'+openCls+'" style="'+(wp.open?"":"opacity:.55")+'" onclick="window.selectPOI(\''+wp.id+'\')">'+
       '<span class="poi-tag '+tagCls+'">'+(wp.open?typeLabel[wp.type]:'禁区')+'</span>'+
       '<div class="poi-name">'+wp.name+'</div>'+
       '<div class="poi-sub">'+wp.elev+'m · '+wp.tags+'</div>'+
       '<div style="font-size:10.5px;margin-top:4px"><span class="pill '+pillCls(risk)+'">'+risk+'</span>'+
       (r?'<span style="color:'+c+';font-family:var(--mono)"> '+r.recStars+'</span>':'')+'</div></button>';
   }).join("");
+}
+
+/* ---------- 景点详情卡 ---------- */
+window.selectPOI = function(id){
+  const wp = WAYPOINTS.find(w=>w.id===id);
+  if(!wp) return;
+  const detailEl = $("poiDetail");
+  if(!detailEl) return;
+  // 高亮按钮
+  document.querySelectorAll(".poi-btn").forEach(b=>b.classList.remove("active"));
+  const btns = document.querySelectorAll("#poiGrid .poi-btn");
+  const idx = WAYPOINTS.findIndex(w=>w.id===id);
+  if(btns[idx]) btns[idx].classList.add("active");
+  // 获取天气数据
+  const w = weatherAt(wp.lat, wp.lon);
+  const data = computeRoutes();
+  const r = data && data.waypoints.find(x=>x.id===id);
+  let weatherHtml = '<div style="color:var(--sub);font-size:12px">天气数据加载中…</div>';
+  if(w && w.series && w.series.length){
+    const cur = w.series[0];
+    const next24 = w.series.slice(0, 24);
+    const totalP = next24.reduce((a,s)=>a+(s.precip||0), 0);
+    const maxT = Math.max(...next24.map(s=>s.temp)), minT = Math.min(...next24.map(s=>s.temp));
+    const maxWg = Math.max(...next24.map(s=>s.wg||0));
+    const csp = (typeof window.__cloudSeaProb === "function") ? window.__cloudSeaProb(cur.rh, maxT - minT, cur.ws) : null;
+    const visKm = cur.vis;
+    const tempCol = cur.temp >= 22 ? "#e8a35c" : cur.temp <= 8 ? "#62c4e8" : "#fff";
+    weatherHtml =
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">'+
+        '<div><div style="font-size:11px;color:var(--sub)">当前气温</div><div style="font-family:var(--mono);font-size:24px;font-weight:700;color:'+tempCol+'">'+cur.temp+'<small style="font-size:12px">°C</small></div></div>'+
+        '<div><div style="font-size:11px;color:var(--sub)">湿度</div><div style="font-family:var(--mono);font-size:24px;font-weight:700">'+Math.round(cur.rh)+'<small style="font-size:12px">%</small></div></div>'+
+        '<div><div style="font-size:11px;color:var(--sub)">能见度</div><div style="font-family:var(--mono);font-size:24px;font-weight:700">'+(visKm != null ? visKm : '—')+'<small style="font-size:12px">km</small></div></div>'+
+        '<div><div style="font-size:11px;color:var(--sub)">云海概率</div><div style="font-family:var(--mono);font-size:24px;font-weight:700;color:'+(csp>=70?'#62c4e8':csp>=45?'#6fd39a':'#fff')+'">'+(csp != null ? csp : '—')+'<small style="font-size:12px">%</small></div></div>'+
+      '</div>'+
+      '<div style="margin-top:10px;font-size:11.5px;color:var(--sub)">'+
+        '体感 '+Math.round((cur.temp - (cur.ws||0)*1.1)*10)/10+'°C · 今日 '+minT+'~'+maxT+'°C · 24h降水 '+Math.round(totalP*10)/10+'mm · 阵风峰值 '+Math.round(maxWg*10)/10+'m/s'+
+      '</div>';
+  }
+  // 最佳游览时段
+  let bestTime = "全天适宜";
+  if(wp.elev >= 2500) bestTime = "清晨 5:30-8:30（看日出云海）";
+  else if(wp.elev >= 1800) bestTime = "上午 8:00-12:00（避开午后强对流）";
+  else bestTime = "上午 7:00-11:00 / 下午 15:00-18:00";
+  if(r && r.risk === "预警") bestTime = "⚠ 当前风险较高，建议暂缓";
+  // 推荐路线
+  const routeHint = wp.id === "gasa" ? "出发基地 → 南恩瀑布 → 石门峡 → 金山森林"
+    : wp.id === "nanen" ? "戛洒镇 → 南恩瀑布 → 石门峡"
+    : wp.id === "shimen" ? "戛洒 → 南恩 → 石门峡 → 茶马古道"
+    : wp.id === "chama" ? "石门峡 → 茶马古道 → 金山森林"
+    : wp.id === "jinshan" ? "茶马古道 → 金山森林 → 金山丫口"
+    : wp.id === "jinshanyakou" ? "金山森林 → 金山丫口（日出）"
+    : "参考景区导览";
+  const riskColor = r ? LVL[r.risk] : "#6fd39a";
+  const riskText = r ? r.risk : "低";
+  detailEl.style.display = "block";
+  detailEl.innerHTML =
+    '<div style="background:rgba(150,204,170,.06);border:1px solid var(--line);border-left:3px solid '+riskColor+';border-radius:8px;padding:16px 18px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'+
+        '<div>'+
+          '<div style="font-size:16px;font-weight:700;color:#fff">'+wp.name+'</div>'+
+          '<div style="font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:2px">海拔 '+wp.elev+'m · '+wp.lat.toFixed(3)+'°N, '+wp.lon.toFixed(3)+'°E · '+wp.tags+'</div>'+
+        '</div>'+
+        '<div style="text-align:right">'+
+          '<span class="pill '+pillCls(riskText)+'" style="font-size:12px">'+riskText+'</span>'+
+          (r ? '<div style="color:'+riskColor+';font-family:var(--mono);font-size:14px;margin-top:4px">'+r.recStars+'</div>' : '')+
+        '</div>'+
+      '</div>'+
+      '<div style="margin-top:12px;padding:10px 12px;background:rgba(150,204,170,.04);border-radius:6px;font-size:12px;color:var(--sub);line-height:1.6">'+wp.note+(wp.warning?'<br><span style="color:var(--red)">⚠ '+wp.warning+'</span>':'')+'</div>'+
+      '<div style="margin-top:12px">'+weatherHtml+'</div>'+
+      '<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+        '<div style="padding:10px 12px;background:rgba(232,163,92,.08);border-radius:6px">'+
+          '<div style="font-size:11px;color:var(--orange);font-family:var(--mono)">最佳游览时段</div>'+
+          '<div style="font-size:13px;color:#fff;margin-top:4px">'+bestTime+'</div>'+
+        '</div>'+
+        '<div style="padding:10px 12px;background:rgba(111,211,154,.08);border-radius:6px">'+
+          '<div style="font-size:11px;color:var(--teal);font-family:var(--mono)">推荐路线</div>'+
+          '<div style="font-size:13px;color:#fff;margin-top:4px">'+routeHint+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  // 3D 飞行
+  if(window.flyToPlace) window.flyToPlace(wp.lat, wp.lon, wp.name, wp.elev);
 }
 
 function computeRoutes(){
@@ -1348,6 +1569,8 @@ function renderTerrain3D(){
   const t = TERRAIN3D;
   const panel = $("terrain3DPanel");
   if(panel) panel.style.display = "block";
+  const hero = $("heroSection");
+  if(hero) hero.style.display = "block";
 
   const meshInfo = HEIGHT_MAP
     ? `Three.js 实时 3D：${HEIGHT_MAP.h}x${HEIGHT_MAP.w} 精细 DEM 高度场 / 70,000+ 三角面，真实透视+光照阴影`

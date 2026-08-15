@@ -15,7 +15,8 @@
 
   let scene = null, camera = null, renderer = null, controls = null, raycaster = null;
   let terrainMesh = null, labelsGroup = null, roadsGroup = null, riversGroup = null,
-      treesGroup = null, contoursLine = null, forbiddenGroup = null, routesGroup = null;
+      treesGroup = null, contoursLine = null, forbiddenGroup = null, routesGroup = null,
+      cloudsGroup = null;
   let initialized = false, tourMode = false;
   let mouse = new THREE.Vector2(), hoverTimer = null;
   let tourCurves = [];        // 路线相机飞行用（buildTourRoutes 填充）
@@ -186,6 +187,11 @@
     scene.add(treesGroup);
     buildTrees();
 
+    /* ---- 哀牢山云雾层 ---- */
+    cloudsGroup = new THREE.Group();
+    scene.add(cloudsGroup);
+    buildClouds();
+
     /* ---- 地名标签 + 禁区 ---- */
     labelsGroup = new THREE.Group();
     scene.add(labelsGroup);
@@ -238,6 +244,14 @@
     renderer.setAnimationLoop(()=>{
       controls.update();
       camLight.position.copy(camera.position);
+      // 云雾缓慢漂移
+      if(cloudsGroup){
+        const t = performance.now();
+        for(const c of cloudsGroup.children){
+          c.position.x = c.userData.baseX + Math.sin(t * c.userData.driftSpeed + c.userData.driftPhase) * 1.4;
+          c.position.z = c.userData.baseZ + Math.cos(t * c.userData.driftSpeed * 0.7 + c.userData.driftPhase) * 1.0;
+        }
+      }
       renderer.render(scene, camera);
     });
   }
@@ -530,6 +544,79 @@
       placed++;
     }
     return placed;
+  }
+
+  /* ---------- 哀牢山云雾层（半透明精灵，缓慢漂移） ---------- */
+  function makeCloudTexture(){
+    const cv = document.createElement("canvas");
+    cv.width = 256; cv.height = 128;
+    const ctx = cv.getContext("2d");
+    const g = ctx.createRadialGradient(128, 64, 8, 128, 64, 110);
+    g.addColorStop(0, "rgba(255,255,255,0.92)");
+    g.addColorStop(0.35, "rgba(230,240,250,0.55)");
+    g.addColorStop(0.7, "rgba(200,215,230,0.18)");
+    g.addColorStop(1, "rgba(180,200,220,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 128);
+    // 叠加噪点让云更自然
+    for(let i = 0; i < 220; i++){
+      const x = Math.random() * 256, y = Math.random() * 128;
+      const r = Math.random() * 18 + 4;
+      const gg = ctx.createRadialGradient(x, y, 0, x, y, r);
+      gg.addColorStop(0, "rgba(255,255,255," + (Math.random() * 0.25 + 0.08) + ")");
+      gg.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = gg;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    const tex = new THREE.CanvasTexture(cv);
+    tex.needsUpdate = true;
+    return tex;
+  }
+  function buildClouds(){
+    const hm = HM();
+    const lat0 = hm.lat_range[0], lat1 = hm.lat_range[1];
+    const lon0 = hm.lon_range[0], lon1 = hm.lon_range[1];
+    const tex = makeCloudTexture();
+    const mat = new THREE.SpriteMaterial({map: tex, transparent: true, depthWrite: false, opacity: 0.55});
+    let seed = 20260815;
+    const rnd = ()=>{ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    // 山腰云雾带：海拔 1400-2400m 之间，多层分布
+    for(let i = 0; i < 46; i++){
+      const lat = lat0 + rnd() * (lat1 - lat0);
+      const lon = lon0 + rnd() * (lon1 - lon0);
+      const e = elevAt(lat, lon);
+      // 云雾集中在 1400-2600m，山顶偶尔有
+      const band = e >= 1400 && e <= 2600 ? 1 : (e > 2600 && e <= 3000 ? 0.35 : 0.12);
+      if(rnd() > band) continue;
+      const p = surfPt(lat, lon);
+      const sp = new THREE.Sprite(mat.clone());
+      const s = 1.2 + rnd() * 2.6;
+      sp.scale.set(s * 1.8, s * 0.72, 1);
+      sp.position.set(p.x + (rnd() - 0.5) * 2.2, p.y + 0.6 + rnd() * 1.4, p.z + (rnd() - 0.5) * 2.2);
+      sp.userData.driftSpeed = 0.00012 + rnd() * 0.00022;
+      sp.userData.driftPhase = rnd() * Math.PI * 2;
+      sp.userData.baseX = sp.position.x;
+      sp.userData.baseZ = sp.position.z;
+      cloudsGroup.add(sp);
+    }
+    // 山顶高空云：少量大尺度
+    for(let i = 0; i < 10; i++){
+      const lat = lat0 + rnd() * (lat1 - lat0);
+      const lon = lon0 + rnd() * (lon1 - lon0);
+      const e = elevAt(lat, lon);
+      if(e < 2200) continue;
+      const p = surfPt(lat, lon);
+      const sp = new THREE.Sprite(mat.clone());
+      const s = 3.0 + rnd() * 3.2;
+      sp.scale.set(s * 2.2, s * 0.9, 1);
+      sp.position.set(p.x, p.y + 2.2 + rnd() * 1.8, p.z);
+      sp.material.opacity = 0.38;
+      sp.userData.driftSpeed = 0.00008 + rnd() * 0.00012;
+      sp.userData.driftPhase = rnd() * Math.PI * 2;
+      sp.userData.baseX = sp.position.x;
+      sp.userData.baseZ = sp.position.z;
+      cloudsGroup.add(sp);
+    }
   }
 
   /* ---------- 地名悬浮标签（CanvasTexture Sprite + 引线） ---------- */
@@ -1004,6 +1091,27 @@
     } else {
       flyTo(new THREE.Vector3(5.8, 5.0, 6.2), new THREE.Vector3(0, 1.6, 0));
     }
+  };
+
+  /* ---------- 开始探索哀牢山：自动巡航全部路线 ---------- */
+  window.startExplore = function(){
+    if(!initialized || !tourCurves.length) return;
+    const btn = $("heroExploreBtn");
+    if(!tourMode) toggleTourMode();
+    let routeIdx = 0;
+    btn.textContent = "🚁 探索中… (" + (routeIdx+1) + "/" + tourCurves.length + ")";
+    btn.disabled = true;
+    function next(){
+      if(routeIdx >= tourCurves.length){
+        btn.textContent = "🚁 开始探索哀牢山";
+        btn.disabled = false;
+        return;
+      }
+      flyRoute(routeIdx);
+      routeIdx++;
+      setTimeout(next, 21000);
+    }
+    next();
   };
 
   /* ---------- 窗口尺寸 ---------- */

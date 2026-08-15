@@ -71,11 +71,23 @@ body{
   line-height:1.65;
   background-attachment:fixed;
 }
+/* 微妙地形等高线纹理 */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.025;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0, transparent 38px, rgba(150,204,170,.5) 38px, rgba(150,204,170,.5) 39px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 38px, rgba(150,204,170,.5) 38px, rgba(150,204,170,.5) 39px);
+}
 .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 64px}
 /* ---- 头部：监测台风格 ---- */
 header{border-bottom:1px solid var(--line);padding:16px 0 14px;margin-bottom:16px;
-  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px}
-.brand-id{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;opacity:.85}
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px;
+  position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg, transparent, var(--teal), transparent);opacity:.35}
+.brand-id{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;opacity:.85;
+  animation:brandPulse 4s ease-in-out infinite}
+@keyframes brandPulse{0%,100%{opacity:.7}50%{opacity:1}}
 header h1{font-size:24px;font-weight:700;letter-spacing:.5px;margin-top:2px}
 header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px}
 .meta{font-size:11.5px;color:var(--sub);margin-top:6px;font-family:var(--mono)}
@@ -93,6 +105,11 @@ header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
   box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 10px 30px rgba(0,0,0,.35);
+  transition:border-color .3s ease, box-shadow .3s ease;
+}
+.panel:hover{
+  border-color:var(--line-strong);
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 14px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(111,211,154,.06);
 }
 .panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
   background:linear-gradient(180deg, var(--teal), transparent 70%);opacity:.5}
@@ -175,28 +192,96 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 #three3DScale .scale-bar{width:12px;height:130px;border-radius:3px;border:1px solid rgba(150,204,170,.35);
   background:linear-gradient(to top,#1a4824 0%,#307032 14%,#589642 28%,#8eaa52 42%,#b49c5e 58%,#ac7c48 72%,#946240 86%,#e9e7f0 100%)}
 #three3DScale .scale-max,#three3DScale .scale-min{font-size:9.5px;color:rgba(216,231,219,.65);font-family:var(--mono)}
-/* ---- 新增：海拔天气差异 ---- */
-.alt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:900px){.alt-grid{grid-template-columns:1fr}}
-.alt-card{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden}
-.alt-card::before{content:"";position:absolute;left:0;top:0;right:0;height:2px}
+/* ---- Hero：第一屏 3D 数字孪生 ---- */
+#heroSection{position:relative;margin-bottom:16px;border-radius:10px;overflow:hidden;
+  background:linear-gradient(180deg, rgba(12,30,21,.92), rgba(5,13,9,.96));
+  border:1px solid var(--line-strong);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#heroSection::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(111,211,154,.015) 3px,rgba(111,211,154,.015) 4px)}
+#heroHeader{position:relative;z-index:2;padding:22px 24px 12px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+#heroHeader .hero-title{font-size:34px;font-weight:800;letter-spacing:1px;color:#fff;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+#heroHeader .hero-title small{display:block;font-size:13px;color:var(--teal);font-weight:500;letter-spacing:2px;margin-top:4px;font-family:var(--mono)}
+#heroHeader .hero-meta{font-family:var(--mono);font-size:11px;color:var(--sub);text-align:right;line-height:1.7}
+#heroHeader .hero-meta b{color:var(--text)}
+#heroBody{position:relative;display:grid;grid-template-columns:1fr 280px;gap:0;min-height:560px}
+#hero3DWrap{position:relative;min-height:560px}
+#hero3DWrap #three3DContainer{height:100%;min-height:560px;border:none;border-radius:0;background:transparent}
+#heroSide{position:relative;z-index:2;padding:18px 20px;display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(180deg, rgba(10,24,17,.88), rgba(5,13,9,.94));
+  border-left:1px solid var(--line);backdrop-filter:blur(10px)}
+.hero-card{background:rgba(150,204,170,.06);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.hero-card .hc-title{font-size:11px;color:var(--sub);letter-spacing:1.5px;font-family:var(--mono);text-transform:uppercase;margin-bottom:8px}
+.hero-card .hc-value{font-family:var(--mono);font-size:32px;font-weight:700;color:#fff;line-height:1.05}
+.hero-card .hc-value small{font-size:14px;color:var(--sub);font-weight:400}
+.hero-card .hc-desc{font-size:11.5px;color:var(--sub);margin-top:6px;line-height:1.5}
+.hero-card .hc-stars{color:var(--orange);font-size:18px;letter-spacing:2px;margin:4px 0}
+.hero-card .hc-bar{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:8px 0 4px}
+.hero-card .hc-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg, var(--teal), var(--blue))}
+#heroExploreBtn{margin-top:auto;padding:14px 18px;border-radius:8px;border:1px solid var(--orange);
+  background:linear-gradient(135deg, rgba(232,163,92,.2), rgba(232,163,92,.08));
+  color:var(--orange);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);
+  transition:all .2s;text-align:center}
+#heroExploreBtn:hover{background:var(--orange);color:#04130a;box-shadow:0 6px 20px rgba(232,163,92,.35)}
+@media(max-width:900px){
+  #heroBody{grid-template-columns:1fr;min-height:auto}
+  #hero3DWrap{min-height:420px}
+  #hero3DWrap #three3DContainer{min-height:420px}
+  #heroSide{border-left:none;border-top:1px solid var(--line);flex-direction:row;flex-wrap:wrap}
+  .hero-card{flex:1;min-width:140px}
+  #heroExploreBtn{width:100%;margin-top:0}
+}
+/* ---- 生态体验指数 ---- */
+.eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.eco-grid{grid-template-columns:1fr}}
+.eco-card{background:rgba(150,204,170,.06);border:1px solid var(--line);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.eco-card:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.eco-card::before{content:"";position:absolute;left:0;top:0;right:0;height:2px}
+.eco-card.hiking::before{background:var(--orange)}
+.eco-card.cloud::before{background:var(--blue)}
+.eco-card.forest::before{background:var(--teal)}
+.eco-card .eco-title{font-size:12px;color:var(--sub);letter-spacing:1px;font-family:var(--mono);text-transform:uppercase;margin-bottom:6px}
+.eco-card .eco-value{font-family:var(--mono);font-size:30px;font-weight:700;color:#fff;line-height:1.1}
+.eco-card .eco-value small{font-size:13px;color:var(--sub);font-weight:400}
+.eco-card .eco-stars{color:var(--orange);font-size:20px;letter-spacing:3px;margin:6px 0}
+.eco-card .eco-bar{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:10px 0 6px}
+.eco-card .eco-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg, var(--teal), var(--blue))}
+.eco-card .eco-desc{font-size:11.5px;color:var(--sub);line-height:1.6;margin-top:8px}
+.eco-card .eco-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eco-card .eco-tag{font-size:10.5px;padding:2px 8px;border-radius:3px;background:rgba(150,204,170,.1);color:var(--sub);border:1px solid var(--line)}
+/* ---- 新增：海拔天气差异（阶梯式剖面） ---- */
+.alt-grid{display:flex;flex-direction:column;gap:8px}
+.alt-card{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden;display:grid;grid-template-columns:110px 1fr 1fr 1fr;gap:12px;align-items:center;
+  transition:border-color .2s ease,background .2s ease}
+.alt-card:hover{border-color:var(--line-strong);background:rgba(150,204,170,.08)}
+.alt-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
 .alt-card.low::before{background:#6fd39a}
 .alt-card.mid::before{background:#e3cf7d}
 .alt-card.high::before{background:#e8a35c}
+.alt-card .alt-elev{font-family:var(--mono);font-size:22px;font-weight:700;color:#fff;text-align:center}
+.alt-card .alt-elev small{display:block;font-size:10px;color:var(--sub);font-weight:400;margin-top:2px}
 .alt-card .alt-name{font-size:14px;font-weight:700;color:#fff}
-.alt-card .alt-meta{font-family:var(--mono);font-size:10.5px;color:var(--sub);margin:3px 0 10px}
-.alt-card .alt-temp{font-family:var(--mono);font-size:34px;font-weight:700;color:#fff;line-height:1.05}
-.alt-card .alt-temp small{font-size:15px;color:var(--sub);font-weight:400}
-.alt-card .alt-feel{font-size:11.5px;color:var(--teal);margin:3px 0 10px}
-.alt-card .alt-metrics{font-size:11.5px;color:var(--sub);display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.alt-card .alt-meta{font-family:var(--mono);font-size:10.5px;color:var(--sub);margin:2px 0 0}
+.alt-card .alt-temp{font-family:var(--mono);font-size:28px;font-weight:700;color:#fff;line-height:1.05;text-align:center}
+.alt-card .alt-temp small{font-size:13px;color:var(--sub);font-weight:400}
+.alt-card .alt-feel{font-size:11px;color:var(--sub);text-align:center;margin-top:2px}
+.alt-card .alt-metrics{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--sub);justify-content:flex-end}
 .alt-card .alt-metrics b{color:var(--text);font-family:var(--mono);font-weight:600}
-.alt-card .alt-wear{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(150,204,170,.16);font-size:11.5px;color:var(--dim);line-height:1.6}
+.alt-card .alt-risk{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:700}
+.alt-card .alt-wear{font-size:11px;color:var(--sub);border-top:1px dashed rgba(150,204,170,.15);padding-top:6px;margin-top:6px;grid-column:1/-1}
 .alt-card .alt-wear b{color:var(--sub)}
-.alt-card .alt-risk{display:inline-block;margin-top:8px;font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:3px;font-weight:700}
+@media(max-width:900px){
+  .alt-card{grid-template-columns:80px 1fr;gap:8px}
+  .alt-card .alt-temp{text-align:left}
+  .alt-card .alt-metrics{justify-content:flex-start;grid-column:1/-1}
+}
 /* ---- 新增：数据来源 ---- */
 .src-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px}
 @media(max-width:900px){.src-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.src-grid{grid-template-columns:1fr}}
+#twinLayers{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){#twinLayers{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){#twinLayers{grid-template-columns:1fr}}
 .src-card{background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
 .src-card .src-tag{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase}
 .src-card .src-title{font-size:13px;font-weight:700;color:#fff;margin:4px 0 6px}
@@ -314,6 +399,64 @@ body.bg-atmos-fog{
     </div>
   </header>
 
+  <!-- Hero：第一屏 3D 数字孪生 -->
+  <section id="heroSection">
+    <div id="heroHeader">
+      <div class="hero-title">哀牢山<small>AILAOSHAN ECO-METEOROLOGY DIGITAL TWIN</small></div>
+      <div class="hero-meta" id="heroMeta">模型加载中…<br>99 格点 · 9 模型 · DEM 三维</div>
+    </div>
+    <div id="heroBody">
+      <div id="hero3DWrap">
+        <div id="three3DContainer">
+          <div id="three3DTooltip"></div>
+          <div id="three3DClickInfo">
+            <span class="ci-close" onclick="window.closeClickInfo && window.closeClickInfo()">✕</span>
+            <div class="ci-head" id="ciHead">—</div>
+            <div class="ci-sub" id="ciSub">—</div>
+            <div id="ciRows"></div>
+          </div>
+          <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
+          <div id="three3DRoutes">
+            <button class="rbtn" data-route="0">① 半日路线 · 耳海环线</button>
+            <button class="rbtn" data-route="1">② 深度路线 · 石门峡→金山森林</button>
+            <button class="rbtn" data-route="2">③ 日出挑战 · 金山丫口</button>
+          </div>
+          <div id="three3DScale">
+            <div class="scale-title">海拔 ELEV</div>
+            <div class="scale-bar"></div>
+            <div class="scale-max" id="scaleMax">3078m</div>
+            <div class="scale-min" id="scaleMin">452m</div>
+          </div>
+          <div id="three3DHint">🖱️ 左键拖拽旋转 · 滚轮缩放 · 右键平移 · 悬停查看 · 点击地形查看当地天气</div>
+        </div>
+      </div>
+      <div id="heroSide">
+        <div class="hero-card">
+          <div class="hc-title">当前天气</div>
+          <div class="hc-value" id="heroTemp">—<small>°C</small></div>
+          <div class="hc-desc" id="heroWeatherDesc">加载中…</div>
+        </div>
+        <div class="hero-card">
+          <div class="hc-title">哀牢山徒步指数</div>
+          <div class="hc-stars" id="heroStars">★★★★★</div>
+          <div class="hc-desc" id="heroHikingDesc">温度适宜 · 降雨较少 · 能见度良好</div>
+        </div>
+        <div class="hero-card">
+          <div class="hc-title">云海 / 云雾概率</div>
+          <div class="hc-value" id="heroCloudSea">—<small>%</small></div>
+          <div class="hc-bar"><i id="heroCloudSeaBar" style="width:0%"></i></div>
+          <div class="hc-desc" id="heroCloudSeaDesc">湿度+温差+风速综合</div>
+        </div>
+        <div class="hero-card">
+          <div class="hc-title">推荐路线</div>
+          <div class="hc-value" style="font-size:18px" id="heroRoute">金山森林</div>
+          <div class="hc-desc" id="heroRouteDesc">半日轻松 · 原始森林</div>
+        </div>
+        <button id="heroExploreBtn" onclick="window.startExplore && window.startExplore()">🚁 开始探索哀牢山</button>
+      </div>
+    </div>
+  </section>
+
   <div class="panel">
     <h2>📊 综合风险指数总表 <span class="badge" id="riskCount">—</span></h2>
     <div class="desc">综合指数 = 40%×强对流峰值 + 15%×浓雾峰值 + 30%×地形敏感性(山洪/泥石流/塌方最高) + 15%×坡度因子 · 30 个网格点 + 主要公路统一排序 · 指数 0-100 · 每次刷新实时更新</div>
@@ -344,6 +487,12 @@ body.bg-atmos-fog{
     <div class="summary" id="weatherSummary"><div class="loading">加载中…</div></div>
   </div>
 
+  <div class="panel" id="ecoIndexPanel">
+    <h2><span class="sec-no">SYS-02B</span>🌿 哀牢山生态体验指数</h2>
+    <div class="desc">把气象数据转化为徒步、观云海、森林浴的直观指数 · 基于实时温度/湿度/降水/能见度/风速/紫外线综合计算</div>
+    <div class="eco-grid" id="ecoIndexContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
+  </div>
+
   <div class="panel" id="altitudePanel">
     <h2><span class="sec-no">SYS-03</span>⛰ 按海拔层天气差异</h2>
     <div class="desc">同一时刻不同海拔的天气截然不同：温度随海拔每升高 1000m 约下降 6.5°C，风速、湿度、浓雾概率随海拔升高而增强。下表基于各海拔代表点实时预报 + 地形校正，进山前请对照你的目标海拔。</div>
@@ -370,6 +519,7 @@ body.bg-atmos-fog{
     <h2>📍 景点一键聚焦 <span class="badge" id="poiBadge">点击 → 3D 聚焦</span></h2>
     <div class="desc">点击景点，3D 地形相机将自动飞向该点位并弹出当地天气卡（海拔/气温/能见度/云海概率）· 若 3D 尚未加载完成会自动滚动到 3D 面板</div>
     <div class="poi-grid" id="poiGrid"><div class="loading">加载中…</div></div>
+    <div id="poiDetail" style="display:none;margin-top:12px"></div>
   </div>
 
   <div class="panel" id="routePanel">
@@ -502,30 +652,8 @@ body.bg-atmos-fog{
     <div class="desc" id="terrain3DNote">加载中…</div>
     <div class="summary" id="terrain3DSummary"><div class="loading">计算中…</div></div>
     <h3 style="margin-top:14px">🌐 3D全景地形可视化（Three.js 真实3D）</h3>
-    <div class="desc">Three.js 实时渲染 169×209 精细 DEM 高度场（35,321 顶点 / 70,000+ 三角面）· 左上45°太阳光照与山体投影阴影 · 摄影风海拔配色 · 真实道路/河流/森林 · 鼠标悬停显示海拔、坡度与地形风险增强</div>
-    <div id="three3DContainer">
-      <div id="three3DTooltip"></div>
-      <div id="three3DClickInfo">
-        <span class="ci-close" onclick="window.closeClickInfo && window.closeClickInfo()">✕</span>
-        <div class="ci-head" id="ciHead">—</div>
-        <div class="ci-sub" id="ciSub">—</div>
-        <div id="ciRows"></div>
-      </div>
-      <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
-      <div id="three3DRoutes">
-        <button class="rbtn" data-route="0">① 半日路线 · 耳海环线</button>
-        <button class="rbtn" data-route="1">② 深度路线 · 石门峡→金山森林</button>
-        <button class="rbtn" data-route="2">③ 日出挑战 · 金山丫口</button>
-      </div>
-      <div id="three3DScale">
-        <div class="scale-title">海拔 ELEV</div>
-        <div class="scale-bar"></div>
-        <div class="scale-max" id="scaleMax">3078m</div>
-        <div class="scale-min" id="scaleMin">452m</div>
-      </div>
-      <div id="three3DHint">🖱️ 左键拖拽旋转 · 滚轮缩放 · 右键平移 · 悬停查看 · 点击地形查看当地天气</div>
-      <div class="desc" style="margin-top:6px;font-size:12px">⬇️ <b>GLB 地形模型导出</b>：<a href="models/terrain_3d.glb" download style="color:var(--teal)">terrain_3d.glb</a>（594顶点/1092面·含海拔配色顶点色·可导入 Blender/Unity/UE/GIS）；高精 35,321 顶点 DEM 版可用仓库 <code>scripts/export_glb.py --full</code> 生成</div>
-    </div>
+    <div class="desc">Three.js 实时渲染 169×209 精细 DEM 高度场（35,321 顶点 / 70,000+ 三角面）· 左上45°太阳光照与山体投影阴影 · 摄影风海拔配色 · 真实道路/河流/森林 · 鼠标悬停显示海拔、坡度与地形风险增强 · 第一屏 Hero 区已嵌入实时 3D 场景</div>
+    <div class="desc" style="margin-top:6px;font-size:12px">⬇️ <b>GLB 地形模型导出</b>：<a href="models/terrain_3d.glb" download style="color:var(--teal)">terrain_3d.glb</a>（594顶点/1092面·含海拔配色顶点色·可导入 Blender/Unity/UE/GIS）；高精 35,321 顶点 DEM 版可用仓库 <code>scripts/export_glb.py --full</code> 生成</div>
     <div class="legend-row" style="margin-top:8px">
       <span><i style="background:#1a4824"></i>&lt;1000m 河谷雨林</span>
       <span><i style="background:#589642"></i>1000-1500m 常绿阔叶林</span>
@@ -630,8 +758,14 @@ body.bg-atmos-fog{
   </section>
 
   <section class="panel" id="sourcesPanel">
-    <h2><span class="sec-no">DATA</span>🔬 数据来源与技术说明</h2>
+    <h2><span class="sec-no">DATA</span>🔬 数据来源与数字孪生说明</h2>
     <div class="desc">所有数据在本页浏览器端实时计算与渲染，无需后端服务器；每次打开/刷新页面即拉取最新预报。</div>
+    <h3 style="margin-top:4px;color:var(--teal)">🌐 什么是哀牢山数字孪生？</h3>
+    <div class="desc" style="background:rgba(98,196,232,.04);border-left:3px solid var(--blue);padding:12px 16px;border-radius:4px;margin-bottom:14px;line-height:1.9">
+      本系统将<b style="color:var(--text)">哀牢山真实地形</b>（MERIT DEM 精细高程，35,321 顶点）与<b style="color:var(--text)">实时气象数据</b>（Open-Meteo 99 格点逐小时预报）在浏览器中融合为三维数字孪生体。<br>
+      <b style="color:var(--text)">数字孪生 ≠ 3D 地图</b>：它不仅还原山体形态，更在每一帧将 9 个机器学习模型的预测结果（强对流、浓雾、山洪、泥石流、塌方、道路安全）叠加到对应海拔与地形位置上，使 3D 场景中的云雾飘移、风险色块、景点天气都与真实气象同步变化。<br>
+      你可以拖拽旋转 3D 山体、点击任意位置查看当地天气、一键飞行探索三条经典路线——看到的就是当前真实气象驱动下的哀牢山。
+    </div>
     <div class="src-grid">
       <div class="src-card">
         <div class="src-tag">Terrain · DEM</div>
@@ -671,7 +805,32 @@ body.bg-atmos-fog{
           <li><b>ECharts 5.4.3</b> 趋势图表</li>
           <li>左上 45° 太阳光照 + 山体投影阴影 + 距离雾效</li>
           <li>程序化森林 / 道路 / 河流 / 地名标签 / 等高线</li>
+          <li><b>云雾粒子系统</b>：56 个半透明精灵，随风速实时漂移</li>
+          <li>相机飞行路线动画 · 景点点击聚焦 · 探索模式</li>
         </ul>
+      </div>
+    </div>
+    <h3 style="margin-top:16px;color:var(--teal)">🗂 数字孪生四层架构</h3>
+    <div class="desc" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px" id="twinLayers">
+      <div class="src-card" style="text-align:center">
+        <div class="src-tag" style="color:var(--orange)">L1 · 地形层</div>
+        <div style="font-size:22px;margin:6px 0">🏔️</div>
+        <div style="font-size:12px;color:var(--sub);line-height:1.6">MERIT DEM 高程场<br>坡度/坡向/粗糙度<br>山脊谷地识别</div>
+      </div>
+      <div class="src-card" style="text-align:center">
+        <div class="src-tag" style="color:var(--blue)">L2 · 气象层</div>
+        <div style="font-size:22px;margin:6px 0">🌦️</div>
+        <div style="font-size:12px;color:var(--sub);line-height:1.6">Open-Meteo 99 格点<br>13 要素逐小时<br>未来 72h 预报</div>
+      </div>
+      <div class="src-card" style="text-align:center">
+        <div class="src-tag" style="color:var(--teal)">L3 · 模型层</div>
+        <div style="font-size:22px;margin:6px 0">🧠</div>
+        <div style="font-size:12px;color:var(--sub);line-height:1.6">9 个 ML 模型推理<br>双模型交叉验证<br>等渗校准 + 地形增强</div>
+      </div>
+      <div class="src-card" style="text-align:center">
+        <div class="src-tag" style="color:var(--yellow)">L4 · 孪生层</div>
+        <div style="font-size:22px;margin:6px 0">🌐</div>
+        <div style="font-size:12px;color:var(--sub);line-height:1.6">3D 场景实时同步<br>云雾/风险/天气联动<br>交互式探索</div>
       </div>
     </div>
     <div class="verify-note" style="margin-top:14px">⚠️ 本页为研究性预警系统，实际出行与预警请以<b style="color:var(--text)">中国气象局</b>及<b style="color:var(--text)">哀牢山管护局</b>官方发布为准；进入保护区请严格遵守进山规范。</div>
@@ -691,16 +850,16 @@ body.bg-atmos-fog{
   </footer>
 </div>
 
-<script src="js/site.js?v=2026081503"></script>
-<script src="js/gb.js?v=2026081503"></script>
-<script src="js/fx.js?v=2026081503"></script>
-<script src="js/app.js?v=2026081503"></script>
-<script src="js/terrain3d.js?v=2026081503"></script>
+<script src="js/site.js?v=2026081504"></script>
+<script src="js/gb.js?v=2026081504"></script>
+<script src="js/fx.js?v=2026081504"></script>
+<script src="js/app.js?v=2026081504"></script>
+<script src="js/terrain3d.js?v=2026081504"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装） */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("sw.js?v=2026081503").catch(()=>{});
+    navigator.serviceWorker.register("sw.js?v=2026081504").catch(()=>{});
   });
 }
 </script>
