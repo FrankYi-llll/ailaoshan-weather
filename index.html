@@ -125,17 +125,17 @@ body::before{
 }
 .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 64px}
 /* ---- 头部：监测台风格 ---- */
-header{border-bottom:1px solid var(--line);padding:16px 0 14px;margin-bottom:16px;
+header{border-bottom:1px solid var(--line);padding:12px 0 10px;margin-bottom:12px;
   display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px;
   position:relative}
 header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:linear-gradient(90deg, transparent, var(--teal), transparent);opacity:.35}
-.brand-id{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;opacity:.9;
+.brand-id{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--teal);text-transform:uppercase;opacity:.8;
   animation:brandPulse 4s ease-in-out infinite}
-@keyframes brandPulse{0%,100%{opacity:.7}50%{opacity:1}}
-header h1{font-size:24px;font-weight:700;letter-spacing:.5px;margin-top:2px}
-header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px}
-.meta{font-size:12px;color:var(--sub);margin-top:6px;font-family:var(--mono)}
+@keyframes brandPulse{0%,100%{opacity:.65}50%{opacity:1}}
+header h1{font-size:22px;font-weight:700;letter-spacing:.3px;margin-top:2px}
+header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:8px}
+.meta{font-size:11.5px;color:var(--sub);margin-top:4px;font-family:var(--mono)}
 /* ---- 通用 ---- */
 .badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11.5px;font-family:var(--mono);
   background:rgba(111,211,154,.12);color:var(--teal);border:1px solid rgba(111,211,154,.35);margin-left:6px}
@@ -245,11 +245,17 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 #three3DTooltip .tip-sub{color:#c3d8c8;margin-top:2px}
 #three3DTooltip .tip-note{color:var(--sub);font-size:11px;margin-top:3px;border-top:1px dashed rgba(150,204,170,.18);padding-top:3px}
 #three3DHint{position:absolute;left:12px;bottom:10px;z-index:8;font-size:10.5px;color:rgba(216,231,219,.5);pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.85);font-family:var(--mono)}
-#tourBtn{position:absolute;right:12px;top:12px;z-index:8;padding:7px 14px;border-radius:4px;border:1px solid rgba(150,204,170,.35);background:rgba(4,14,9,.72);color:#cfe6d4;font-size:12px;cursor:pointer;backdrop-filter:blur(6px);font-family:var(--mono)}
-#tourBtn:hover{background:rgba(111,211,154,.15);border-color:var(--teal)}
+/* ===== 3D 角落控件：默认收起，点击展开 ===== */
+#three3DCtrl{position:absolute;right:12px;top:12px;z-index:8;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+#ctrlToggleBtn{padding:7px 14px;border-radius:4px;border:1px solid rgba(150,204,170,.35);background:rgba(4,14,9,.72);color:#cfe6d4;font-size:12px;cursor:pointer;backdrop-filter:blur(6px);font-family:var(--mono);transition:all .15s}
+#ctrlToggleBtn:hover{background:rgba(111,211,154,.15);border-color:var(--teal)}
+#ctrlToggleBtn.open{background:rgba(111,211,154,.18);border-color:var(--teal);color:var(--teal)}
+#ctrlMenu{display:none;flex-direction:column;gap:6px;align-items:flex-end}
+#three3DCtrl.open #ctrlMenu{display:flex}
+#tourBtn{padding:6px 12px;border-radius:4px;border:1px solid rgba(150,204,170,.3);background:rgba(4,14,9,.72);color:#9fc4a8;font-size:11.5px;cursor:pointer;backdrop-filter:blur(6px);font-family:var(--mono);transition:all .15s}
+#tourBtn:hover{color:#fff;border-color:var(--teal);background:rgba(111,211,154,.15)}
 #tourBtn.active{background:rgba(98,196,232,.2);border-color:var(--blue);font-weight:700;color:var(--blue)}
-/* 路线飞行按钮组（3D 右上角） */
-#three3DRoutes{position:absolute;right:12px;top:52px;z-index:8;display:flex;flex-direction:column;gap:6px}
+#three3DRoutes{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 #three3DRoutes .rbtn{padding:6px 12px;border-radius:4px;border:1px solid rgba(150,204,170,.3);background:rgba(4,14,9,.72);color:#9fc4a8;font-size:11.5px;cursor:pointer;backdrop-filter:blur(6px);text-align:left;font-family:var(--mono);transition:all .15s}
 #three3DRoutes .rbtn:hover{color:#fff;border-color:var(--orange);background:rgba(232,163,92,.15)}
 #three3DRoutes .rbtn.active{color:#04130a;background:var(--orange);border-color:var(--orange);font-weight:700}
@@ -265,9 +271,9 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 #three3DClickInfo .ci-row:last-child{border-bottom:none}
 #three3DClickInfo .ci-row span{color:var(--sub)}
 #three3DClickInfo .ci-row b{font-family:var(--mono);color:var(--text)}
-#three3DScale{position:absolute;right:12px;bottom:12px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none}
-#three3DScale .scale-title{font-size:9.5px;color:rgba(216,231,219,.55);font-family:var(--mono);letter-spacing:1px}
-#three3DScale .scale-bar{width:12px;height:130px;border-radius:3px;border:1px solid rgba(150,204,170,.35);
+#three3DScale{position:absolute;right:12px;bottom:12px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;opacity:.75}
+#three3DScale .scale-title{display:none}
+#three3DScale .scale-bar{width:10px;height:96px;border-radius:3px;border:1px solid rgba(150,204,170,.35);
   background:linear-gradient(to top,#1a4824 0%,#307032 14%,#589642 28%,#8eaa52 42%,#b49c5e 58%,#ac7c48 72%,#946240 86%,#e9e7f0 100%)}
 #three3DScale .scale-max,#three3DScale .scale-min{font-size:9.5px;color:rgba(216,231,219,.65);font-family:var(--mono)}
 /* ---- Hero：第一屏 3D 数字孪生 ---- */
@@ -453,11 +459,11 @@ body.bg-atmos-fog{
 @media(max-width:760px){
   .wrap{padding:10px 8px 40px}
   /* 头部 */
-  header{padding:12px 0 10px;margin-bottom:12px}
-  header h1{font-size:17px;line-height:1.4}
-  header h1 small{display:block;margin-left:0;margin-top:4px;font-size:11px}
-  .brand-id{font-size:9px;letter-spacing:1.5px}
-  .meta{font-size:11px;line-height:1.5}
+  header{padding:10px 0 8px;margin-bottom:10px}
+  header h1{font-size:16px;line-height:1.35}
+  header h1 small{display:block;margin-left:0;margin-top:3px;font-size:10.5px}
+  .brand-id{font-size:8.5px;letter-spacing:1px}
+  .meta{font-size:10.5px;line-height:1.45}
   .badge{font-size:10.5px;padding:1px 8px}
   /* 面板 */
   .panel{padding:12px 12px;margin-bottom:12px}
@@ -483,9 +489,10 @@ body.bg-atmos-fog{
   #three3DContainer{height:340px}
   #weatherChart{height:280px}
   #three3DClickInfo{width:180px;font-size:11px;max-width:calc(100vw - 24px)}
-  #three3DRoutes{top:auto;bottom:10px;left:10px;right:auto;flex-direction:row;flex-wrap:wrap;max-width:55%}
-  #three3DRoutes .rbtn{padding:4px 8px;font-size:10px}
-  #tourBtn{top:8px;right:8px;padding:5px 10px;font-size:11px}
+  #ctrlToggleBtn{padding:5px 10px;font-size:11px}
+  #tourBtn{padding:5px 10px;font-size:11px}
+  #three3DRoutes .rbtn{padding:5px 10px;font-size:10.5px}
+  #three3DCtrl{right:8px;top:8px}
   #windGauge{display:none!important}
   #three3DTooltip{max-width:200px;font-size:11px}
   /* 触摸目标 —— 按钮加大 */
@@ -550,36 +557,46 @@ body.bg-atmos-fog{
   #floatNav .fn-item{padding:3px 4px}
 }
 
-/* ===== 悬浮快速导航（标签常驻 · 高亮联动） ===== */
+/* ===== 悬浮快速导航（默认收起为圆点，hover/点击展开） ===== */
 #floatNav{
   position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:80;
-  display:flex;flex-direction:column;gap:1px;
+  display:flex;flex-direction:column;gap:2px;align-items:center;
   background:rgba(5,13,9,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid var(--line-strong);border-radius:12px;padding:8px 7px 6px;
+  border:1px solid var(--line-strong);border-radius:20px;padding:10px 6px;
   box-shadow:0 6px 28px rgba(0,0,0,.5);
-  min-width:100px;
+  width:32px;overflow:hidden;
+  transition:width .25s ease,padding .25s ease,background .25s ease;
+}
+#floatNav:hover,#floatNav.expanded{
+  width:auto;min-width:118px;align-items:stretch;padding:10px 10px 10px 8px;
+  background:rgba(5,13,9,.94);
 }
 #floatNav .fn-title{
-  font-size:10px;color:var(--sub);text-align:center;
-  padding:0 4px 6px;margin-bottom:3px;
+  font-size:9px;color:var(--dim);text-align:center;
+  padding:0 2px 5px;margin-bottom:2px;
   border-bottom:1px solid var(--line);
-  font-family:var(--mono);letter-spacing:1.5px;
+  font-family:var(--mono);letter-spacing:1px;
+  white-space:nowrap;opacity:0;transition:opacity .2s;
 }
+#floatNav:hover .fn-title,#floatNav.expanded .fn-title{opacity:1}
 #floatNav .fn-item{
-  display:flex;align-items:center;gap:7px;
-  cursor:pointer;border-radius:6px;padding:4px 8px;
-  color:var(--sub);font-size:12px;line-height:1.3;white-space:nowrap;
-  transition:color .18s,background .18s;
+  display:flex;align-items:center;justify-content:center;
+  gap:0;cursor:pointer;border-radius:16px;padding:6px;
+  color:var(--sub);font-size:12px;line-height:1;white-space:nowrap;
+  transition:color .18s,background .18s,gap .2s;
 }
+#floatNav:hover .fn-item,#floatNav.expanded .fn-item{justify-content:flex-start;gap:8px;padding:5px 8px;border-radius:6px}
 #floatNav .fn-dot{
   width:8px;height:8px;border-radius:50%;flex-shrink:0;
   background:var(--dim);border:1px solid var(--line-strong);
   transition:background .2s,box-shadow .2s,transform .2s,border-color .2s;
 }
 #floatNav .fn-label{
-  font-size:11.5px;font-family:var(--mono);letter-spacing:.3px;
-  opacity:.7;transition:opacity .18s;
+  font-size:11px;font-family:var(--mono);letter-spacing:.3px;
+  opacity:0;max-width:0;transition:opacity .2s,max-width .25s ease;
+  overflow:hidden;
 }
+#floatNav:hover .fn-label,#floatNav.expanded .fn-label{opacity:.75;max-width:120px}
 /* hover */
 #floatNav .fn-item:hover{background:rgba(111,211,154,.1);color:var(--teal)}
 #floatNav .fn-item:hover .fn-label{opacity:1}
@@ -588,7 +605,6 @@ body.bg-atmos-fog{
 #floatNav .fn-item.active{
   color:var(--teal);
   background:rgba(111,211,154,.14);
-  border-radius:6px;
 }
 #floatNav .fn-item.active .fn-label{opacity:1;font-weight:600}
 #floatNav .fn-item.active .fn-dot{
@@ -598,54 +614,55 @@ body.bg-atmos-fog{
 }
 /* 返回顶部 */
 #floatNav .fn-top{
-  margin-top:3px;padding-top:5px;border-top:1px solid var(--line);
+  margin-top:4px;padding-top:6px;border-top:1px solid var(--line);
   color:var(--sub)
 }
 #floatNav .fn-top:hover{color:var(--blue)}
 #floatNav .fn-top:hover .fn-dot{background:var(--blue);box-shadow:0 0 8px rgba(98,196,232,.5);border-color:var(--blue)}
 @media(max-width:760px){
-  #floatNav{right:6px;padding:6px 5px;gap:1px;min-width:auto}
+  #floatNav{right:6px;padding:6px 4px;width:28px}
+  #floatNav:hover,#floatNav.expanded{width:auto;min-width:108px;padding:8px 8px 8px 6px}
   #floatNav .fn-title{display:none}
-  #floatNav .fn-item{padding:5px 6px;gap:5px}
-  #floatNav .fn-label{display:none}
-  #floatNav .fn-item:hover .fn-label{display:inline;opacity:1}
-  #floatNav .fn-item.active .fn-label{display:inline;opacity:1;font-weight:600}
+  #floatNav .fn-item{padding:5px;border-radius:14px}
+  #floatNav:hover .fn-item,#floatNav.expanded .fn-item{padding:4px 7px;border-radius:5px;gap:7px}
+  #floatNav .fn-dot{width:7px;height:7px}
 }
 
-/* ===== 顶部数据源权威声明条 ===== */
+/* ===== 顶部数据源权威声明条（更紧凑） ===== */
 #srcDisclaimer{
-  background:rgba(240,100,108,.10);border-bottom:1px solid rgba(240,100,108,.25);
-  padding:6px 16px;font-size:12px;color:var(--sub);text-align:center;line-height:1.6;
+  background:rgba(240,100,108,.08);border-bottom:1px solid rgba(240,100,108,.18);
+  padding:4px 14px;font-size:11px;color:var(--dim);text-align:center;line-height:1.5;
   position:relative;z-index:90;
 }
-#srcDisclaimer b{color:var(--red)}
+#srcDisclaimer b{color:var(--red);font-weight:600}
 #srcDisclaimer .src-modal-btn{
-  margin-left:8px;padding:1px 8px;border-radius:3px;border:1px solid var(--line-strong);
-  background:rgba(150,204,170,.06);color:var(--teal);font-size:11px;cursor:pointer;font-family:var(--mono);
+  margin-left:6px;padding:1px 6px;border-radius:3px;border:1px solid var(--line);
+  background:rgba(150,204,170,.05);color:var(--teal);font-size:10px;cursor:pointer;font-family:var(--mono);
   transition:background .2s;
 }
-#srcDisclaimer .src-modal-btn:hover{background:rgba(111,211,154,.14)}
+#srcDisclaimer .src-modal-btn:hover{background:rgba(111,211,154,.12)}
 @media(max-width:760px){
-  #srcDisclaimer{font-size:11px;padding:5px 10px}
+  #srcDisclaimer{font-size:10px;padding:3px 8px}
+  #srcDisclaimer .src-modal-btn{font-size:9.5px}
 }
 
-/* ===== 顶部固定风险警示横幅 ===== */
+/* ===== 顶部固定风险警示横幅（更紧凑） ===== */
 #riskBanner{
   position:sticky;top:0;z-index:85;
-  display:flex;align-items:center;gap:14px;
-  padding:10px 18px;font-size:13px;line-height:1.5;
+  display:flex;align-items:center;gap:12px;
+  padding:8px 16px;font-size:12.5px;line-height:1.4;
   transition:background .4s,border-color .4s;
   border-bottom:1px solid var(--line);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
-#riskBanner .rb-icon{font-size:26px;flex-shrink:0;line-height:1}
+#riskBanner .rb-icon{font-size:22px;flex-shrink:0;line-height:1}
 #riskBanner .rb-body{flex:1;min-width:0}
-#riskBanner .rb-level{font-size:16px;font-weight:700;letter-spacing:.5px}
-#riskBanner .rb-actions{font-size:12.5px;margin-top:3px;opacity:.92}
-#riskBanner .rb-value{font-family:var(--mono);font-size:22px;font-weight:700;flex-shrink:0}
+#riskBanner .rb-level{font-size:15px;font-weight:700;letter-spacing:.3px}
+#riskBanner .rb-actions{font-size:12px;margin-top:1px;opacity:.9}
+#riskBanner .rb-value{font-family:var(--mono);font-size:18px;font-weight:700;flex-shrink:0}
 #riskBanner .rb-toggle{
-  flex-shrink:0;padding:4px 10px;border-radius:4px;border:1px solid var(--line-strong);
-  background:rgba(150,204,170,.06);color:var(--sub);font-size:11.5px;cursor:pointer;
+  flex-shrink:0;padding:3px 8px;border-radius:4px;border:1px solid var(--line-strong);
+  background:rgba(150,204,170,.06);color:var(--sub);font-size:11px;cursor:pointer;
   font-family:var(--mono);transition:background .2s;
 }
 #riskBanner .rb-toggle:hover{background:rgba(150,204,170,.12)}
@@ -659,11 +676,11 @@ body.bg-atmos-fog{
 #riskBanner.rb-extreme .rb-level,#riskBanner.rb-extreme .rb-value{color:#f0646c}
 #riskBanner.rb-extreme{border-bottom-color:rgba(240,100,108,.30)}
 @media(max-width:760px){
-  #riskBanner{padding:8px 12px;gap:8px;font-size:12px}
-  #riskBanner .rb-icon{font-size:22px}
-  #riskBanner .rb-level{font-size:14px}
-  #riskBanner .rb-value{font-size:18px}
-  #riskBanner .rb-actions{font-size:11.5px}
+  #riskBanner{padding:6px 10px;gap:8px;font-size:11.5px}
+  #riskBanner .rb-icon{font-size:20px}
+  #riskBanner .rb-level{font-size:13.5px}
+  #riskBanner .rb-value{font-size:16px}
+  #riskBanner .rb-actions{font-size:11px}
   #riskBanner .rb-toggle{display:none}
 }
 
@@ -692,19 +709,27 @@ body.bg-atmos-fog{
   border-radius:6px;padding:10px 14px;font-size:12px;color:var(--sub);line-height:1.7;margin-top:8px;
 }
 
+/* ===== 顶部工具栏 ===== */
+#topBar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:12px;padding:8px 12px;
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  flex-wrap:wrap;
+}
 /* ===== 视图切换器 ===== */
 #viewToggle{
-  display:flex;gap:0;margin:0 auto;border-radius:6px;overflow:hidden;
-  border:1px solid var(--line-strong);background:var(--panel);
+  display:flex;gap:0;border-radius:6px;overflow:hidden;
+  border:1px solid var(--line-strong);background:rgba(0,0,0,.12);
 }
 #viewToggle .vt-btn{
-  padding:6px 16px;font-size:12.5px;font-family:var(--mono);cursor:pointer;
+  padding:5px 12px;font-size:12px;font-family:var(--mono);cursor:pointer;
   border:none;background:transparent;color:var(--sub);transition:background .2s,color .2s;
 }
 #viewToggle .vt-btn.active{background:rgba(111,211,154,.14);color:var(--teal);font-weight:600}
 #viewToggle .vt-btn:hover:not(.active){background:rgba(150,204,170,.06)}
 @media(max-width:760px){
-  #viewToggle .vt-btn{padding:5px 10px;font-size:11.5px}
+  #topBar{padding:6px 8px;gap:8px}
+  #viewToggle .vt-btn{padding:4px 10px;font-size:11.5px}
 }
 
 /* 专业视图标记：大众视图下隐藏 */
@@ -779,22 +804,23 @@ body.view-public #altVerifyPanel{display:none!important}
 
 /* ===== 工具栏（GPS/通知/分享/轻量化） ===== */
 #toolBar{
-  display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px;align-items:center;
+  display:flex;gap:6px;flex-wrap:wrap;align-items:center;
 }
 #toolBar .tb-btn{
-  padding:6px 12px;border-radius:5px;border:1px solid var(--line-strong);
-  background:var(--panel);color:var(--sub);font-size:12px;cursor:pointer;
-  font-family:var(--mono);transition:background .2s,color .2s;
-  display:flex;align-items:center;gap:5px;
+  padding:6px 9px;border-radius:5px;border:1px solid var(--line-strong);
+  background:rgba(0,0,0,.12);color:var(--sub);font-size:13px;cursor:pointer;
+  font-family:var(--mono);transition:background .2s,color .2s,border-color .2s;
+  display:flex;align-items:center;gap:4px;
+  line-height:1;
 }
-#toolBar .tb-btn:hover{background:rgba(111,211,154,.10);color:var(--teal)}
+#toolBar .tb-btn:hover{background:rgba(111,211,154,.10);color:var(--teal);border-color:rgba(111,211,154,.35)}
 #toolBar .tb-btn.active{background:rgba(111,211,154,.14);color:var(--teal);border-color:var(--teal)}
 #toolBar .tb-btn .tb-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--dim);transition:background .2s;
+  width:6px;height:6px;border-radius:50%;background:var(--dim);transition:background .2s;
 }
 #toolBar .tb-btn.active .tb-dot{background:var(--teal);box-shadow:0 0 6px rgba(111,211,154,.6)}
 @media(max-width:760px){
-  #toolBar .tb-btn{padding:5px 8px;font-size:11px}
+  #toolBar .tb-btn{padding:5px 7px;font-size:12px}
 }
 
 /* ===== 图表筛选标签 ===== */
@@ -992,19 +1018,19 @@ body.view-public #altVerifyPanel{display:none!important}
     </div>
   </header>
 
-  <!-- 视图切换 + 工具栏 -->
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
+  <!-- 顶部工具栏：视图切换 + 快捷操作 -->
+  <div id="topBar">
     <div id="viewToggle">
-      <button class="vt-btn active" data-view="public" onclick="setView('public')">🧭 大众出行</button>
-      <button class="vt-btn" data-view="pro" onclick="setView('pro')">🔬 专业研判</button>
+      <button class="vt-btn active" data-view="public" onclick="setView('public')">大众</button>
+      <button class="vt-btn" data-view="pro" onclick="setView('pro')">专业</button>
     </div>
     <div id="toolBar">
-      <button class="tb-btn" id="btnGPS" onclick="toggleGPS()"><span class="tb-dot"></span>📍 定位</button>
-      <button class="tb-btn" id="btnNotify" onclick="toggleNotify()"><span class="tb-dot"></span>🔔 预警推送</button>
-      <button class="tb-btn" id="btnLite3D" onclick="toggleLite3D()"><span class="tb-dot"></span>⚡ 轻量3D</button>
-      <button class="tb-btn" onclick="shareRisk()">📤 分享风险</button>
-      <button class="tb-btn" id="btnInstallApp" style="display:none" onclick="installPWA()">📱 安装App</button>
-      <button class="tb-btn" onclick="manualRefresh()"><span class="tb-dot"></span>🔄 手动刷新</button>
+      <button class="tb-btn" id="btnGPS" onclick="toggleGPS()" title="GPS定位"><span class="tb-dot"></span>📍</button>
+      <button class="tb-btn" id="btnNotify" onclick="toggleNotify()" title="预警推送"><span class="tb-dot"></span>🔔</button>
+      <button class="tb-btn" id="btnLite3D" onclick="toggleLite3D()" title="轻量3D"><span class="tb-dot"></span>⚡</button>
+      <button class="tb-btn" onclick="shareRisk()" title="分享">📤</button>
+      <button class="tb-btn" id="btnInstallApp" style="display:none" onclick="installPWA()" title="安装App">📱</button>
+      <button class="tb-btn" onclick="manualRefresh()" title="刷新"><span class="tb-dot"></span>🔄</button>
     </div>
   </div>
   <div id="gpsInfo">
@@ -1029,11 +1055,16 @@ body.view-public #altVerifyPanel{display:none!important}
             <div class="ci-sub" id="ciSub">—</div>
             <div id="ciRows"></div>
           </div>
-          <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
-          <div id="three3DRoutes">
-            <button class="rbtn" data-route="0">① 半日路线 · 耳海环线</button>
-            <button class="rbtn" data-route="1">② 深度路线 · 石门峡→金山森林</button>
-            <button class="rbtn" data-route="2">③ 日出挑战 · 金山丫口</button>
+          <div id="three3DCtrl">
+            <button id="ctrlToggleBtn" onclick="toggleHeroCtrl(this)">🎬 视角 / 路线</button>
+            <div id="ctrlMenu">
+              <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
+              <div id="three3DRoutes">
+                <button class="rbtn" data-route="0">① 半日 · 耳海环线</button>
+                <button class="rbtn" data-route="1">② 深度 · 石门峡→金山</button>
+                <button class="rbtn" data-route="2">③ 日出 · 金山丫口</button>
+              </div>
+            </div>
           </div>
           <div id="three3DScale">
             <div class="scale-title">海拔 ELEV</div>
@@ -1041,7 +1072,7 @@ body.view-public #altVerifyPanel{display:none!important}
             <div class="scale-max" id="scaleMax">3078m</div>
             <div class="scale-min" id="scaleMin">452m</div>
           </div>
-          <div id="three3DHint">🖱️ 左键拖拽旋转 · 滚轮缩放 · 右键平移 · 悬停查看 · 点击地形查看当地天气</div>
+          <div id="three3DHint">🖱️ 拖拽旋转 · 滚轮缩放 · 点击地形查看当地天气</div>
         </div>
       </div>
       <div id="heroSide">
@@ -1592,16 +1623,16 @@ body.view-public #altVerifyPanel{display:none!important}
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081520"></script>
-<script src="js/gb.js?v=2026081520"></script>
-<script src="js/fx.js?v=2026081520"></script>
-<script src="js/app.js?v=2026081520"></script>
-<script src="js/terrain3d.js?v=2026081520"></script>
+<script src="js/site.js?v=2026081521"></script>
+<script src="js/gb.js?v=2026081521"></script>
+<script src="js/fx.js?v=2026081521"></script>
+<script src="js/app.js?v=2026081521"></script>
+<script src="js/terrain3d.js?v=2026081521"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081520").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081521").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -1628,6 +1659,35 @@ if("serviceWorker" in navigator){
 </script>
 
 <script>
+/* ===== 3D 角落控件：视角/路线 展开收起 ===== */
+window.toggleHeroCtrl = function(btn){
+  var wrap = document.getElementById("three3DCtrl");
+  if(!wrap) return;
+  var open = wrap.classList.toggle("open");
+  if(btn) btn.classList.toggle("open", open);
+};
+/* 点击外部自动收起 */
+document.addEventListener("click", function(e){
+  var wrap = document.getElementById("three3DCtrl");
+  if(wrap && !wrap.contains(e.target)){
+    wrap.classList.remove("open");
+    var b = document.getElementById("ctrlToggleBtn");
+    if(b) b.classList.remove("open");
+  }
+});
+/* 选中路线/视角后自动收起 */
+document.addEventListener("click", function(e){
+  var t = e.target;
+  if(t && (t.id === "tourBtn" || (t.classList && t.classList.contains("rbtn")))){
+    setTimeout(function(){
+      var wrap = document.getElementById("three3DCtrl");
+      if(wrap) wrap.classList.remove("open");
+      var b = document.getElementById("ctrlToggleBtn");
+      if(b) b.classList.remove("open");
+    }, 200);
+  }
+});
+
 /* ===== 悬浮快速导航：点击跳转 + 滚动联动高亮 ===== */
 (function(){
   var nav = document.getElementById("floatNav");
@@ -1640,15 +1700,27 @@ if("serviceWorker" in navigator){
     var el = document.getElementById(id);
     if(el){ sections.push({el:el, item:it}); }
   });
+  // 点击展开/收起（触屏无 hover）
+  var expanded = false;
+  function setExpand(v){
+    expanded = v;
+    nav.classList.toggle("expanded", v);
+  }
+  nav.addEventListener("click", function(e){ setExpand(true); });
+  document.addEventListener("click", function(e){
+    if(!nav.contains(e.target)) setExpand(false);
+  });
   // 点击跳转
   items.forEach(function(it){
-    it.addEventListener("click", function(){
-      if(it._isTop){ window.scrollTo({top:0,behavior:"smooth"}); return; }
+    it.addEventListener("click", function(e){
+      e.stopPropagation();
+      if(it._isTop){ window.scrollTo({top:0,behavior:"smooth"}); setExpand(false); return; }
       var el = document.getElementById(it.getAttribute("data-target"));
       if(el){
         var top = el.getBoundingClientRect().top + window.pageYOffset - 12;
         window.scrollTo({top:top, behavior:"smooth"});
       }
+      setExpand(false);
     });
   });
   // 滚动联动高亮（IntersectionObserver 优先，回退 scroll）
