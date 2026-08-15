@@ -630,7 +630,7 @@ async function renderAltitudeWeather(){
     '<div class="alt-card '+band.key+'" style="opacity:.4">'+
       '<div class="alt-elev">'+band.elev+'m<small>'+band.name.split("·")[0]+'</small></div>'+
       '<div class="alt-name">'+band.name+'</div>'+
-      '<div style="color:var(--sub);font-size:12px;margin-top:10px">正在拉取 Open-Meteo 实时数据…</div>'+
+      '<div style="color:var(--sub);font-size:12px;margin-top:10px">正在等待 Open-Meteo 数据（约需 10-30 秒）…</div>'+
     '</div>'
   ).join("");
   const data = await fetchAltitudeBands();
@@ -1032,7 +1032,7 @@ window.selectPOI = function(id){
   const w = weatherAt(wp.lat, wp.lon);
   const data = computeRoutes();
   const r = data && data.waypoints.find(x=>x.id===id);
-  let weatherHtml = '<div style="color:var(--sub);font-size:12px">天气数据加载中…</div>';
+  let weatherHtml = '<div style="color:var(--sub);font-size:12px">天气数据加载中（约需 10-30 秒）…</div>';
   if(w && w.series && w.series.length){
     const cur = w.series[0];
     const next24 = w.series.slice(0, 24);
@@ -2641,9 +2641,22 @@ async function main(){
     window.HEIGHT_MAP = HEIGHT_MAP;
     window.TERRAIN3D = TERRAIN3D;
     window.TERR = TERR;
-    $("meta").innerHTML = "模型加载完成，正在拉取最新气象预报（Open-Meteo 99 格点，分3批）…";
+    $("meta").innerHTML = "模型加载完成，正在拉取最新气象预报（Open-Meteo 99 格点，分3批，约需 10-30 秒）…";
+    // 长等待提示：30 秒后若仍未完成，给用户一个友好的说明
+    const longWaitTimer = setTimeout(function(){
+      $("meta").innerHTML = '数据仍在加载中，Open-Meteo 从海外服务器拉取 99 格点数据可能较慢… <button onclick="retryLoadWeather()" style="margin-left:8px;padding:4px 12px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer">🔄 重试</button>';
+    }, 30000);
     // 预报
-    const raw = await predictGrid(t, f, 24, roadModel);
+    const raw = await predictGrid(t, f, 24, roadModel, function(ev){
+      if(ev.type === "batch"){
+        $("meta").innerHTML = "正在拉取 Open-Meteo 第 "+ev.current+"/"+ev.total+" 批数据（"+ev.points+" 格点）…";
+      }else if(ev.type === "retry"){
+        $("meta").innerHTML = "Open-Meteo 第 "+ev.attempt+"/"+ev.total+" 次重试中…";
+      }else if(ev.type === "cache"){
+        $("meta").innerHTML = "使用本地缓存气象数据（10 分钟内有效）…";
+      }
+    });
+    clearTimeout(longWaitTimer);
     // 计算综合风险与地形标签
     GRID = raw.map(g=>{
       const ri = riskIndexFor(g);

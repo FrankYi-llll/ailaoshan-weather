@@ -1293,7 +1293,7 @@ body.view-public #altVerifyPanel{display:none!important}
     <h2>⛰️ 地质灾害分流域精细化演算</h2>
     <div class="desc">DEM 地形敏感性 + 实时降水阈值（1h/3h/24h）耦合计算各流域地质灾害触发概率</div>
     <div id="geoHazardContent" style="margin-top:10px">
-      <div class="desc" style="color:var(--dim)">正在计算地质灾害风险…</div>
+      <div class="desc" style="color:var(--dim)">正在等待 Open-Meteo 气象数据（99 格点，约需 10-30 秒）…</div>
     </div>
   </div>
 
@@ -1623,16 +1623,16 @@ body.view-public #altVerifyPanel{display:none!important}
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081521"></script>
-<script src="js/gb.js?v=2026081521"></script>
-<script src="js/fx.js?v=2026081521"></script>
-<script src="js/app.js?v=2026081521"></script>
-<script src="js/terrain3d.js?v=2026081521"></script>
+<script src="js/site.js?v=2026081522"></script>
+<script src="js/gb.js?v=2026081522"></script>
+<script src="js/fx.js?v=2026081522"></script>
+<script src="js/app.js?v=2026081522"></script>
+<script src="js/terrain3d.js?v=2026081522"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081521").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081522").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -2233,7 +2233,7 @@ window.fetchTriModel = async function(){
 window.renderGeoHazard = function(){
   var el = document.getElementById("geoHazardContent");
   if(!el || !window.GRID || !window.GRID.length || !window.TERR){
-    if(el) el.innerHTML = '<div class="desc" style="color:var(--dim)">等待气象数据加载…</div>';
+    if(el) el.innerHTML = '<div class="desc" style="color:var(--dim)">正在等待 Open-Meteo 气象数据（约需 10-30 秒）…</div>';
     return;
   }
   var grid = window.GRID;

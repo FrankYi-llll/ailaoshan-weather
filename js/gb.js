@@ -171,7 +171,7 @@ function setOMCache(data){
 
 function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
 
-async function fetchOneBatch(pts, retries){
+async function fetchOneBatch(pts, retries, onProgress){
   const params = new URLSearchParams({
     latitude: pts.map(p=>p.lat).join(","),
     longitude: pts.map(p=>p.lon).join(","),
@@ -184,10 +184,13 @@ async function fetchOneBatch(pts, retries){
   let lastErr;
   for(let attempt=0; attempt<retries; attempt++){
     try{
-      if(attempt>0) await sleep((Math.pow(2, attempt) + Math.random()) * 1000);
-      // 超时保护：15秒未响应则中止
+      if(attempt>0){
+        if(onProgress) onProgress({type:"retry", attempt: attempt+1, total: retries, points: pts.length});
+        await sleep((Math.pow(2, attempt) + Math.random()) * 1000);
+      }
+      // 超时保护：30秒未响应则中止（99格点多变量大 JSON 在国内网络可能需 10-20 秒）
       const ctrl = new AbortController();
-      const timer = setTimeout(function(){ ctrl.abort(); }, 15000);
+      const timer = setTimeout(function(){ ctrl.abort(); }, 30000);
       const resp = await fetch(url, {cache:"no-store", signal:ctrl.signal});
       clearTimeout(timer);
       if(!resp.ok){
@@ -218,16 +221,16 @@ async function fetchOneBatch(pts, retries){
         })),
       }));
     }catch(e){
-      if(e.name === "AbortError") lastErr = new Error("Open-Meteo 请求超时（15秒）");
+      if(e.name === "AbortError") lastErr = new Error("Open-Meteo 请求超时（30秒）");
       else lastErr = e;
     }
   }
   throw lastErr || new Error("批次请求失败");
 }
 
-async function fetchAllGrid(hours){
+async function fetchAllGrid(hours, onProgress){
   const cached = getOMCache();
-  if(cached){ cached._fromCache = true; return cached; }
+  if(cached){ cached._fromCache = true; if(onProgress) onProgress({type:"cache"}); return cached; }
 
   try{
     const pts = gridPoints();
@@ -239,9 +242,10 @@ async function fetchAllGrid(hours){
     }
     const results = [];
     for(let b=0; b<batches.length; b++){
-      // 批间间隔 500ms 避免短时间并发
-      if(b>0) await sleep(500);
-      const batchResult = await fetchOneBatch(batches[b], 3);
+      if(onProgress) onProgress({type:"batch", current: b+1, total: batches.length, points: batches[b].length});
+      // 批间间隔 300ms 避免短时间并发
+      if(b>0) await sleep(300);
+      const batchResult = await fetchOneBatch(batches[b], 3, onProgress);
       results.push(...batchResult);
     }
     setOMCache(results);
@@ -279,10 +283,10 @@ window.retryLoadWeather = async function(){
 };
 
 /* ---------- 逐格点双模型推理 ---------- */
-async function predictGrid(modelT, modelF, hours=24, modelR){
+async function predictGrid(modelT, modelF, hours=24, modelR, onProgress){
   setFeaturesOrder(modelT.features);
   if(modelR) setRoadFeaturesOrder(modelR.features);
-  const raw = await fetchAllGrid(hours);
+  const raw = await fetchAllGrid(hours, onProgress);
   const now = new Date();
   const nowIso = localHourKey(now);
   const mapped = raw.map(g=>{
