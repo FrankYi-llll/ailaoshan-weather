@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<title>哀牢山天气 - 实时气象灾害预警 · 强对流/浓雾/山洪/道路安全 | 公开版</title>
-<meta name="description" content="哀牢山天气实时预警平台：基于9个机器学习模型预测未来24小时强对流、浓雾、山洪、泥石流、塌方及道路出行安全风险。3D地形可视化，覆盖新平、双柏、镇沅、大雪锅山、金山丫口等区域，数据每次刷新实时更新，无需安装任何软件即可打开。">
-<meta name="keywords" content="哀牢山天气,哀牢山天气预报,哀牢山,天气预警,云南新平,戛洒镇,大雪锅山,金山丫口,石门峡,茶马古道,金山原始森林,强对流,浓雾,山洪,泥石流,塌方,道路安全,镇沅,双柏,哀牢山国家级自然保护区">
+<title>哀牢山智能生态气象三维可视化系统 - 实时灾害预警 · 强对流/浓雾/山洪/道路安全</title>
+<meta name="description" content="哀牢山智能生态气象三维可视化系统：基于9个机器学习模型预测未来24小时强对流、浓雾、山洪、泥石流、塌方及道路出行安全风险，DEM驱动的Three.js三维数字孪生地形，支持按海拔层温差预报、云海概率、紫外线与空气质量监测。覆盖新平、双柏、镇沅、大雪锅山、金山丫口等区域。">
+<meta name="keywords" content="哀牢山天气,哀牢山天气预报,哀牢山,哀牢山智能生态气象三维可视化系统,天气预警,云南新平,戛洒镇,大雪锅山,金山丫口,石门峡,茶马古道,金山原始森林,强对流,浓雾,山洪,泥石流,塌方,道路安全,云海概率,镇沅,双柏,哀牢山国家级自然保护区">
 <meta name="robots" content="index,follow">
-<meta name="author" content="哀牢山天气预警">
+<meta name="author" content="哀牢山智能生态气象三维可视化系统">
 <meta name="theme-color" content="#0f1c30">
 <link rel="canonical" href="https://frankyi-llll.github.io/ailaoshan-weather/">
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-<meta property="og:title" content="哀牢山天气 - 实时气象灾害预警">
-<meta property="og:description" content="9模型交叉验证 + 3D地形 + 道路安全评估。强对流、浓雾、山洪、泥石流、塌方风险实时预警。进山前必看。">
+<link rel="manifest" href="manifest.json">
+<meta property="og:title" content="哀牢山智能生态气象三维可视化系统">
+<meta property="og:description" content="DEM驱动的Three.js三维数字孪生地形 · 9模型交叉验证 · 强对流/浓雾/山洪/泥石流/塌方风险实时预警 · 云海概率 · 按海拔层温差预报。进山前必看。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://frankyi-llll.github.io/ailaoshan-weather/">
 <meta property="og:locale" content="zh_CN">
@@ -22,8 +23,8 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="哀牢山天气 - 实时气象灾害预警">
-<meta name="twitter:description" content="9模型交叉验证 + 3D地形 + 道路安全评估。进山前必看。">
+<meta name="twitter:title" content="哀牢山智能生态气象三维可视化系统">
+<meta name="twitter:description" content="Three.js三维数字孪生 + 9模型交叉验证。强对流、浓雾、山洪、泥石流、塌方风险实时预警，进山前必看。">
 <meta name="twitter:image" content="https://frankyi-llll.github.io/ailaoshan-weather/assets/ailaoshan_map.png">
 <!-- 如需在百度/360/搜狗搜索中收录并显示官网标，请把以下内容替换为各站长平台提供的真实验证码 -->
 <meta name="baidu-site-verification" content="code-PLACEHOLDER">
@@ -33,8 +34,8 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "哀牢山天气 - 实时气象灾害预警",
-  "description": "哀牢山区域强对流/浓雾/山洪/泥石流/塌方/道路安全综合风险实时预警, 9模型交叉验证, 3D地形可视化, 浏览器端实时计算",
+  "name": "哀牢山智能生态气象三维可视化系统",
+  "description": "哀牢山区域强对流/浓雾/山洪/泥石流/塌方/道路安全综合风险实时预警, 9模型交叉验证, DEM驱动的Three.js三维数字孪生地形, 浏览器端实时计算",
   "url": "https://frankyi-llll.github.io/ailaoshan-weather/",
   "image": "https://frankyi-llll.github.io/ailaoshan-weather/assets/ailaoshan_map.png",
   "applicationCategory": "WeatherApplication",
@@ -213,14 +214,101 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 .hike-main .hs-items{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:11.5px;color:var(--sub)}
 .hike-main .hs-items b{color:var(--text);font-family:var(--mono)}
 @media(max-width:600px){.hike-card{flex-direction:column}.hike-score{border-right:none;border-bottom:1px dashed rgba(150,204,170,.18);padding-right:0;padding-bottom:12px}}
+/* ============================================================
+ * 沉浸式动态背景（氛围由 fx.js 按天气切换）
+ * ============================================================ */
+body{transition:background 1.2s ease}
+body.bg-atmos-sunny{
+  background:
+    radial-gradient(1100px 520px at 78% -8%, rgba(255,214,140,.16), transparent 62%),
+    radial-gradient(900px 480px at 8% 22%, rgba(120,190,160,.12), transparent 55%),
+    linear-gradient(180deg,#0a1c14 0%,#0e2a1c 55%,#123527 100%);
+}
+body.bg-atmos-partly{
+  background:
+    radial-gradient(1000px 480px at 70% -5%, rgba(200,220,255,.10), transparent 60%),
+    radial-gradient(800px 420px at 15% 30%, rgba(90,150,120,.14), transparent 55%),
+    linear-gradient(180deg,#081712 0%,#0b2418 60%,#0d2c1e 100%);
+}
+body.bg-atmos-overcast{
+  background:
+    radial-gradient(900px 500px at 50% -5%, rgba(160,190,210,.10), transparent 60%),
+    linear-gradient(180deg,#070f0d 0%,#0a1a13 60%,#0c2218 100%);
+}
+body.bg-atmos-rain{
+  background:
+    radial-gradient(900px 500px at 50% -5%, rgba(120,150,180,.14), transparent 60%),
+    linear-gradient(180deg,#050c0d 0%,#08161a 55%,#0a1d1f 100%);
+}
+body.bg-atmos-fog{
+  background:
+    radial-gradient(1000px 560px at 50% 10%, rgba(190,205,210,.14), transparent 65%),
+    linear-gradient(180deg,#060d0c 0%,#0b1c17 60%,#0d241d 100%);
+}
+/* ============================================================
+ * 骨架屏（数据加载前占位）
+ * ============================================================ */
+.loading.sk{display:flex;flex-direction:column;gap:10px;padding:18px}
+.sk-bar{height:13px;border-radius:4px;background:linear-gradient(90deg,rgba(150,204,170,.06),rgba(150,204,170,.16),rgba(150,204,170,.06));background-size:200% 100%;animation:skShine 1.3s linear infinite}
+@keyframes skShine{to{background-position:-200% 0}}
+/* ============================================================
+ * 景点模块（可点击 → 3D 聚焦）
+ * ============================================================ */
+.poi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:4px}
+.poi-btn{position:relative;text-align:left;padding:10px 12px;border-radius:6px;border:1px solid var(--line);background:rgba(150,204,170,.05);color:var(--text);cursor:pointer;transition:all .15s;font-size:12.5px;line-height:1.5}
+.poi-btn:hover{border-color:var(--teal);background:rgba(111,211,154,.1);transform:translateY(-1px)}
+.poi-btn.active{border-color:var(--orange);background:rgba(232,163,92,.12);box-shadow:0 0 0 1px rgba(232,163,92,.4)}
+.poi-btn .poi-name{font-weight:700;font-size:13px}
+.poi-btn .poi-sub{font-size:10.5px;color:var(--sub);font-family:var(--mono);margin-top:2px}
+.poi-btn .poi-tag{position:absolute;right:8px;top:8px;font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;background:rgba(111,211,154,.15);color:var(--teal)}
+.poi-btn .poi-tag.hot{background:rgba(232,163,92,.18);color:var(--orange)}
+.poi-btn .poi-tag.cold{background:rgba(98,196,232,.16);color:var(--blue)}
+/* ============================================================
+ * 预警中心
+ * ============================================================ */
+.warn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:900px){.warn-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.warn-grid{grid-template-columns:1fr}}
+.warn-item{border-radius:6px;padding:12px 14px;border:1px solid var(--line);background:rgba(150,204,170,.04)}
+.warn-item .warn-icon{font-size:18px}
+.warn-item .warn-name{font-size:12.5px;font-weight:700;margin:4px 0 2px}
+.warn-item .warn-val{font-family:var(--mono);font-size:22px;font-weight:700}
+.warn-item .warn-lv{font-size:11px;font-family:var(--mono);margin-top:4px;padding:2px 8px;border-radius:3px;display:inline-block}
+.warn-item .warn-tip{font-size:10.5px;color:var(--dim);margin-top:6px;line-height:1.5}
+/* ============================================================
+ * 科普模块
+ * ============================================================ */
+.science details{border:1px solid var(--line);border-radius:6px;margin-bottom:10px;background:rgba(150,204,170,.03);overflow:hidden}
+.science summary{cursor:pointer;padding:12px 16px;font-size:13.5px;font-weight:600;color:var(--text);list-style:none;display:flex;align-items:center;gap:8px}
+.science summary::-webkit-details-marker{display:none}
+.science summary::after{content:"▸";margin-left:auto;color:var(--teal);transition:transform .2s}
+.science details[open] summary::after{transform:rotate(90deg)}
+.science .sci-body{padding:0 16px 14px;font-size:12.5px;color:var(--sub);line-height:1.9}
+/* ============================================================
+ * 响应式优化（手机端）
+ * ============================================================ */
+@media(max-width:760px){
+  .wrap{padding:12px 10px 48px}
+  header h1{font-size:18px}
+  header h1 small{display:block;margin-left:0;margin-top:3px}
+  .brand-id{font-size:9px;letter-spacing:1.5px}
+  .panel{padding:14px 14px}
+  #three3DContainer{height:360px}
+  #weatherChart{height:300px}
+  #three3DClickInfo{width:210px;font-size:11px}
+  #three3DRoutes{top:auto;bottom:12px;left:12px;right:auto;flex-direction:row;flex-wrap:wrap;max-width:60%}
+  #three3DRoutes .rbtn{padding:4px 8px;font-size:10px}
+  #tourBtn{top:8px;right:8px;padding:5px 10px;font-size:11px}
+  #windGauge{display:none!important}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
-      <div class="brand-id">AILAOSHAN · WEATHER MONITORING STATION</div>
-      <h1>⛰ 哀牢山实时气象灾害预警 <small>公开版 · 9模型交叉验证 + 3D地形模拟</small>
+      <div class="brand-id">AILAOSHAN · SMART ECO-METEOROLOGY · 3D DIGITAL TWIN</div>
+      <h1>⛰ 哀牢山智能生态气象三维可视化系统 <small>9模型交叉验证 · DEM数字孪生地形 · 实时灾害预警</small>
         <span class="badge" id="freshBadge">等待数据</span></h1>
       <div class="meta" id="meta">正在加载模型与最新预报… <span style="color:var(--sub)">（本页每次刷新/打开都会重新拉取最新数据）</span></div>
     </div>
@@ -242,6 +330,12 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
       <tbody id="riskTbody"><tr><td colspan="7" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
     </table></div>
     <div class="verify-note" id="riskTips"></div>
+  </div>
+
+  <div class="panel" id="warnCenterPanel">
+    <h2><span class="sec-no">SYS-01</span>🚨 实时预警中心</h2>
+    <div class="desc">聚合 9 模型与 3D 地形增强结果，输出六大类风险当前最高等级与未来 24h 峰值 · 等级按"预警 &gt; 较高 &gt; 关注 &gt; 低"取最高</div>
+    <div class="warn-grid" id="warnCenterContent"><div class="loading">计算中…</div></div>
   </div>
 
   <div class="panel" id="weatherPanel">
@@ -270,6 +364,12 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
     <h2>🧭 出行建议</h2>
     <div class="desc">基于综合风险指数、强对流/浓雾概率、地形敏感性与气象条件自动生成 · 仅供参考，以官方发布为准</div>
     <div id="adviceContent"><div class="loading">加载中…</div></div>
+  </div>
+
+  <div class="panel" id="poiPanel">
+    <h2>📍 景点一键聚焦 <span class="badge" id="poiBadge">点击 → 3D 聚焦</span></h2>
+    <div class="desc">点击景点，3D 地形相机将自动飞向该点位并弹出当地天气卡（海拔/气温/能见度/云海概率）· 若 3D 尚未加载完成会自动滚动到 3D 面板</div>
+    <div class="poi-grid" id="poiGrid"><div class="loading">加载中…</div></div>
   </div>
 
   <div class="panel" id="routePanel">
@@ -507,6 +607,27 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
     <p style="margin-top:8px">功能亮点：实时风险指数、未来24小时趋势图、3D全景地形、地名标注、景区开放状态、推荐徒步路线、道路安全出行建议。适用于登山、徒步、自驾、科考及保护区管理前的快速天气风险评估。</p>
   </section>
 
+  <section class="panel science" id="sciencePanel">
+    <h2>🔭 关于哀牢山 · 科普小贴士</h2>
+    <div class="desc">进山前 5 分钟，了解这座山的脾气。</div>
+    <details>
+      <summary>🧭 为什么哀牢山"磁场异常"、指南针会失灵？</summary>
+      <div class="sci-body">哀牢山地处横断山脉南延余脉，山体由数条深大断裂带（红河断裂等）控制。山体含大量铁磁性矿物（玄武岩、辉长岩类），在地质图上呈明显磁异常条带；加上峡谷深切、地形起伏剧烈，局部地磁要素（磁偏角/磁倾角）与全球磁场模型差异较大。因此林深处、峡谷中指南针可能出现明显偏差，官方一再提醒：<b>切勿仅凭指南针在原始林中导航，务必结伴、沿既定路线、带 GPS 设备</b>。</div>
+    </details>
+    <details>
+      <summary>🌫 为什么哀牢山常年云雾缭绕、雾气特别重？</summary>
+      <div class="sci-body">哀牢山是云南南北向的巨大屏障（最高 3137.6m），从红河谷地到山脊相对高差超 2600m。印度洋/孟加拉湾暖湿气流被山体强迫抬升，冷却凝结成云；山间"U 型谷"地形又形成冷池效应，夜间辐射降温后水汽近地面饱和，清晨极易形成浓雾与平流雾。<b>能见度常低于 200m，是本系统把它列为最高优先级指标的原因</b>。</div>
+    </details>
+    <details>
+      <summary>🌄 为什么这里是"云海摄影天堂"？</summary>
+      <div class="sci-body">云海形成三要素：高湿度 + 明显昼夜温差 + 微风。秋冬清晨，山体夜间辐射冷却、谷底形成逆温层，暖湿空气在逆温层顶凝结成云海，日出前后温差最大、风力最小，云海概率最高。本系统基于湿度/温差/风速给出<b>云海概率</b>启发式指数（见实况天气面板），供摄影爱好者参考。</div>
+    </details>
+    <details>
+      <summary>⛈ 为什么强对流、山洪风险集中在午后？</summary>
+      <div class="sci-body">夏季午后太阳加热坡面，暖湿空气沿谷地辐合上升，触发对流单体（局地雷暴），伴随短时强降水。山区集水面积小、河道比降大，洪水上涨极快；谷底与山脊温差大，还易出现阵性大风。本系统建议：<b>14:00 前完成下山、远离河道与陡坡</b>。</div>
+    </details>
+  </section>
+
   <section class="panel" id="sourcesPanel">
     <h2><span class="sec-no">DATA</span>🔬 数据来源与技术说明</h2>
     <div class="desc">所有数据在本页浏览器端实时计算与渲染，无需后端服务器；每次打开/刷新页面即拉取最新预报。</div>
@@ -569,9 +690,18 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
   </footer>
 </div>
 
-<script src="js/site.js?v=2026081501"></script>
-<script src="js/gb.js?v=2026081501"></script>
-<script src="js/app.js?v=2026081501"></script>
-<script src="js/terrain3d.js?v=2026081501"></script>
+<script src="js/site.js?v=2026081502"></script>
+<script src="js/gb.js?v=2026081502"></script>
+<script src="js/fx.js?v=2026081502"></script>
+<script src="js/app.js?v=2026081502"></script>
+<script src="js/terrain3d.js?v=2026081502"></script>
+<script>
+/* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装） */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js?v=2026081502").catch(()=>{});
+  });
+}
+</script>
 </body>
 </html>

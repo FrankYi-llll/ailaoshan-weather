@@ -843,24 +843,15 @@
     }
     return best && bd < 14 ? best.name + (bd > 6 ? " 附近" : "") : "所选位置";
   }
-  function onTerrainClick(e){
-    const dom = renderer.domElement;
-    const rect = dom.getBoundingClientRect();
-    const mx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const my = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(new THREE.Vector2(mx, my), camera);
-    const hits = raycaster.intersectObject(terrainMesh, false);
-    if(!hits.length) return;
-    const pt = hits[0].point;
-    const lon = HM().lon_range[0] + (pt.x + X0) / KX;
-    const lat = HM().lat_range[0] + (pt.z + Z0) / KZ;
+  /* ---------- 景点一键聚焦（app.js 景点模块调用） ---------- */
+  function fillClickInfo(lat, lon, nameOverride){
+    const panel = $("three3DClickInfo");
+    if(!panel) return;
     const e2 = elevAt(lat, lon);
     const slope = slopeDegAt(lat, lon);
     let w = null;
     try{ w = window.__weatherAt ? window.__weatherAt(lat, lon) : null; }catch(err){}
-    const panel = $("three3DClickInfo");
-    if(!panel) return;
-    const name = nearestPlaceName(lat, lon);
+    const name = nameOverride || nearestPlaceName(lat, lon);
     const row = (k, v, col) => '<div class="ci-row"><span>'+k+'</span><b style="'+(col?'color:'+col+';':'')+'">'+v+'</b></div>';
     let rows = row("海拔", Math.round(e2) + " m") + row("坡度", slope.toFixed(1) + "°");
     if(w && w.series && w.series.length){
@@ -868,11 +859,14 @@
       const next24 = w.series.slice(0, 24);
       const totalP = next24.reduce((a,s)=>a+(s.precip||0), 0);
       const maxWg = Math.max(...next24.map(s=>s.wg||0));
+      const maxT = Math.max(...next24.map(s=>s.temp)), minT = Math.min(...next24.map(s=>s.temp));
+      const csp = (typeof window.__cloudSeaProb === "function") ? window.__cloudSeaProb(cur.rh, maxT - minT, cur.ws) : null;
       const tempCol = cur.temp >= 22 ? "#e8a35c" : cur.temp <= 5 ? "#62c4e8" : "#fff";
       rows += row("当前气温", cur.temp + "°C", tempCol);
       rows += row("湿度 / 云量", Math.round(cur.rh) + "% / " + Math.round(cur.cloud) + "%");
       rows += row("阵风", Math.round(maxWg*10)/10 + " m/s");
       rows += row("24h 降水", Math.round(totalP*10)/10 + " mm");
+      rows += row("云海概率", csp != null ? csp + "%" : "—", csp != null && csp >= 70 ? "#62c4e8" : csp != null && csp >= 45 ? "#6fd39a" : "#fff");
       rows += row("强对流峰值", Math.round(w.peakP*100) + "%", w.peakP >= 0.5 ? "#f0646c" : w.peakP >= 0.3 ? "#e3cf7d" : "#6fd39a");
       rows += row("浓雾峰值", Math.round(w.peakF*100) + "%", w.peakF >= 0.5 ? "#f0646c" : w.peakF >= 0.3 ? "#e3cf7d" : "#6fd39a");
       rows += row("能见度", cur.vis != null ? cur.vis + " km" : "—");
@@ -885,6 +879,46 @@
     const rowsEl = document.getElementById("ciRows");
     if(rowsEl) rowsEl.innerHTML = rows;
     panel.style.display = "block";
+  }
+  window.flyToPlace = function(lat, lon, name, elev){
+    const panel3d = $("terrain3DPanel");
+    if(!initialized || !camera || !controls || !terrainMesh){
+      // 3D 未就绪：确保面板可见并滚动过去
+      if(panel3d) panel3d.style.display = "block";
+      if(panel3d && panel3d.scrollIntoView) panel3d.scrollIntoView({behavior:"smooth", block:"start"});
+      setTimeout(()=> window.flyToPlace && window.flyToPlace(lat, lon, name, elev), 800);
+      return;
+    }
+    if(panel3d && panel3d.scrollIntoView) panel3d.scrollIntoView({behavior:"smooth", block:"start"});
+    stopFly();
+    const x = lon2x(lon), z = lat2z(lat);
+    const y = elevAt(lat, lon) * VERT;
+    const dist = Math.max(9, 7 + (elev||1500) / 700);
+    const camPos = new THREE.Vector3(x + dist * 0.62, y + dist * 0.78, z + dist * 0.62);
+    flyTo(camPos, new THREE.Vector3(x, y + 0.5, z));
+    // 飞行到位后填充信息卡
+    setTimeout(()=> fillClickInfo(lat, lon, name), 1450);
+    // 高亮对应景点按钮
+    document.querySelectorAll("#poiGrid .poi-btn").forEach(b=> b.classList.remove("active"));
+    setTimeout(()=>{
+      document.querySelectorAll("#poiGrid .poi-btn").forEach(b=>{
+        if(b.textContent.indexOf(name) >= 0) b.classList.add("active");
+      });
+    }, 200);
+  };
+
+  function onTerrainClick(e){
+    const dom = renderer.domElement;
+    const rect = dom.getBoundingClientRect();
+    const mx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const my = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(new THREE.Vector2(mx, my), camera);
+    const hits = raycaster.intersectObject(terrainMesh, false);
+    if(!hits.length) return;
+    const pt = hits[0].point;
+    const lon = HM().lon_range[0] + (pt.x + X0) / KX;
+    const lat = HM().lat_range[0] + (pt.z + Z0) / KZ;
+    fillClickInfo(lat, lon, null);
   }
   window.closeClickInfo = function(){
     const panel = $("three3DClickInfo");

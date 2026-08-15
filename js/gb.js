@@ -175,7 +175,7 @@ async function fetchOneBatch(pts, retries){
   const params = new URLSearchParams({
     latitude: pts.map(p=>p.lat).join(","),
     longitude: pts.map(p=>p.lon).join(","),
-    hourly: "temperature_2m,relative_humidity_2m,surface_pressure,cloud_cover,wind_speed_10m,wind_gusts_10m,precipitation,dew_point_2m,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,visibility,is_day,shortwave_radiation",
+    hourly: "temperature_2m,relative_humidity_2m,surface_pressure,cloud_cover,wind_speed_10m,wind_gusts_10m,precipitation,dew_point_2m,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,visibility,is_day,shortwave_radiation,uv_index",
     forecast_days: "3",
     past_days: "0",
     timezone: "Asia/Shanghai",
@@ -210,6 +210,7 @@ async function fetchOneBatch(pts, retries){
           vis: g.hourly.visibility ? g.hourly.visibility[k] : null,
           isDay: g.hourly.is_day ? g.hourly.is_day[k] : null,
           rad: g.hourly.shortwave_radiation ? g.hourly.shortwave_radiation[k] : 0,
+          uv: g.hourly.uv_index ? g.hourly.uv_index[k] : null,
         })),
       }));
     }catch(e){ lastErr = e; }
@@ -325,7 +326,7 @@ function regionSeries(grid){
   const n = grid[0].series.length;
   const out = [];
   for(let i=0;i<n;i++){
-    let maxP=0, maxF=0, maxR=0, temp=0, rh=0, precip=0, cloud=0, ws=0, wg=0, vis=0, rad=0, isDay=1;
+    let maxP=0, maxF=0, maxR=0, temp=0, rh=0, precip=0, cloud=0, ws=0, wg=0, vis=0, rad=0, uv=0, isDay=1;
     for(const g of grid){
       const s = g.series[i];
       maxP = Math.max(maxP, s.p);
@@ -335,6 +336,7 @@ function regionSeries(grid){
       ws += s.ws||0; wg += s.wg||0;
       if(s.vis != null) vis = Math.max(vis, s.vis);
       if(s.rad != null) rad = Math.max(rad, s.rad);
+      if(s.uv != null) uv = Math.max(uv, s.uv);
       if(s.isDay != null) isDay = s.isDay;
     }
     const m = grid.length;
@@ -349,6 +351,7 @@ function regionSeries(grid){
       wg: Math.round(wg/m*10)/10,
       vis: vis > 0 ? Math.round(vis/100)/10 : null,  // km
       rad: Math.round(rad),
+      uv: uv ? Math.round(uv*10)/10 : null,
       isDay: isDay
     });
   }
@@ -360,3 +363,75 @@ function localHourKey(d){
   const p = n => String(n).padStart(2,"0");
   return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:00`;
 }
+
+/* ---------- 空气质量（Open-Meteo Air Quality API，代表点，失败不阻塞主流程） ---------- */
+const AQ_POINTS = [
+  {name:"戛洒镇",  lat:24.08,  lon:101.60},
+  {name:"金山原始森林", lat:23.945, lon:101.51},
+  {name:"金山丫口", lat:23.939, lon:101.50},
+];
+const AQ_CACHE_KEY = "ailaoshan_aq_cache_v1";
+const AQ_CACHE_TTL = 30 * 60 * 1000;
+
+function getAqCache(){
+  try{
+    const s = localStorage.getItem(AQ_CACHE_KEY);
+    if(!s) return null;
+    const o = JSON.parse(s);
+    if(Date.now() - o.ts > AQ_CACHE_TTL) return null;
+    return o.data;
+  }catch(e){ return null; }
+}
+function setAqCache(data){
+  try{ localStorage.setItem(AQ_CACHE_KEY, JSON.stringify({ts:Date.now(), data})); }catch(e){}
+}
+
+async function fetchAirQuality(){
+  const cached = getAqCache();
+  if(cached) return cached;
+  try{
+    const params = new URLSearchParams({
+      latitude: AQ_POINTS.map(p=>p.lat).join(","),
+      longitude: AQ_POINTS.map(p=>p.lon).join(","),
+      hourly: "pm2_5,pm10,us_aqi",
+      forecast_days: "2",
+      timezone: "Asia/Shanghai",
+    });
+    const url = "https://air-quality-api.open-meteo.com/v1/air-quality?" + params.toString();
+    const resp = await fetch(url, {cache:"no-store"});
+    if(!resp.ok) return null;
+    const j = await resp.json();
+    const out = AQ_POINTS.map((p,i)=>{
+      const g = j[i] || {};
+      const h = g.hourly || {};
+      const time = (h.time||[]).map(t=>t.slice(0,13)+":00");
+      return {
+        name: p.name, lat: p.lat, lon: p.lon,
+        series: time.map((t,k)=>({
+          t,
+          pm25: h.pm2_5 ? Math.round(h.pm2_5[k]) : null,
+          pm10: h.pm10 ? Math.round(h.pm10[k]) : null,
+          aqi: h.us_aqi ? Math.round(h.us_aqi[k]) : null,
+        }))
+      };
+    });
+    setAqCache(out);
+    return out;
+  }catch(e){ return null; }
+}
+
+/* ---------- 云海概率启发式模型（湿度 + 昼夜温差 + 风速） ---------- */
+/* 哀牢山云海多出现于秋冬清晨：高相对湿度 + 明显昼夜温差 + 低风速 + 低层逆温。
+ * 无官方云海观测，采用物理解释性经验公式，返回 0-100 概率。 */
+function cloudSeaProb(rhNow, tDiff24, wsNow){
+  if(rhNow == null || tDiff24 == null) return null;
+  const s = (v, a, b) => Math.max(0, Math.min(1, (v - a) / (b - a)));
+  const fRh  = s(rhNow, 55, 98);
+  const fTd  = s(tDiff24, 4, 16);
+  const fW   = 1 - s(wsNow, 0, 4.5);
+  const prob = (0.45*fRh + 0.30*fTd + 0.25*fW) * 100;
+  return Math.round(prob);
+}
+
+window.__fetchAirQuality = fetchAirQuality;
+window.__cloudSeaProb = cloudSeaProb;

@@ -311,7 +311,7 @@ function renderRoadSafety(grid, series){
     </details>
   `;
 }
-function renderWeather(series){
+function renderWeather(series, aq){
   if(!series || !series.length){ $("weatherSummary").innerHTML = "暂无数据"; return; }
   const cur = series[0];
   // 未来 24h 统计
@@ -322,14 +322,34 @@ function renderWeather(series){
   const maxRh = Math.max(...next24.map(s=>s.rh));
   const avgWs = next24.reduce((a,s)=>a+(s.ws||0), 0) / next24.length;
   const maxWg = Math.max(...next24.map(s=>s.wg||0));
+  // 云海概率（湿度 + 昼夜温差 + 风速）
+  const csp = (typeof window.__cloudSeaProb === "function")
+    ? window.__cloudSeaProb(cur.rh, maxT - minT, cur.ws) : null;
+  // 能见度分级
+  const visKm = cur.vis;
+  const visCls = visKm == null ? "var(--text)"
+    : visKm < 0.2 ? "var(--red)" : visKm < 1 ? "var(--orange)" : visKm < 8 ? "var(--yellow)" : "var(--teal)";
   const card = (icon, label, val, unit, color) =>
     '<div class="sum-item" style="min-width:110px">'+icon+' '+label+
     '<b style="color:'+(color||'var(--text)')+'">'+val+'<span style="font-size:13px;font-weight:400">'+unit+'</span></b></div>';
+  // AQI 卡（代表点当前值）
+  let aqCard = "";
+  if(aq && aq.length && aq[0].series && aq[0].series.length){
+    const a = aq[0].series[0];
+    if(a.aqi != null){
+      const aqiLv = a.aqi<=50?"var(--teal)":a.aqi<=100?"var(--yellow)":a.aqi<=150?"var(--orange)":"var(--red)";
+      aqCard = card("🏭","空气AQI", a.aqi, " · PM2.5 "+a.pm25+"µg", aqiLv);
+    }
+  }
   $("weatherSummary").innerHTML =
     card("🌡","当前气温", cur.temp, "°C", cur.temp>=25?"#ff9f43":cur.temp<=5?"#4aa3ff":"var(--text)")+
     card("💧","当前湿度", cur.rh, "%", cur.rh>=85?"#4aa3ff":"var(--text)")+
     card("💨","当前风速", cur.ws, " m/s")+
     card("🌬","阵风峰值", Math.round(maxWg*10)/10, " m/s", maxWg>=17?"#ff4d4f":"var(--text)")+
+    card("👁","能见度", visKm != null ? visKm : "—", " km", visCls)+
+    card("☀️","紫外线UV", cur.uv != null ? cur.uv : "—", "", cur.uv>=7?"#ff4d4f":cur.uv>=5?"#ff9f43":"var(--text)")+
+    card("🌫","云海概率", csp != null ? csp : "—", "%", csp!=null&&csp>=70?"#62c4e8":csp!=null&&csp>=45?"#6fd39a":"var(--text)")+
+    aqCard+
     card("📊","24h气温", minT+"~"+maxT, "°C")+
     card("🌧","24h降水", Math.round(totalP*10)/10, " mm", totalP>=25?"#ff4d4f":totalP>=10?"#ff9f43":"var(--text)")+
     card("💧","24h最高湿", Math.round(maxRh), "%")+
@@ -344,7 +364,7 @@ function weatherAt(lat, lon){
     if(g.series && g.series.length){ n = g.series.length; times = g.series.map(s=>s.t); break; }
   }
   if(!n) return null;
-  const acc = Array.from({length:n}, ()=>({p:0,f:0,r:0,temp:0,rh:0,precip:0,cloud:0,ws:0,wg:0,vis:0,visW:0,rad:0,radW:0}));
+  const acc = Array.from({length:n}, ()=>({p:0,f:0,r:0,temp:0,rh:0,precip:0,cloud:0,ws:0,wg:0,vis:0,visW:0,rad:0,radW:0,uv:0,uvW:0}));
   let W = 0;
   for(const g of GRID){
     const s = g.series; if(!s || s.length < n) continue;
@@ -358,6 +378,7 @@ function weatherAt(lat, lon){
       a.cloud += w*t.cloud; a.ws += w*(t.ws||0); a.wg += w*(t.wg||0);
       if(t.vis != null){ a.vis += w*t.vis; a.visW += w; }
       if(t.rad != null){ a.rad += w*t.rad; a.radW += w; }
+      if(t.uv != null){ a.uv += w*t.uv; a.uvW += w; }
     }
   }
   if(!W) return null;
@@ -368,7 +389,8 @@ function weatherAt(lat, lon){
     precip: Math.round(a.precip/W*10)/10, cloud: Math.round(a.cloud/W*10)/10,
     ws: Math.round(a.ws/W*10)/10, wg: Math.round(a.wg/W*10)/10,
     vis: a.visW ? Math.round(a.vis/a.visW/100)/10 : null,  // km
-    rad: a.radW ? Math.round(a.rad/a.radW) : null
+    rad: a.radW ? Math.round(a.rad/a.radW) : null,
+    uv: a.uvW ? Math.round(a.uv/a.uvW*10)/10 : null
   }));
   series.forEach((s,i)=> s.t = times[i]);
   const elev = (typeof elevAt === "function" && window.HEIGHT_MAP) ? Math.round(elevAt(lat, lon)) : null;
@@ -683,6 +705,62 @@ function wpIDW(lat, lon){
     fPeak.push(wt[i] ? accF[i]/wt[i] : 0);
   }
   return {times, tPeak, fPeak};
+}
+
+/* ---------- 预警中心：聚合六大类风险最高等级 ---------- */
+function renderWarningCenter(){
+  const el = $("warnCenterContent");
+  if(!el) return;
+  if(!GRID || !GRID.length){ el.innerHTML = '<div style="grid-column:1/-1;color:var(--sub)">暂无数据</div>'; return; }
+  const lvOf = (p, thr) => p>=thr?"预警":p>=0.6?"较高":p>=0.4?"关注":"低";
+  const T = MODEL_T ? MODEL_T.opt_threshold : 0.793;
+  const F = MODEL_F ? MODEL_F.opt_threshold : 0.978;
+  const R = MODEL_R ? MODEL_R.opt_threshold : 0.6;
+  const maxOf = key => GRID.reduce((a,g)=>Math.max(a, g[key]||0), 0);
+  const maxTer = key => GRID.reduce((a,g)=>(g.terrainHazard && g.terrainHazard[key] != null ? Math.max(a, g.terrainHazard[key]) : a), 0);
+  const items = [
+    {icon:"🌩", name:"强对流", val:Math.round(maxOf("peak_prob")*100)+"%", lv:lvOf(maxOf("peak_prob"), T), tip:"雷暴/冰雹/短时强降水，午后高发"},
+    {icon:"🌫", name:"浓雾", val:Math.round(maxOf("fog_prob")*100)+"%", lv:lvOf(maxOf("fog_prob"), F), tip:"能见度骤降，山区最危险的常态"},
+    {icon:"🌊", name:"山洪", val:Math.round(maxTer("flash")*100)+"%", lv:lvOf(maxTer("flash"), 0.6), tip:"谷地集水快，涨水极迅速"},
+    {icon:"🪨", name:"泥石流", val:Math.round(maxTer("debris")*100)+"%", lv:lvOf(maxTer("debris"), 0.6), tip:"陡坡松散堆积物 + 强降水触发"},
+    {icon:"⛰", name:"塌方", val:Math.round(maxTer("slump")*100)+"%", lv:lvOf(maxTer("slump"), 0.6), tip:"公路边坡/高切坡路段高发"},
+    {icon:"🚗", name:"道路出行", val:Math.round(maxOf("road_prob")*100)+"%", lv:lvOf(maxOf("road_prob"), R), tip:"能见度+路面+昼夜综合评估"},
+  ];
+  const lvCol = lv => lv==="预警"?"#f0646c":lv==="较高"?"#e8a35c":lv==="关注"?"#e3cf7d":"#6fd39a";
+  el.innerHTML = items.map(it=>{
+    const c = lvCol(it.lv);
+    const tip = it.lv==="预警" ? (it.tip+" → 建议取消进山") : it.lv==="较高" ? (it.tip+" → 谨慎出行") : it.tip;
+    return '<div class="warn-item" style="border-left:3px solid '+c+'">'+
+      '<div class="warn-icon">'+it.icon+'</div>'+
+      '<div class="warn-name">'+it.name+'</div>'+
+      '<div class="warn-val" style="color:'+c+'">'+it.val+'</div>'+
+      '<span class="warn-lv" style="background:'+c+';color:#04130a">'+it.lv+'</span>'+
+      '<div class="warn-tip">'+tip+'</div></div>';
+  }).join("");
+}
+
+/* ---------- 景点一键聚焦 ---------- */
+function renderPOI(){
+  const gridEl = $("poiGrid"), badge = $("poiBadge");
+  if(!gridEl) return;
+  if(!GRID || !GRID.length){ gridEl.innerHTML = '<div style="grid-column:1/-1;color:var(--sub)">暂无数据</div>'; return; }
+  const data = computeRoutes();
+  const typeLabel = {base:"出发点", scenic:"景区", research:"科研站"};
+  const lvCol = lv => lv==="预警"?"#f0646c":lv==="较高"?"#e8a35c":lv==="关注"?"#e3cf7d":"#6fd39a";
+  if(badge) badge.textContent = WAYPOINTS.length+" 个点位";
+  gridEl.innerHTML = WAYPOINTS.map(wp=>{
+    const r = data && data.waypoints.find(x=>x.id===wp.id);
+    const risk = r ? r.risk : "低";
+    const c = lvCol(risk);
+    const tagCls = wp.elev>=2500?"cold":wp.type==="base"?"hot":"";
+    const openCls = wp.open ? "" : " disabled";
+    return '<button class="poi-btn'+openCls+'" style="'+(wp.open?"":"opacity:.55")+'" onclick="window.flyToPlace && window.flyToPlace('+wp.lat+','+wp.lon+',\''+wp.name.replace(/'/g,"\\'")+'\','+wp.elev+')">'+
+      '<span class="poi-tag '+tagCls+'">'+(wp.open?typeLabel[wp.type]:'禁区')+'</span>'+
+      '<div class="poi-name">'+wp.name+'</div>'+
+      '<div class="poi-sub">'+wp.elev+'m · '+wp.tags+'</div>'+
+      '<div style="font-size:10.5px;margin-top:4px"><span class="pill '+pillCls(risk)+'">'+risk+'</span>'+
+      (r?'<span style="color:'+c+';font-family:var(--mono)"> '+r.recStars+'</span>':'')+'</div></button>';
+  }).join("");
 }
 
 function computeRoutes(){
@@ -1994,6 +2072,7 @@ function renderRecalc3D(){
 async function main(){
   $("freshBadge").className = "badge"; $("freshBadge").textContent = "加载中";
   $("meta").innerHTML = "正在加载双模型与地形数据…";
+  if(window.__enableSkeleton) window.__enableSkeleton();
   try{
     const [t, f, terr, calib, fenghe, joint, terr3d, heightMap, recalc3d, roadModel] = await Promise.all([
       fetch("models/thunder_gb.json",{cache:"no-store"}).then(r=>r.json()),
@@ -2036,7 +2115,10 @@ async function main(){
     window.__chartSeries = regionSeries(GRID);
     renderChart(window.__chartSeries);
     // 实况天气面板
-    renderWeather(window.__chartSeries);
+    const aq = await (window.__fetchAirQuality ? window.__fetchAirQuality().catch(()=>null) : Promise.resolve(null));
+    renderWeather(window.__chartSeries, aq);
+    // 沉浸式动态背景 + 雨滴/风速动效
+    if(window.__applyBackground) window.__applyBackground(window.__chartSeries);
     // 按海拔层天气差异面板
     renderAltitudeWeather();
     // 道路出行安全评估面板
@@ -2045,6 +2127,9 @@ async function main(){
     renderAdvice(GRID, ROADS, window.__chartSeries);
     // 景点路线推荐面板
     renderRoutes();
+    // 景点一键聚焦 + 预警中心
+    renderPOI();
+    renderWarningCenter();
     renderHikingRoutes();
     // 历史灾害关联校准面板
     renderCalibration();
