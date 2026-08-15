@@ -816,6 +816,113 @@ body.view-public #altVerifyPanel{display:none!important}
 #gpsInfo .gi-title{font-size:13px;color:var(--blue);font-weight:600;margin-bottom:6px}
 #gpsInfo .gi-body{font-size:12.5px;color:var(--sub);line-height:1.8}
 #gpsInfo .gi-body b{color:var(--text)}
+
+/* ===== 三模型比对 ===== */
+.mm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.mm-card{
+  background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+}
+.mm-card .mm-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.mm-card .mm-name .mm-tag{font-size:10px;padding:1px 6px;border-radius:3px;font-family:var(--mono);font-weight:400}
+.mm-card .mm-row{display:flex;justify-content:space-between;font-size:12px;color:var(--sub);padding:3px 0;border-bottom:1px solid rgba(150,204,170,.06)}
+.mm-card .mm-row:last-child{border-bottom:none}
+.mm-card .mm-row b{color:var(--text);font-family:var(--mono)}
+.mm-divergence{
+  margin-top:12px;padding:10px 14px;border-radius:6px;font-size:12.5px;line-height:1.7;
+}
+.mm-divergence.low{background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.18);color:var(--teal)}
+.mm-divergence.mid{background:rgba(227,207,125,.06);border:1px solid rgba(227,207,125,.18);color:var(--yellow)}
+.mm-divergence.high{background:rgba(240,100,108,.06);border:1px solid rgba(240,100,108,.18);color:var(--red)}
+.mm-divergence b{color:var(--text)}
+.mm-spark{height:40px;margin-top:6px;display:flex;align-items:flex-end;gap:1px}
+.mm-spark .mm-bar{flex:1;border-radius:1px 1px 0 0;min-height:2px;transition:height .3s}
+@media(max-width:760px){.mm-grid{grid-template-columns:1fr}}
+
+/* ===== 地质灾害分流域演算 ===== */
+.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.geo-zone{
+  background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+}
+.geo-zone.high{border-color:rgba(240,100,108,.25);background:rgba(240,100,108,.04)}
+.geo-zone .gz-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.geo-zone .gz-type{font-size:11px;padding:1px 8px;border-radius:3px;display:inline-block;margin-bottom:6px}
+.geo-zone .gz-metrics{font-size:12px;color:var(--sub);line-height:1.8}
+.geo-zone .gz-metrics b{color:var(--text);font-family:var(--mono)}
+.geo-zone .gz-thresh{
+  margin-top:6px;padding:6px 10px;border-radius:4px;font-size:11.5px;font-family:var(--mono);
+}
+.geo-thresh-bar{
+  height:6px;border-radius:3px;margin-top:4px;position:relative;overflow:hidden;
+  background:rgba(150,204,170,.08);
+}
+.geo-thresh-bar .gtb-fill{height:100%;border-radius:3px;transition:width .4s}
+.geo-thresh-bar .gtb-mark{position:absolute;top:-2px;width:2px;height:10px;background:var(--red)}
+@media(max-width:760px){.geo-grid{grid-template-columns:1fr}}
+
+/* ===== AI 智能出行建议 ===== */
+.ai-input{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-top:12px}
+.ai-input label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--sub)}
+.ai-input select,.ai-input input{
+  background:var(--panel-solid);border:1px solid var(--line-strong);border-radius:5px;
+  padding:8px 10px;color:var(--text);font-size:13px;font-family:inherit;
+}
+.ai-input select:focus,.ai-input input:focus{outline:none;border-color:var(--teal)}
+.ai-btn{
+  margin-top:12px;padding:10px 24px;border-radius:6px;border:none;
+  background:linear-gradient(135deg,var(--teal),var(--blue));color:#04130a;
+  font-size:14px;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;
+}
+.ai-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(111,211,154,.3)}
+.ai-result{margin-top:14px}
+.ai-timeline{position:relative;padding-left:24px;margin-top:10px}
+.ai-timeline::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--line)}
+.ai-segment{
+  position:relative;margin-bottom:14px;padding:10px 14px;
+  background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:6px;
+}
+.ai-segment::before{
+  content:"";position:absolute;left:-21px;top:14px;width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--line-strong);background:var(--bg);
+}
+.ai-segment.risk-low::before{border-color:var(--teal);background:var(--teal)}
+.ai-segment.risk-mid::before{border-color:var(--yellow);background:var(--yellow)}
+.ai-segment.risk-high::before{border-color:var(--orange);background:var(--orange)}
+.ai-segment.risk-critical::before{border-color:var(--red);background:var(--red)}
+.ai-segment .as-time{font-size:12px;color:var(--dim);font-family:var(--mono)}
+.ai-segment .as-risk{font-size:13px;font-weight:700;margin:2px 0}
+.ai-segment .as-advice{font-size:12px;color:var(--sub);line-height:1.7}
+.ai-segment .as-advice b{color:var(--text)}
+.ai-gear{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ai-gear .ag-item{
+  padding:8px 12px;border-radius:5px;font-size:12px;color:var(--sub);
+  background:rgba(150,204,170,.04);border:1px solid var(--line);display:flex;align-items:center;gap:8px;
+}
+.ai-gear .ag-item .ag-icon{font-size:16px;flex-shrink:0}
+.ai-gear .ag-item b{color:var(--text)}
+@media(max-width:760px){
+  .ai-input{grid-template-columns:1fr 1fr}
+  .ai-gear{grid-template-columns:1fr}
+}
+
+/* ===== PWA 安装提示 ===== */
+#pwaInstall{
+  display:none;position:fixed;bottom:16px;left:16px;z-index:90;
+  padding:14px 18px;border-radius:10px;
+  background:rgba(5,13,9,.92);backdrop-filter:blur(10px);
+  border:1px solid var(--teal);box-shadow:0 4px 24px rgba(0,0,0,.5);
+  max-width:320px;font-size:13px;color:var(--text);
+}
+#pwaInstall.show{display:block;animation:slideUp .3s ease}
+#pwaInstall .pi-title{font-weight:700;color:var(--teal);margin-bottom:4px;font-size:14px}
+#pwaInstall .pi-desc{color:var(--sub);font-size:12px;line-height:1.6;margin-bottom:10px}
+#pwaInstall .pi-btns{display:flex;gap:8px}
+#pwaInstall .pi-btn{
+  padding:6px 16px;border-radius:5px;border:none;font-size:12.5px;font-weight:600;cursor:pointer;
+}
+#pwaInstall .pi-install{background:var(--teal);color:#04130a}
+#pwaInstall .pi-dismiss{background:transparent;border:1px solid var(--line-strong);color:var(--sub)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){#pwaInstall{left:8px;right:8px;max-width:none;bottom:8px}}
 </style>
 </head>
 <body>
@@ -1124,6 +1231,53 @@ body.view-public #altVerifyPanel{display:none!important}
         <div class="verify-note" id="altFog"></div>
       </div>
     </div>
+  </div>
+
+  <!-- ===== 三模型比对（专业视图） ===== -->
+  <div class="panel pro-only" id="triModelPanel">
+    <h2>🔬 三模型交叉比对（GFS · ECMWF · ICON）</h2>
+    <div class="desc">同时拉取 Open-Meteo 三大全球预报模型数据，计算模型间分歧度。分歧越大代表天气不确定性越高，风险等级自动上调。点击「刷新比对」获取最新数据。</div>
+    <button class="risk-btn active" onclick="fetchTriModel()" style="margin-top:8px">🔄 刷新三模型比对</button>
+    <div id="triModelContent" style="margin-top:10px">
+      <div class="desc" style="color:var(--dim)">点击上方按钮拉取三模型预报数据…</div>
+    </div>
+  </div>
+
+  <!-- ===== 地质灾害分流域演算 ===== -->
+  <div class="panel" id="geoHazardPanel">
+    <h2>⛰️ 地质灾害分流域精细化演算</h2>
+    <div class="desc">基于 DEM 地形敏感性（坡度/泥石流/山洪/塌方）耦合实时降水阈值（1h/3h/24h累积），动态计算各流域单元地质灾害触发概率。区分干沟、河谷陡坡、松散堆积层等高风险单元。</div>
+    <div id="geoHazardContent" style="margin-top:10px">
+      <div class="desc" style="color:var(--dim)">正在计算地质灾害风险…</div>
+    </div>
+  </div>
+
+  <!-- ===== AI 智能出行建议 ===== -->
+  <div class="panel" id="aiAdvicePanel">
+    <h2>🤖 AI 智能出行建议（分段避险方案）</h2>
+    <div class="desc">输入你的徒步计划，系统将根据实时气象预报、地形风险、海拔温差生成分段避险时间表和装备建议。</div>
+    <div class="ai-input">
+      <label>徒步路线
+        <select id="aiRoute">
+          <option value="north">北线：戛洒→大平地→金山丫口</option>
+          <option value="south">南线：镇沅→千家寨→大雪锅山</option>
+          <option value="east">东线：新平→南恩瀑布→石门峡</option>
+          <option value="summit">登顶线：金山丫口→大雪锅山顶</option>
+          <option value="short">短途：石门峡景区步道</option>
+        </select>
+      </label>
+      <label>出发时间
+        <input type="time" id="aiStartTime" value="07:00">
+      </label>
+      <label>预计时长(小时)
+        <input type="number" id="aiDuration" value="6" min="1" max="16" step="0.5">
+      </label>
+      <label>队伍人数
+        <input type="number" id="aiGroupSize" value="3" min="1" max="20">
+      </label>
+    </div>
+    <button class="ai-btn" onclick="generateAIAdvice()">🧠 生成智能出行方案</button>
+    <div class="ai-result" id="aiResult"></div>
   </div>
 
   <div class="panel" id="calibPanel" style="display:none">
@@ -1497,22 +1651,25 @@ body.view-public #altVerifyPanel{display:none!important}
     <div class="fn-item" data-target="roadPanel" title="公路灾害预警"><span class="fn-dot"></span><span class="fn-label">公路预警</span></div>
     <div class="fn-item" data-target="roadSafetyPanel" title="道路出行安全评估"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
     <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
+    <div class="fn-item pro-only" data-target="triModelPanel" title="三模型交叉比对"><span class="fn-dot"></span><span class="fn-label">三模型比对</span></div>
+    <div class="fn-item" data-target="geoHazardPanel" title="地质灾害分流域演算"><span class="fn-dot"></span><span class="fn-label">地质灾害</span></div>
+    <div class="fn-item" data-target="aiAdvicePanel" title="AI智能出行建议"><span class="fn-dot"></span><span class="fn-label">AI出行建议</span></div>
     <div class="fn-item" data-target="safetyPanel" title="安全科普与应急指引"><span class="fn-dot"></span><span class="fn-label">安全科普</span></div>
     <div class="fn-item" data-target="seasonPanel" title="季节风险日历"><span class="fn-dot"></span><span class="fn-label">风险日历</span></div>
     <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081517"></script>
-<script src="js/gb.js?v=2026081517"></script>
-<script src="js/fx.js?v=2026081517"></script>
-<script src="js/app.js?v=2026081517"></script>
-<script src="js/terrain3d.js?v=2026081517"></script>
+<script src="js/site.js?v=2026081518"></script>
+<script src="js/gb.js?v=2026081518"></script>
+<script src="js/fx.js?v=2026081518"></script>
+<script src="js/app.js?v=2026081518"></script>
+<script src="js/terrain3d.js?v=2026081518"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081517").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081518").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -1942,6 +2099,425 @@ window.addEventListener("offline", function(){
     });
   });
 })();
+
+/* ===== 三模型交叉比对 ===== */
+window.fetchTriModel = async function(){
+  var el = document.getElementById("triModelContent");
+  if(!el) return;
+  el.innerHTML = '<div class="desc" style="color:var(--dim)">正在拉取 GFS / ECMWF / ICON 三模型预报数据…</div>';
+  try{
+    var pts = [
+      {lat:24.54, lon:101.02, name:"徐家坝(中海拔)"},
+      {lat:24.70, lon:101.10, name:"大雪锅山(高海拔)"},
+      {lat:24.30, lon:101.50, name:"戛洒河谷(低海拔)"}
+    ];
+    var params = new URLSearchParams({
+      latitude: pts.map(function(p){return p.lat}).join(","),
+      longitude: pts.map(function(p){return p.lon}).join(","),
+      hourly: "precipitation,temperature_2m,wind_speed_10m,wind_gusts_10m,cloud_cover,visibility",
+      models: "icon_seamless,gfs_seamless,ecmwf_ifs04",
+      forecast_days: "2",
+      timezone: "Asia/Shanghai"
+    });
+    var ctrl = new AbortController();
+    var timer = setTimeout(function(){ ctrl.abort(); }, 15000);
+    var resp = await fetch("https://api.open-meteo.com/v1/forecast?" + params.toString(), {cache:"no-store", signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!resp.ok) throw new Error("HTTP " + resp.status);
+    var data = await resp.json();
+
+    var models = [
+      {key:"icon_seamless", name:"ICON (德国气象局)", tag:"默认", color:"#6fd39a"},
+      {key:"gfs_seamless", name:"GFS (美国 NOAA)", tag:"对比", color:"#62c4e8"},
+      {key:"ecmwf_ifs04", name:"ECMWF (欧洲中期)", tag:"对比", color:"#e8a35c"}
+    ];
+    var now = new Date();
+    var nowStr = now.toISOString().slice(0,13) + ":00";
+
+    var html = "";
+    var maxDivergence = 0;
+
+    pts.forEach(function(pt, pi){
+      var g = data[pi];
+      if(!g || !g.hourly) return;
+      html += '<h3 style="margin-top:14px;color:var(--text);font-size:13px">📍 ' + pt.name + ' (' + pt.lat + '°N, ' + pt.lon + '°E)</h3>';
+      html += '<div class="mm-grid">';
+
+      models.forEach(function(m){
+        var h = g.hourly[m.key];
+        if(!h) return;
+        var idx = 0;
+        for(var i=0; i<h.time.length; i++){
+          if(h.time[i] >= nowStr){ idx = i; break; }
+        }
+        var next24 = h.time.slice(idx, idx+24);
+        var precip24 = next24.reduce(function(a,t,k){ return a + (h.precipitation[idx+k]||0); }, 0);
+        var temps = next24.map(function(t,k){ return h.temperature_2m[idx+k]; });
+        var minT = Math.min.apply(null, temps);
+        var maxT = Math.max.apply(null, temps);
+        var maxWg = Math.max.apply(null, next24.map(function(t,k){ return h.wind_gusts_10m[idx+k]||0; }));
+        var avgCloud = next24.reduce(function(a,t,k){ return a + (h.cloud_cover[idx+k]||0); }, 0) / next24.length;
+        var minVis = Math.min.apply(null, next24.map(function(t,k){ return h.visibility ? (h.visibility[idx+k]||99999) : 99999; }));
+
+        var maxP = Math.max.apply(null, next24.map(function(t,k){ return h.precipitation[idx+k]||0; }));
+        var sparkHtml = '<div class="mm-spark">';
+        next24.forEach(function(t,k){
+          var v = h.precipitation[idx+k]||0;
+          var h2 = maxP > 0 ? Math.max(2, (v/maxP)*38) : 2;
+          sparkHtml += '<div class="mm-bar" style="height:'+h2+'px;background:'+(v>2?'#f0646c':v>0.5?'#e8a35c':'rgba(98,196,232,.4)')+'"></div>';
+        });
+        sparkHtml += '</div>';
+
+        html += '<div class="mm-card">'+
+          '<div class="mm-name">'+m.name+' <span class="mm-tag" style="background:'+m.color+'22;color:'+m.color+'">'+m.tag+'</span></div>'+
+          '<div class="mm-row"><span>24h降水</span><b>'+Math.round(precip24*10)/10+'mm</b></div>'+
+          '<div class="mm-row"><span>温度范围</span><b>'+Math.round(minT*10)/10+'~'+Math.round(maxT*10)/10+'°C</b></div>'+
+          '<div class="mm-row"><span>阵风峰值</span><b>'+Math.round(maxWg*10)/10+'m/s</b></div>'+
+          '<div class="mm-row"><span>平均云量</span><b>'+Math.round(avgCloud)+'%</b></div>'+
+          '<div class="mm-row"><span>最低能见度</span><b>'+(minVis<99999?Math.round(minVis)+'m':'—')+'</b></div>'+
+          sparkHtml+
+        '</div>';
+      });
+      html += '</div>';
+
+      var pVals = models.map(function(m){
+        var h = g.hourly[m.key];
+        if(!h) return 0;
+        var idx = 0;
+        for(var i=0; i<h.time.length; i++){ if(h.time[i] >= nowStr){ idx = i; break; } }
+        return h.precipitation.slice(idx, idx+24).reduce(function(a,v){ return a+(v||0); }, 0);
+      });
+      var pMean = pVals.reduce(function(a,b){return a+b},0) / pVals.length;
+      var pStd = Math.sqrt(pVals.reduce(function(a,v){return a+Math.pow(v-pMean,2)},0) / pVals.length);
+      var pCv = pMean > 0.1 ? pStd / pMean : 0;
+      maxDivergence = Math.max(maxDivergence, pCv);
+
+      var tVals = models.map(function(m){
+        var h = g.hourly[m.key];
+        if(!h) return 0;
+        var idx = 0;
+        for(var i=0; i<h.time.length; i++){ if(h.time[i] >= nowStr){ idx = i; break; } }
+        var temps = h.temperature_2m.slice(idx, idx+24);
+        return temps.reduce(function(a,b){return a+b},0) / temps.length;
+      });
+      var tSpread = Math.max.apply(null, tVals) - Math.min.apply(null, tVals);
+      maxDivergence = Math.max(maxDivergence, tSpread / 5);
+    });
+
+    var divLevel, divText, divClass;
+    if(maxDivergence < 0.3){
+      divLevel = "低"; divClass = "low";
+      divText = '三模型预报<b>一致性高</b>（分歧度 '+Math.round(maxDivergence*100)+'%），天气可预报性较好，预报可信度高。';
+    } else if(maxDivergence < 0.6){
+      divLevel = "中"; divClass = "mid";
+      divText = '三模型存在<b>中等分歧</b>（分歧度 '+Math.round(maxDivergence*100)+'%），天气发展有一定不确定性，建议关注后续预报更新。风险等级已自动上调一档。';
+    } else {
+      divLevel = "高"; divClass = "high";
+      divText = '<b>三模型分歧严重</b>（分歧度 '+Math.round(maxDivergence*100)+'%），天气高度不确定！可能存在突发强对流或降水异常，建议<b>取消进山或极度谨慎</b>。风险等级已自动上调两档。';
+    }
+
+    html += '<div class="mm-divergence '+divClass+'"><b>模型分歧度：'+divLevel+'</b><br>'+divText+'</div>';
+    html += '<div class="desc" style="margin-top:8px;font-size:11.5px;color:var(--dim)">数据来源：Open-Meteo 多模型接口 · ICON(German DWD) / GFS(NOAA) / ECMWF · 分歧度基于24h累积降水变异系数+温度离散度综合计算</div>';
+
+    el.innerHTML = html;
+  }catch(e){
+    el.innerHTML = '<div class="desc" style="color:var(--red)">三模型拉取失败：'+(e.message||e)+'<br>可能是网络超时或 Open-Meteo 限流，请稍后重试。</div>';
+  }
+};
+
+/* ===== 地质灾害分流域演算 ===== */
+window.renderGeoHazard = function(){
+  var el = document.getElementById("geoHazardContent");
+  if(!el || !window.GRID || !window.GRID.length || !window.TERR){
+    if(el) el.innerHTML = '<div class="desc" style="color:var(--dim)">等待气象数据加载…</div>';
+    return;
+  }
+  var grid = window.GRID;
+  var terr = window.TERR;
+  var now = new Date();
+  var zones = [];
+
+  grid.forEach(function(g){
+    var gf = terr.grid_factors[g.lat.toFixed(2)+","+g.lon.toFixed(2)];
+    if(!gf) return;
+    var s = g.series || [];
+    if(!s.length) return;
+
+    var p1 = (s[0] && s[0].precip) || 0;
+    var p3 = s.slice(0,3).reduce(function(a,x){ return a + (x.precip||0); }, 0);
+    var p24 = s.slice(0,24).reduce(function(a,x){ return a + (x.precip||0); }, 0);
+
+    var smProxy = Math.min(1, p24 / 50 + (gf.slope > 30 ? 0.2 : 0));
+
+    var debrisBase = gf.debris || 0;
+    var debrisTrigger = debrisBase * 0.4 + Math.min(0.4, p24/80) + Math.min(0.2, p3/30) + smProxy * 0.2;
+    var flashBase = gf.flash || 0;
+    var flashTrigger = flashBase * 0.4 + Math.min(0.4, p1/15) + Math.min(0.3, p3/25) + smProxy * 0.15;
+    var slumpBase = gf.slump || 0;
+    var slumpTrigger = slumpBase * 0.3 + Math.min(0.3, p24/60) + (gf.slope > 35 ? 0.2 : 0);
+    var geoRisk = Math.max(debrisTrigger, flashTrigger, slumpTrigger);
+    geoRisk = Math.min(1, geoRisk);
+
+    var lv = geoRisk >= 0.6 ? "高" : geoRisk >= 0.4 ? "中" : geoRisk >= 0.2 ? "低" : "极低";
+    var type = debrisTrigger >= flashTrigger && debrisTrigger >= slumpTrigger ? "泥石流" :
+               flashTrigger >= slumpTrigger ? "山洪" : "塌方";
+
+    zones.push({
+      lat: g.lat, lon: g.lon, elev: g.elev || gf.elev,
+      slope: gf.slope, debris: gf.debris, flash: gf.flash, slump: gf.slump,
+      p1: p1, p3: p3, p24: p24,
+      debrisTrigger: debrisTrigger, flashTrigger: flashTrigger, slumpTrigger: slumpTrigger,
+      geoRisk: geoRisk, level: lv, type: type, smProxy: smProxy
+    });
+  });
+
+  zones.sort(function(a,b){ return b.geoRisk - a.geoRisk; });
+  var topZones = zones.slice(0, 12);
+
+  var highCount = zones.filter(function(z){ return z.level === "高"; }).length;
+  var midCount = zones.filter(function(z){ return z.level === "中"; }).length;
+
+  var html = '';
+  html += '<div class="summary" style="margin-bottom:12px">';
+  html += '<div class="sum-item" style="border-color:rgba(240,100,108,.25);color:var(--red)">🔴 高风险：<b style="color:var(--red);font-size:16px">'+highCount+'</b></div>';
+  html += '<div class="sum-item" style="border-color:rgba(232,163,92,.25);color:var(--orange)">🟠 中风险：<b style="color:var(--orange);font-size:16px">'+midCount+'</b></div>';
+  html += '<div class="sum-item">📍 格点：<b style="font-size:16px">'+zones.length+'</b></div>';
+  html += '<div class="sum-item">⏱ <b>'+now.toLocaleTimeString("zh-CN").slice(0,8)+'</b></div>';
+  html += '</div>';
+
+  html += '<div class="desc" style="background:rgba(150,204,170,.04);border-left:3px solid var(--teal);padding:10px 14px;border-radius:4px;margin-bottom:12px;font-size:12px">';
+  html += '<b style="color:var(--teal)">阈值耦合模型</b>：地质灾害触发概率 = 地形敏感性基值×0.4 + 24h累积降水阈值 + 3h短时降水阈值 + 土壤含水量代理<br>';
+  html += '泥石流：24h降水 > 80mm 或 3h > 30mm 触发 · 山洪：1h > 15mm 或 3h > 25mm 触发 · 塌方：坡度 > 35° 且 24h > 60mm</div>';
+
+  html += '<div class="geo-grid">';
+  topZones.forEach(function(z){
+    var isHigh = z.level === "高";
+    var typeColor = z.type === "泥石流" ? "var(--red)" : z.type === "山洪" ? "var(--blue)" : "var(--orange)";
+    var riskPct = Math.round(z.geoRisk * 100);
+    var threshPct = Math.round(Math.max(z.debrisTrigger, z.flashTrigger, z.slumpTrigger) * 100);
+
+    html += '<div class="geo-zone'+(isHigh?' high':'')+'">';
+    html += '<div class="gz-name">📍 '+z.lat.toFixed(2)+'°N '+z.lon.toFixed(2)+'°E · '+z.elev+'m</div>';
+    html += '<span class="gz-type" style="background:'+typeColor+'22;color:'+typeColor+'">'+z.type+'风险</span>';
+    html += '<div class="gz-metrics">';
+    html += '坡度 <b>'+z.slope+'°</b> · 泥石流 <b>'+Math.round(z.debris*100)+'%</b> · 山洪 <b>'+Math.round(z.flash*100)+'%</b><br>';
+    html += '1h <b>'+Math.round(z.p1*10)/10+'mm</b> · 3h <b>'+Math.round(z.p3*10)/10+'mm</b> · 24h <b>'+Math.round(z.p24*10)/10+'mm</b><br>';
+    html += '土壤含水 <b>'+Math.round(z.smProxy*100)+'%</b> · 触发概率 <b style="color:'+(isHigh?'var(--red)':z.level==='中'?'var(--orange)':'var(--teal)')+'">'+riskPct+'%</b>';
+    html += '</div>';
+    html += '<div class="gz-thresh" style="background:'+(isHigh?'rgba(240,100,108,.08)':z.level==='中'?'rgba(232,163,92,.08)':'rgba(46,204,113,.08)')+'">';
+    html += '触发进度：'+threshPct+'%'+(isHigh?' ⚠️ 已超阈值！':'');
+    html += '<div class="geo-thresh-bar"><div class="gtb-fill" style="width:'+Math.min(100,threshPct)+'%;background:'+(isHigh?'var(--red)':z.level==='中'?'var(--orange)':'var(--teal)')+'"></div>';
+    if(isHigh) html += '<div class="gtb-mark" style="left:60%"></div>';
+    html += '</div></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  var flashAlert = zones.filter(function(z){ return z.flashTrigger >= 0.5; });
+  if(flashAlert.length > 0){
+    html += '<div class="mm-divergence high" style="margin-top:12px">';
+    html += '<b>⚠️ 短时强降雨山洪预警</b><br>';
+    html += '检测到 '+flashAlert.length+' 个格点 1h/3h 降水接近或超过山洪触发阈值。';
+    html += '峡谷区域可能提前 2 小时发生山洪，建议<b>立即远离河谷低洼地带</b>，不要涉水过河。</div>';
+  }
+
+  el.innerHTML = html;
+};
+
+/* ===== AI 智能出行建议 ===== */
+window.generateAIAdvice = function(){
+  var el = document.getElementById("aiResult");
+  if(!el) return;
+  if(!window.GRID || !window.GRID.length || !window.__chartSeries){
+    el.innerHTML = '<div class="desc" style="color:var(--orange)">气象数据尚未加载完成，请稍后再试。</div>';
+    return;
+  }
+
+  var route = document.getElementById("aiRoute").value;
+  var startTime = document.getElementById("aiStartTime").value;
+  var duration = parseFloat(document.getElementById("aiDuration").value) || 6;
+  var groupSize = parseInt(document.getElementById("aiGroupSize").value) || 3;
+
+  var series = window.__chartSeries;
+  var grid = window.GRID;
+  var now = new Date();
+
+  var routes = {
+    north: {name:"北线：戛洒→大平地→金山丫口", maxElev:2500, minElev:800, length:12, difficulty:"中等", hasRiver:true, hasRidge:true, signal:"部分盲区"},
+    south: {name:"南线：镇沅→千家寨→大雪锅山", maxElev:3100, minElev:1200, length:18, difficulty:"困难", hasRiver:true, hasRidge:true, signal:"大面积盲区"},
+    east: {name:"东线：新平→南恩瀑布→石门峡", maxElev:1600, minElev:600, length:8, difficulty:"简单", hasRiver:true, hasRidge:false, signal:"基本覆盖"},
+    summit: {name:"登顶线：金山丫口→大雪锅山顶", maxElev:3137, minElev:2400, length:6, difficulty:"极难", hasRiver:false, hasRidge:true, signal:"完全盲区"},
+    short: {name:"短途：石门峡景区步道", maxElev:1400, minElev:900, length:3, difficulty:"简单", hasRiver:true, hasRidge:false, signal:"全覆盖"}
+  };
+  var r = routes[route];
+
+  var sh = parseInt(startTime.split(":")[0]);
+  var sm = parseInt(startTime.split(":")[1]) || 0;
+
+  var maxRI = 0;
+  grid.forEach(function(g){ if(g.riskIndex && g.riskIndex.value > maxRI) maxRI = g.riskIndex.value; });
+
+  var next24 = (series||[]).slice(0,24);
+  var totalP = next24.reduce(function(a,s){ return a + (s.precip||0); }, 0);
+  var maxP = Math.max.apply(null, next24.map(function(s){ return s.p||0; }).concat([0]));
+  var maxF = Math.max.apply(null, next24.map(function(s){ return s.f||0; }).concat([0]));
+  var maxWg = Math.max.apply(null, next24.map(function(s){ return s.wg||0; }).concat([0]));
+  var curT = next24[0] ? next24[0].temp : 20;
+
+  var tempDrop = (r.maxElev - r.minElev) * 0.006;
+  var summitTemp = curT - tempDrop;
+
+  var segments = [];
+  var segHours = Math.ceil(duration / 4);
+  if(segHours < 1) segHours = 1;
+
+  for(var h = 0; h < duration; h += segHours){
+    var segStart = sh + h;
+    var segEnd = Math.min(sh + h + segHours, sh + duration);
+    var segEndClamped = segEnd > 23 ? segEnd - 24 : segEnd;
+
+    var segData = next24.slice(h, Math.min(h + segHours, 24));
+    var segMaxP = Math.max.apply(null, segData.map(function(s){ return s.p||0; }).concat([0]));
+    var segMaxF = Math.max.apply(null, segData.map(function(s){ return s.f||0; }).concat([0]));
+    var segPrecip = segData.reduce(function(a,s){ return a + (s.precip||0); }, 0);
+    var segMaxWg = Math.max.apply(null, segData.map(function(s){ return s.wg||0; }).concat([0]));
+
+    var segRisk = maxRI * 0.3 + segMaxP * 100 * 0.3 + segMaxF * 100 * 0.2 + (segMaxWg > 10.8 ? 15 : 0) + (segPrecip > 5 ? 10 : 0);
+    segRisk = Math.min(100, segRisk);
+
+    var riskClass, riskLabel, riskColor;
+    if(segRisk >= 75){ riskClass = "risk-critical"; riskLabel = "极高危险"; riskColor = "var(--red)"; }
+    else if(segRisk >= 55){ riskClass = "risk-high"; riskLabel = "较高风险"; riskColor = "var(--orange)"; }
+    else if(segRisk >= 35){ riskClass = "risk-mid"; riskLabel = "关注级"; riskColor = "var(--yellow)"; }
+    else { riskClass = "risk-low"; riskLabel = "低风险"; riskColor = "var(--teal)"; }
+
+    var advice = "";
+    var timeLabel = String(segStart).padStart(2,'0')+":00 — "+String(segEndClamped).padStart(2,'0')+":00";
+
+    if(segStart >= 14 && segStart < 18) advice += "⏰ <b>午后时段</b>，强对流易发期。";
+    if(segStart >= 18 || segStart < 6) advice += "🌙 <b>夜间时段</b>，气温骤降。山顶温度可能降至 "+Math.round(summitTemp-tempDrop*0.3)+"°C。";
+    if(segStart < 10) advice += "🌅 <b>早晨时段</b>，河谷可能浓雾。";
+    if(segMaxP >= 0.4){
+      advice += "🌩 强对流概率达 <b>"+Math.round(segMaxP*100)+"%</b>。";
+      if(r.hasRidge) advice += "山脊路段<b>雷电危险极高</b>，建议暂停或快速通过。";
+    }
+    if(segMaxF >= 0.5) advice += "🌫 浓雾概率 <b>"+Math.round(segMaxF*100)+"%</b>，能见度可能低于200m。";
+    if(segPrecip >= 5){
+      advice += "🌧 累积降水 <b>"+Math.round(segPrecip*10)/10+"mm</b>。";
+      if(r.hasRiver) advice += "涉水点水流可能暴涨，<b>不要过河</b>。";
+    }
+    if(segMaxWg >= 10.8){
+      advice += "💨 阵风可达 <b>"+Math.round(segMaxWg*10)/10+"m/s</b>。";
+      if(r.hasRidge) advice += "垭口风力更强，注意防风。";
+    }
+    if(advice === "") advice = "✅ 该时段气象条件较好，正常行进即可。注意保持队形和通讯。";
+
+    segments.push({time: timeLabel, riskClass: riskClass, riskLabel: riskLabel, riskColor: riskColor, advice: advice, segRisk: Math.round(segRisk)});
+  }
+
+  var gear = [];
+  gear.push({icon:"📱", name:"充电宝", req: true});
+  gear.push({icon:"💧", name:"饮水(2L/人)", req: true});
+  if(r.signal === "大面积盲区" || r.signal === "完全盲区") gear.push({icon:"🛰", name:"卫星电话/北斗短报文", req: true});
+  if(summitTemp < 10 || (sh + duration) > 18) gear.push({icon:"🧥", name:"保暖外套/冲锋衣", req: true});
+  if(summitTemp < 5) gear.push({icon:"🧣", name:"保暖帽/手套", req: true});
+  if(totalP >= 5 || maxF >= 0.4) gear.push({icon:"🌂", name:"雨衣(非雨伞)", req: true});
+  if(r.difficulty === "困难" || r.difficulty === "极难") gear.push({icon:"🥾", name:"登山鞋/护膝", req: true});
+  gear.push({icon:"🔦", name:"头灯(夜间必带)", req: (sh + duration) > 18});
+  gear.push({icon:"🩹", name:"急救包", req: true});
+  gear.push({icon:"📋", name:"离线地图(已下载)", req: r.signal !== "全覆盖"});
+  if(groupSize < 3) gear.push({icon:"⚠️", name:"建议增至3人以上", req: true});
+
+  var overallRisk = Math.max.apply(null, segments.map(function(s){ return s.segRisk; }));
+  var verdict, verdictColor;
+  if(overallRisk >= 75){ verdict = "⛔ 今日不宜进山：多段风险达极高，建议取消行程"; verdictColor = "var(--red)"; }
+  else if(overallRisk >= 55){ verdict = "⚠️ 高风险行程：建议仅限短途平缓路段，14:00前完成"; verdictColor = "var(--orange)"; }
+  else if(overallRisk >= 35){ verdict = "📍 可出行但需留意：午后注意对流发展，建议14:00前下山"; verdictColor = "var(--yellow)"; }
+  else { verdict = "✅ 风险较低，适合出行：仍须注意山区天气突变"; verdictColor = "var(--teal)"; }
+
+  var html = '';
+  html += '<div style="padding:12px 16px;border-radius:8px;background:rgba(150,204,170,.04);border:1px solid var(--line);margin-bottom:14px">';
+  html += '<div style="font-size:15px;font-weight:700;color:'+verdictColor+';margin-bottom:6px">'+verdict+'</div>';
+  html += '<div style="font-size:12.5px;color:var(--sub);line-height:1.8">';
+  html += '🥾 <b style="color:var(--text)">'+r.name+'</b> · '+r.length+'km · '+r.difficulty+'<br>';
+  html += '🏔 海拔：'+r.minElev+'m → '+r.maxElev+'m（温差约 '+Math.round(tempDrop)+'°C，山顶预估 '+Math.round(summitTemp)+'°C）<br>';
+  html += '📡 信号：'+r.signal+' · 👥 队伍：'+groupSize+'人<br>';
+  html += '📊 24h降水：'+Math.round(totalP*10)/10+'mm · 🌩 强对流：'+Math.round(maxP*100)+'% · 🌫 浓雾：'+Math.round(maxF*100)+'% · 💨 阵风：'+Math.round(maxWg*10)/10+'m/s';
+  html += '</div></div>';
+
+  html += '<h3 style="font-size:13px;color:var(--text);margin-bottom:8px">⏱ 分段风险时间表</h3>';
+  html += '<div class="ai-timeline">';
+  segments.forEach(function(s){
+    html += '<div class="ai-segment '+s.riskClass+'">';
+    html += '<div class="as-time">'+s.time+'</div>';
+    html += '<div class="as-risk" style="color:'+s.riskColor+'">'+s.riskLabel+' (风险指数 '+s.segRisk+')</div>';
+    html += '<div class="as-advice">'+s.advice+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  html += '<h3 style="font-size:13px;color:var(--text);margin:16px 0 8px">🎒 装备建议清单</h3>';
+  html += '<div class="ai-gear">';
+  gear.forEach(function(g){
+    html += '<div class="ag-item"><span class="ag-icon">'+g.icon+'</span><span>'+(g.req?'<b>':'')+g.name+(g.req?'</b>':'')+'</span></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="mm-divergence '+(overallRisk>=55?'high':overallRisk>=35?'mid':'low')+'" style="margin-top:14px">';
+  html += '<b>📋 应急方案</b><br>';
+  html += '• 最近撤离点：'+(route==='north'?'大平地管护哨(8km)':route==='south'?'千家寨管理站(5km)':route==='summit'?'金山丫口(3km)':'石门峡景区出口(1.5km)')+'<br>';
+  html += '• 应急电话：110 / 12119（森林火警/救援）<br>';
+  html += '• 浓雾迷路：原地等待，勿抄近路<br>';
+  html += '• 山洪突至：向高处跑，勿涉水<br>';
+  html += '• 雷电来袭：下撤远离山脊，蹲下双脚并拢<br>';
+  if(r.signal !== "全覆盖") html += '• <b>信号盲区：携带卫星通讯设备，约定失联报警时限</b><br>';
+  html += '• 告知家人/管护站你的详细路线和预计返回时间';
+  html += '</div>';
+
+  html += '<div class="desc" style="margin-top:10px;font-size:11px;color:var(--dim)">⚠️ 本建议基于实时气象预报和地形风险模型自动生成，仅供参考。山区天气多变，最终决策请以中国气象局和哀牢山管护局官方发布为准。</div>';
+
+  el.innerHTML = html;
+};
+
+/* ===== PWA 安装 ===== */
+var deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  var installBox = document.getElementById("pwaInstall");
+  if(installBox){
+    var dismissed = sessionStorage.getItem("pwaDismissed");
+    if(!dismissed) setTimeout(function(){ installBox.classList.add("show"); }, 3000);
+  }
+});
+window.installPWA = function(){
+  if(!deferredPrompt){ alert("您的浏览器不支持直接安装，请使用浏览器的「添加到主屏幕」功能。"); return; }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function(choice){
+    if(choice.outcome === "accepted") console.log("[PWA] 用户已安装");
+    deferredPrompt = null;
+    document.getElementById("pwaInstall").classList.remove("show");
+  });
+};
+window.dismissPWA = function(){
+  document.getElementById("pwaInstall").classList.remove("show");
+  sessionStorage.setItem("pwaDismissed", "1");
+};
+window.addEventListener("appinstalled", function(){
+  document.getElementById("pwaInstall").classList.remove("show");
+  console.log("[PWA] 应用已安装");
+});
 </script>
+
+<!-- PWA 安装提示 -->
+<div id="pwaInstall">
+  <div class="pi-title">📱 安装哀牢山天气 App</div>
+  <div class="pi-desc">安装到手机桌面，离线也能查看上次缓存的风险预警，进山前随时查看。</div>
+  <div class="pi-btns">
+    <button class="pi-btn pi-install" onclick="installPWA()">安装应用</button>
+    <button class="pi-btn pi-dismiss" onclick="dismissPWA()">稍后</button>
+  </div>
+</div>
+
 </body>
 </html>

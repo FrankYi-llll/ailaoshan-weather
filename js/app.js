@@ -2675,6 +2675,8 @@ async function main(){
     renderRoadSafety(GRID, window.__chartSeries);
     // 出行建议面板
     renderAdvice(GRID, ROADS, window.__chartSeries);
+    // 地质灾害分流域演算
+    if(typeof window.renderGeoHazard === "function") window.renderGeoHazard();
     // 景点路线推荐面板
     renderRoutes();
     // 景点一键聚焦 + 预警中心

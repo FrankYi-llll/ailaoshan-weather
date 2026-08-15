@@ -1,16 +1,37 @@
 {
   "name": "哀牢山智能生态气象三维可视化系统",
   "short_name": "哀牢山天气",
-  "description": "DEM驱动的Three.js三维数字孪生地形 · 9模型交叉验证 · 强对流/浓雾/山洪/泥石流/塌方/道路安全实时预警 · 云海概率 · 按海拔层温差预报",
+  "description": "DEM驱动的Three.js三维数字孪生地形 · 9模型交叉验证 · 强对流/浓雾/山洪/泥石流/塌方/道路安全实时预警 · 云海概率 · 按海拔层温差预报 · AI智能出行建议 · 离线缓存",
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#050d09",
   "theme_color": "#0f1c30",
   "lang": "zh-CN",
+  "categories": ["weather", "travel", "navigation"],
   "icons": [
     {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
     {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ],
+  "shortcuts": [
+    {
+      "name": "查看实时风险",
+      "short_name": "风险",
+      "description": "查看当前综合风险指数和预警",
+      "url": "./?source=pwa#riskIndexPanel"
+    },
+    {
+      "name": "AI出行建议",
+      "short_name": "AI建议",
+      "description": "生成分段避险出行方案",
+      "url": "./?source=pwa#aiAdvicePanel"
+    },
+    {
+      "name": "安全科普",
+      "short_name": "安全",
+      "description": "户外安全自救与应急联络",
+      "url": "./?source=pwa#safetyPanel"
+    }
   ]
 }
