@@ -1003,6 +1003,7 @@ body.view-public #altVerifyPanel{display:none!important}
       <button class="tb-btn" id="btnNotify" onclick="toggleNotify()"><span class="tb-dot"></span>🔔 预警推送</button>
       <button class="tb-btn" id="btnLite3D" onclick="toggleLite3D()"><span class="tb-dot"></span>⚡ 轻量3D</button>
       <button class="tb-btn" onclick="shareRisk()">📤 分享风险</button>
+      <button class="tb-btn" id="btnInstallApp" style="display:none" onclick="installPWA()">📱 安装App</button>
       <button class="tb-btn" onclick="manualRefresh()"><span class="tb-dot"></span>🔄 手动刷新</button>
     </div>
   </div>
@@ -1623,12 +1624,12 @@ body.view-public #altVerifyPanel{display:none!important}
   </div>
 
   <footer>
-    <p>🛡 <b>分级强制行动清单</b>（按综合风险指数）：</p>
+    <p>🛡 <b>分级出行建议</b>（按综合风险指数）：</p>
     <p style="margin-top:6px;line-height:2">
-      <b style="color:#2ecc71">＜35 低风险</b>：正常游览，16:00 前下山，避开河谷低洼地带<br>
-      <b style="color:#e3cf7d">35–55 较高风险</b>：仅限短途平缓景区，禁止徒步野线，不进深山<br>
-      <b style="color:#e8a35c">55–74 预警级</b>：全线取消进山，仅镇区公路通行，已进山者立即下山<br>
-      <b style="color:#f0646c">≥75 极高危险</b>：全域封山，所有道路、景区、保护区禁止进入
+      <b style="color:#2ecc71">＜35 低风险</b>：适合正常游览，16:00 前下山，避开河谷低洼地带<br>
+      <b style="color:#e3cf7d">35–55 关注级</b>：建议选择短途平缓路线，不建议徒步野线<br>
+      <b style="color:#e8a35c">55–74 较高风险</b>：建议暂缓进山，如需出行仅走镇区公路，已进山者尽早下山<br>
+      <b style="color:#f0646c">≥75 高风险</b>：建议避免进山活动，关注官方预警公告
     </p>
     <p style="margin-top:8px">模型基于 ERA5 再分析数据训练（2020-2026），实时预报来自 Open-Meteo，地形基于 MERIT DEM。本页为<b>研究性开源预报</b>，实际防灾/进山审批以<b>中国气象局及哀牢山管护局官方公告为准</b>。数据源详情请点击顶部「数据源详情」按钮。</p>
     <p style="margin-top:6px">数据源：Open-Meteo · 每次打开/刷新本页即获取最新数据</p>
@@ -1660,16 +1661,16 @@ body.view-public #altVerifyPanel{display:none!important}
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081518"></script>
-<script src="js/gb.js?v=2026081518"></script>
-<script src="js/fx.js?v=2026081518"></script>
-<script src="js/app.js?v=2026081518"></script>
-<script src="js/terrain3d.js?v=2026081518"></script>
+<script src="js/site.js?v=2026081519"></script>
+<script src="js/gb.js?v=2026081519"></script>
+<script src="js/fx.js?v=2026081519"></script>
+<script src="js/app.js?v=2026081519"></script>
+<script src="js/terrain3d.js?v=2026081519"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081518").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081519").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -1776,26 +1777,26 @@ function updateRiskBanner(maxRI){
   banner.className = "rb-low";
   if(maxRI >= 75){
     banner.classList.add("rb-extreme");
-    icon.textContent = "🚫";
-    level.textContent = "极高危险 · 全域封山";
-    actions.innerHTML = "全域封山，所有道路、景区、保护区禁止进入。已进山者立即撤至安全区域。";
+    icon.textContent = "🔴";
+    level.textContent = "高风险 · 建议暂缓进山";
+    actions.innerHTML = "强对流/地质灾害风险较高，建议暂缓进山计划。已进山者请关注天气变化，尽早下山至安全区域。";
     value.textContent = maxRI;
   } else if(maxRI >= 55){
     banner.classList.add("rb-high");
     icon.textContent = "⚠️";
-    level.textContent = "预警级 · 全线取消进山";
-    actions.innerHTML = "全线取消进山，仅镇区公路通行。已进山者尽快下山至安全区域。";
+    level.textContent = "较高风险 · 谨慎出行";
+    actions.innerHTML = "存在较强对流或地质灾害风险，如需进山请在 12:00 前完成，避开陡坡和河道。";
     value.textContent = maxRI;
   } else if(maxRI >= 35){
     banner.classList.add("rb-mid");
     icon.textContent = "📍";
-    level.textContent = "较高风险 · 限制出行";
-    actions.innerHTML = "仅限短途平缓景区，禁止徒步野线，不进深山。16:00 前下山。";
+    level.textContent = "关注级 · 注意天气变化";
+    actions.innerHTML = "山区天气多变，建议选择短途平缓路线，14:00 前完成下山，留意午后对流发展。";
     value.textContent = maxRI;
   } else {
     icon.textContent = "✅";
-    level.textContent = "低风险 · 正常游览";
-    actions.innerHTML = "正常游览，16:00 前下山，避开河谷低洼地带。注意山区天气突变。";
+    level.textContent = "低风险 · 适合游览";
+    actions.innerHTML = "天气状况良好，适合正常游览。建议 16:00 前下山，避开河谷低洼地带，注意山区天气突变。";
     value.textContent = maxRI;
   }
   // 触发浏览器通知
@@ -2430,7 +2431,7 @@ window.generateAIAdvice = function(){
 
   var overallRisk = Math.max.apply(null, segments.map(function(s){ return s.segRisk; }));
   var verdict, verdictColor;
-  if(overallRisk >= 75){ verdict = "⛔ 今日不宜进山：多段风险达极高，建议取消行程"; verdictColor = "var(--red)"; }
+  if(overallRisk >= 75){ verdict = "🔴 风险较高：多段风险达高级，建议暂缓行程"; verdictColor = "var(--red)"; }
   else if(overallRisk >= 55){ verdict = "⚠️ 高风险行程：建议仅限短途平缓路段，14:00前完成"; verdictColor = "var(--orange)"; }
   else if(overallRisk >= 35){ verdict = "📍 可出行但需留意：午后注意对流发展，建议14:00前下山"; verdictColor = "var(--yellow)"; }
   else { verdict = "✅ 风险较低，适合出行：仍须注意山区天气突变"; verdictColor = "var(--teal)"; }
@@ -2484,11 +2485,8 @@ var deferredPrompt = null;
 window.addEventListener("beforeinstallprompt", function(e){
   e.preventDefault();
   deferredPrompt = e;
-  var installBox = document.getElementById("pwaInstall");
-  if(installBox){
-    var dismissed = sessionStorage.getItem("pwaDismissed");
-    if(!dismissed) setTimeout(function(){ installBox.classList.add("show"); }, 3000);
-  }
+  var btn = document.getElementById("btnInstallApp");
+  if(btn) btn.style.display = "";
 });
 window.installPWA = function(){
   if(!deferredPrompt){ alert("您的浏览器不支持直接安装，请使用浏览器的「添加到主屏幕」功能。"); return; }

@@ -288,7 +288,7 @@ function renderRoadSafety(grid, series){
   // 出行建议
   let advice;
   if(roadLv === "预警"){
-    advice = "🚫 道路出行极高风险：建议暂缓出行，特别是夜间、浓雾或暴雨时段。已上路车辆请减速慢行、开启雾灯、保持安全车距。";
+    advice = "⚠️ 道路出行风险较高：建议谨慎驾驶，特别是夜间、浓雾或暴雨时段。已上路车辆请减速慢行、开启雾灯、保持安全车距。";
   } else if(roadLv === "较高"){
     advice = "⚠️ 道路出行风险较高：谨慎驾驶，注意能见度变化，山区弯道减速。夜间行驶请开启远光灯（会车切换近光），保持 2 倍以上安全车距。";
   } else if(roadLv === "关注"){
@@ -721,8 +721,8 @@ function renderAdvice(grid, roads, series){
   const maxF = Math.max(...next24.map(s=>s.f||0), 0);
   /* ---- 登山建议大卡（普通人视角：星级 + 一句话结论 + 关键指标） ---- */
   let hs = 4, verdict = "风险较低，适合出行：仍须注意山区天气突变，建议 14:00 前下山", vColor = "#6fd39a";
-  if(maxRI >= 75){ hs = 0; verdict = "今日不宜进山：综合风险已达预警级，建议取消一切进山计划，已进山者尽快下山"; vColor = "#f0646c"; }
-  else if(maxRI >= 55){ hs = 1; verdict = "谨慎出行：综合风险较高，如必须进山请 12:00 前完成并避开陡坡、河道"; vColor = "#e8a35c"; }
+  if(maxRI >= 75){ hs = 0; verdict = "风险较高：综合风险指数偏高，建议暂缓进山计划，已进山者请关注天气变化尽早下山"; vColor = "#f0646c"; }
+  else if(maxRI >= 55){ hs = 1; verdict = "谨慎出行：综合风险较高，如需进山请 12:00 前完成并避开陡坡、河道"; vColor = "#e8a35c"; }
   else if(maxRI >= 35){ hs = 3; verdict = "可出行但需留意：午后易发强对流，建议 14:00 前完成下山"; vColor = "#e3cf7d"; }
   if(maxRI < 35 && totalP >= 10) hs = Math.min(hs, 3);
   if(maxRI < 35 && (maxP >= 0.4 || maxF >= 0.5)) hs = Math.min(hs, 3);
@@ -752,17 +752,17 @@ function renderAdvice(grid, roads, series){
   let items = [];
   // 主风险等级建议
   if(maxRI >= 75){
-    items.push({icon:"⛔", title:"今日不宜进山", color:"#ff4d4f",
-      text:"综合风险指数 "+maxRI+"（预警级），强对流/地形灾害风险极高。建议取消一切进山计划，已进山者尽快下山至安全区域。"});
+    items.push({icon:"🔴", title:"建议暂缓进山", color:"#ff4d4f",
+      text:"综合风险指数 "+maxRI+"（高风险），强对流/地形灾害风险较高。建议暂缓进山计划，已进山者请关注天气变化，尽早下山至安全区域。"});
   } else if(maxRI >= 55){
     items.push({icon:"⚠️", title:"谨慎出行", color:"#ff9f43",
-      text:"综合风险指数 "+maxRI+"（较高级），存在较强对流或地形灾害风险。如必须进山，请在 12:00 前完成、避开陡坡和河道、保持通讯畅通。"});
+      text:"综合风险指数 "+maxRI+"（较高级），存在较强对流或地形灾害风险。如需进山，请在 12:00 前完成、避开陡坡和河道、保持通讯畅通。"});
   } else if(maxRI >= 35){
     items.push({icon:"📍", title:"留意天气变化", color:"#f7d154",
       text:"综合风险指数 "+maxRI+"（关注级），山区天气多变。建议 14:00 前下山，注意午后对流发展。"});
   } else {
     items.push({icon:"✅", title:"风险较低", color:"#2ecc71",
-      text:"综合风险指数 "+maxRI+"（低级），但仍需注意山区天气突变。"});
+      text:"综合风险指数 "+maxRI+"（低级），适合正常游览，但仍需注意山区天气突变。"});
   }
   // 降水建议
   if(totalP >= 25){
