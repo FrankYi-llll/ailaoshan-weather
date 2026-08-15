@@ -155,6 +155,38 @@ footer b{color:var(--orange)}
 .risk-btn{padding:6px 15px;border-radius:4px;border:1px solid var(--line-strong);background:transparent;color:var(--sub);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.4px;transition:all .15s}
 .risk-btn:hover{color:var(--text);border-color:var(--teal);background:rgba(111,211,154,.08)}
 .risk-btn.active{background:rgba(98,196,232,.16);color:var(--blue);border-color:var(--blue);font-weight:700}
+
+/* ---- 风险地图增强组件 ---- */
+.risk-map-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.rms-card{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:10px 14px;position:relative;overflow:hidden}
+.rms-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-color,var(--teal));opacity:.7}
+.rms-label{font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:4px}
+.rms-value{font-size:22px;font-weight:700;line-height:1.2;color:var(--text)}
+.rms-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.rms-dist{display:flex;align-items:center;gap:6px;font-size:12px}
+.rms-dist span{display:inline-flex;align-items:center;gap:3px}
+.rms-dist i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.risk-dist-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:10px 0 4px;background:rgba(255,255,255,.06)}
+.risk-dist-bar > div{transition:width .4s ease}
+.risk-dist-labels{display:flex;justify-content:space-between;font-size:10.5px;color:var(--sub);font-family:var(--mono);margin-bottom:12px}
+
+.risk-hotspots{margin-top:14px}
+.risk-hotspots h3{margin-bottom:8px}
+.risk-hotspot-table{width:100%;border-collapse:collapse;font-size:12px}
+.risk-hotspot-table th{text-align:left;padding:6px 8px;color:var(--sub);font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;font-family:var(--mono);border-bottom:1px solid var(--line);font-weight:500}
+.risk-hotspot-table td{padding:7px 8px;border-bottom:1px solid rgba(150,204,170,.07);color:var(--text)}
+.risk-hotspot-table tr:hover td{background:rgba(150,204,170,.05)}
+.risk-hotspot-table .hs-rank{font-family:var(--mono);color:var(--dim);width:28px}
+.risk-hotspot-table .hs-bar{width:80px}
+.hs-mini-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;display:inline-block;width:100%}
+.hs-mini-bar i{display:block;height:100%;border-radius:3px}
+
+.risk-timeline{margin-top:14px;background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.risk-timeline-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.risk-timeline-header h3{margin:0}
+.risk-timeline-header .rt-peak{font-size:11.5px;color:var(--sub);font-family:var(--mono)}
+#riskTimelineSvg{width:100%;height:70px;display:block}
 .loading{text-align:center;padding:40px;color:var(--sub);font-size:13px;font-family:var(--mono)}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.18);border-top-color:var(--teal);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-4px;margin-right:8px}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -545,15 +577,22 @@ body.bg-atmos-fog{
   <div class="panel">
     <h2>🗺 哀牢山精细地形与风险地图</h2>
     <div class="desc">底图 = 0.02° 精细 DEM 出行地图（微弱地形纹理 + 分级道路着色 + 河流 + 村镇 + 景点 + 禁区）· 色块 = 该格点未来 24h 峰值风险（仅颜色表示，鼠标悬停/点击看详情）· 适合进山出行前快速扫一眼风险分布</div>
+    <div id="riskMapSummary" class="risk-map-summary"></div>
     <div class="btn-group">
       <button class="risk-btn active" id="btnThunder" onclick="setRisk('thunder')">🌩 强对流</button>
       <button class="risk-btn" id="btnFog" onclick="setRisk('fog')">🌫 浓雾</button>
+      <button class="risk-btn" id="btnFlash" onclick="setRisk('flash')">🌊 山洪</button>
+      <button class="risk-btn" id="btnDebris" onclick="setRisk('debris')">🪨 泥石流</button>
+      <button class="risk-btn" id="btnSlump" onclick="setRisk('slump')">⛰ 塌方</button>
+      <button class="risk-btn" id="btnRoad" onclick="setRisk('road')">🚗 道路</button>
     </div>
     <div id="mapWrap">
       <img id="mapImg" alt="哀牢山精细地形图" style="display:none">
       <svg id="mapSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
       <div class="tooltip" id="tip"></div>
     </div>
+    <div id="riskDistBar" class="risk-dist-bar"></div>
+    <div id="riskDistLabels" class="risk-dist-labels"></div>
     <div class="legend-row">
       <span><i style="background:#2ecc71"></i>低</span>
       <span><i style="background:#f7d154"></i>关注</span>
@@ -567,6 +606,20 @@ body.bg-atmos-fog{
       <span><i style="background:#2ecc71;border-radius:50%;width:10px;height:10px"></i>开放景区</span>
       <span><i style="background:#ff4d4f;border-radius:50%;width:10px;height:10px"></i>禁区/科研站</span>
       <span><i style="background:rgba(255,77,79,0.12);border:1px dashed #ff4d4f"></i>禁区范围</span>
+    </div>
+    <div class="risk-hotspots">
+      <h3>🔥 风险热点排行 <span id="hotspotBadge" style="font-size:11px;color:var(--sub);font-weight:400"></span></h3>
+      <div style="overflow-x:auto"><table class="risk-hotspot-table">
+        <thead><tr><th>#</th><th>区域</th><th>海拔</th><th>风险值</th><th class="hs-bar">概率</th><th>等级</th><th>峰值时间</th></tr></thead>
+        <tbody id="riskHotspotTbody"></tbody>
+      </table></div>
+    </div>
+    <div class="risk-timeline">
+      <div class="risk-timeline-header">
+        <h3>📈 24h 风险演变趋势</h3>
+        <span class="rt-peak" id="riskTimelinePeak"></span>
+      </div>
+      <svg id="riskTimelineSvg" viewBox="0 0 480 70" preserveAspectRatio="none"></svg>
     </div>
   </div>
 
@@ -851,16 +904,16 @@ body.bg-atmos-fog{
   </footer>
 </div>
 
-<script src="js/site.js?v=2026081505"></script>
-<script src="js/gb.js?v=2026081505"></script>
-<script src="js/fx.js?v=2026081505"></script>
-<script src="js/app.js?v=2026081505"></script>
-<script src="js/terrain3d.js?v=2026081505"></script>
+<script src="js/site.js?v=2026081506"></script>
+<script src="js/gb.js?v=2026081506"></script>
+<script src="js/fx.js?v=2026081506"></script>
+<script src="js/app.js?v=2026081506"></script>
+<script src="js/terrain3d.js?v=2026081506"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装） */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("sw.js?v=2026081505").catch(()=>{});
+    navigator.serviceWorker.register("sw.js?v=2026081506").catch(()=>{});
   });
 }
 </script>

@@ -1167,7 +1167,7 @@ function renderMap(){
     const [x0,y0] = lngLat2px(g.lat+0.05, g.lon-0.05);
     const [x1,y1] = lngLat2px(g.lat-0.05, g.lon+0.05);
     const w = Math.abs(x1-x0), h = Math.abs(y1-y0);
-    const s2 = riskType==="fog" ? g.fogLevel : g.level;
+    const s2 = riskLvFor(g, riskType);
     const c = LVL[s2]||"#2ecc71";
     // 降低透明度，重点在预警/较高；低等级几乎透明，不再挡住底图文字
     const op = s2==="预警"?0.38 : s2==="较高"?0.28 : s2==="关注"?0.18 : 0.09;
@@ -1274,9 +1274,209 @@ function renderMap(){
 }
 function setRisk(t){
   riskType = t;
-  $("btnThunder").classList.toggle("active", t==="thunder");
-  $("btnFog").classList.toggle("active", t==="fog");
+  const btnIds = {thunder:"btnThunder",fog:"btnFog",flash:"btnFlash",debris:"btnDebris",slump:"btnSlump",road:"btnRoad"};
+  for(const k in btnIds){
+    const b = $(btnIds[k]);
+    if(b) b.classList.toggle("active", t===k);
+  }
   renderMap();
+  renderRiskDistBar();
+  renderRiskHotspots();
+  renderRiskTimeline();
+}
+
+/* ---- 风险类型 → 取值函数 ---- */
+function riskValFor(g, type){
+  if(type==="thunder") return g.peak_prob;
+  if(type==="fog") return g.fog_prob;
+  if(type==="road") return g.road_prob || 0;
+  if(g.terrainHazard){
+    if(type==="flash") return (g.terrainHazard.flash||0)/100;
+    if(type==="debris") return (g.terrainHazard.debris||0)/100;
+    if(type==="slump") return (g.terrainHazard.slump||0)/100;
+  }
+  return 0;
+}
+function riskLvFor(g, type){
+  if(type==="thunder") return g.level;
+  if(type==="fog") return g.fogLevel;
+  if(type==="road") return g.roadLevel || "低";
+  const v = riskValFor(g, type);
+  return v>=0.6?"预警":v>=0.45?"较高":v>=0.30?"关注":"低";
+}
+function riskTimeFor(g, type){
+  if(type==="thunder") return g.peak_time || "—";
+  if(type==="fog") return g.fog_peak_time || "—";
+  if(type==="road") return g.peak_time || "—";
+  return "持续";
+}
+const RISK_TYPE_LABEL = {
+  thunder:"强对流", fog:"浓雾", flash:"山洪", debris:"泥石流", slump:"塌方", road:"道路出行"
+};
+
+/* ---- 风险地图概览仪表盘 ---- */
+function renderRiskMapSummary(){
+  const el = $("riskMapSummary");
+  if(!el || !GRID || !GRID.length) return;
+  const type = riskType;
+  const vals = GRID.map(g=>({g, v:riskValFor(g, type), lv:riskLvFor(g, type)}));
+  const warnN = vals.filter(x=>x.lv==="预警").length;
+  const highN = vals.filter(x=>x.lv==="较高").length;
+  const watchN = vals.filter(x=>x.lv==="关注").length;
+  const lowN = vals.filter(x=>x.lv==="低").length;
+  const maxVal = vals.reduce((a,x)=>Math.max(a, x.v), 0);
+  const topG = vals.find(x=>x.v===maxVal);
+  const total = GRID.length;
+  const lvCol = lv => lv==="预警"?"#ff4d4f":lv==="较高"?"#ff9f43":lv==="关注"?"#f7d154":"#2ecc71";
+  el.innerHTML =
+    '<div class="rms-card" style="--accent-color:'+lvCol(topG?topG.lv:"低")+'">'+
+      '<div class="rms-label">当前类型</div>'+
+      '<div class="rms-value" style="font-size:16px">'+RISK_TYPE_LABEL[type]+'</div>'+
+      '<div class="rms-sub">'+total+' 个格点</div>'+
+    '</div>'+
+    '<div class="rms-card" style="--accent-color:'+lvCol(maxVal>=0.6?"预警":maxVal>=0.45?"较高":maxVal>=0.30?"关注":"低")+'">'+
+      '<div class="rms-label">峰值概率</div>'+
+      '<div class="rms-value" style="color:'+lvCol(topG?topG.lv:"低")+'">'+(maxVal*100).toFixed(1)+'<small style="font-size:13px">%</small></div>'+
+      '<div class="rms-sub">最高: '+(topG?gridPlaceName(topG.g.lat, topG.g.lon):"—")+'</div>'+
+    '</div>'+
+    '<div class="rms-card" style="--accent-color:#ff4d4f">'+
+      '<div class="rms-label">预警 / 较高</div>'+
+      '<div class="rms-value"><span style="color:#ff4d4f">'+warnN+'</span> / <span style="color:#ff9f43">'+highN+'</span></div>'+
+      '<div class="rms-sub">关注 '+watchN+' · 低 '+lowN+'</div>'+
+    '</div>'+
+    '<div class="rms-card" style="--accent-color:var(--teal)">'+
+      '<div class="rms-label">风险分布</div>'+
+      '<div class="rms-dist" style="margin-top:4px">'+
+        '<span><i style="background:#ff4d4f"></i>'+warnN+'</span>'+
+        '<span><i style="background:#ff9f43"></i>'+highN+'</span>'+
+        '<span><i style="background:#f7d154"></i>'+watchN+'</span>'+
+        '<span><i style="background:#2ecc71"></i>'+lowN+'</span>'+
+      '</div>'+
+      '<div class="rms-sub" style="margin-top:4px">共 '+total+' 格点</div>'+
+    '</div>';
+}
+
+/* ---- 风险分布条形图 ---- */
+function renderRiskDistBar(){
+  const bar = $("riskDistBar"), labels = $("riskDistLabels");
+  if(!bar || !GRID || !GRID.length) return;
+  const type = riskType;
+  const vals = GRID.map(g=>riskLvFor(g, type));
+  const warnN = vals.filter(v=>v==="预警").length;
+  const highN = vals.filter(v=>v==="较高").length;
+  const watchN = vals.filter(v=>v==="关注").length;
+  const lowN = vals.filter(v=>v==="低").length;
+  const total = vals.length;
+  const pct = n => total ? (n/total*100).toFixed(0) : 0;
+  bar.innerHTML =
+    '<div style="width:'+pct(warnN)+'%;background:#ff4d4f" title="预警 '+warnN+'"></div>'+
+    '<div style="width:'+pct(highN)+'%;background:#ff9f43" title="较高 '+highN+'"></div>'+
+    '<div style="width:'+pct(watchN)+'%;background:#f7d154" title="关注 '+watchN+'"></div>'+
+    '<div style="width:'+pct(lowN)+'%;background:#2ecc71" title="低 '+lowN+'"></div>';
+  labels.innerHTML =
+    '<span>🟥 预警 '+warnN+' ('+pct(warnN)+'%)</span>'+
+    '<span>🟧 较高 '+highN+' ('+pct(highN)+'%)</span>'+
+    '<span>🟨 关注 '+watchN+' ('+pct(watchN)+'%)</span>'+
+    '<span>🟩 低 '+lowN+' ('+pct(lowN)+'%)</span>';
+}
+
+/* ---- 风险热点排行 ---- */
+function renderRiskHotspots(){
+  const tbody = $("riskHotspotTbody"), badge = $("hotspotBadge");
+  if(!tbody || !GRID || !GRID.length) return;
+  const type = riskType;
+  const data = GRID.map(g=>({
+    g, v:riskValFor(g, type), lv:riskLvFor(g, type), t:riskTimeFor(g, type)
+  })).sort((a,b)=>b.v-a.v).slice(0, 8);
+  const lvCol = lv => lv==="预警"?"#ff4d4f":lv==="较高"?"#ff9f43":lv==="关注"?"#f7d154":"#2ecc71";
+  if(badge) badge.textContent = "Top " + data.length + " / " + GRID.length + " 格点 · 按 " + RISK_TYPE_LABEL[type] + " 概率排序";
+  tbody.innerHTML = data.map((d, i)=>{
+    const name = gridPlaceName(d.g.lat, d.g.lon);
+    const barW = Math.round(d.v * 100);
+    return '<tr>'+
+      '<td class="hs-rank">'+(i+1)+'</td>'+
+      '<td><b>'+name+'</b><div style="font-size:10px;color:var(--sub)">'+d.g.lat.toFixed(2)+'N, '+d.g.lon.toFixed(2)+'E</div></td>'+
+      '<td>'+d.g.elev+'m</td>'+
+      '<td><b style="color:'+lvCol(d.lv)+'">'+(d.v*100).toFixed(1)+'%</b></td>'+
+      '<td class="hs-bar"><div class="hs-mini-bar"><i style="width:'+barW+'%;background:'+lvCol(d.lv)+'"></i></div></td>'+
+      '<td><span class="pill '+pillCls(d.lv)+'">'+d.lv+'</span></td>'+
+      '<td style="font-size:11px;color:var(--sub);font-family:var(--mono)">'+d.t+'</td>'+
+    '</tr>';
+  }).join("");
+}
+
+/* ---- 24h 风险演变时间线 ---- */
+function renderRiskTimeline(){
+  const svg = $("riskTimelineSvg"), peakEl = $("riskTimelinePeak");
+  if(!svg || !GRID || !GRID.length) return;
+  const type = riskType;
+  // 地质类风险没有时间序列，用静态值平铺
+  const isGeological = type==="flash" || type==="debris" || type==="slump";
+  let hours = [], maxVals = [];
+  if(isGeological){
+    // 静态值，24h 平铺
+    const maxV = GRID.reduce((a,g)=>Math.max(a, riskValFor(g, type)), 0);
+    for(let h=0; h<24; h++){ hours.push(h); maxVals.push(maxV); }
+  } else {
+    // 从 series 提取每小时最大概率
+    const key = type==="fog" ? "f" : type==="road" ? "p" : "p"; // thunder & road use p
+    const fogKey = type==="fog";
+    let n = 0, times = [];
+    for(const g of GRID){
+      if(g.series && g.series.length){ n = g.series.length; times = g.series.map(s=>s.t); break; }
+    }
+    if(!n){ svg.innerHTML = ""; return; }
+    for(let i=0; i<n; i++){
+      hours.push(i);
+      let mx = 0;
+      for(const g of GRID){
+        const s = g.series; if(!s || i>=s.length) continue;
+        let v;
+        if(type==="fog") v = s[i].f || 0;
+        else if(type==="road") v = s[i].p || 0;
+        else v = s[i].p || 0; // thunder
+        if(v > mx) mx = v;
+      }
+      maxVals.push(mx);
+    }
+  }
+  const W = 480, H = 70, padX = 4, padY = 8;
+  const n = maxVals.length;
+  if(n < 2){ svg.innerHTML = ""; return; }
+  const stepX = (W - padX*2) / (n - 1);
+  const pts = maxVals.map((v, i)=>[padX + i*stepX, H - padY - v*(H - padY*2)]);
+  const pathD = pts.map((p, i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const areaD = pathD + " L"+pts[n-1][0].toFixed(1)+","+(H-padY)+" L"+pts[0][0].toFixed(1)+","+(H-padY)+" Z";
+  const maxV = Math.max(...maxVals);
+  const maxIdx = maxVals.indexOf(maxV);
+  const lvCol = v => v>=0.6?"#ff4d4f":v>=0.45?"#ff9f43":v>=0.30?"#f7d154":"#2ecc71";
+  const lineCol = lvCol(maxV);
+  // 时间标签
+  let firstTime = "", peakTime = "";
+  for(const g of GRID){
+    if(g.series && g.series.length){
+      firstTime = g.series[0].t;
+      if(maxIdx < g.series.length) peakTime = g.series[maxIdx].t;
+      break;
+    }
+  }
+  if(isGeological) peakTime = "持续存在";
+  if(peakEl) peakEl.textContent = "峰值 " + (maxV*100).toFixed(1) + "% @" + (peakTime || "—");
+  // 阈值线
+  const thrY = H - padY - 0.6*(H-padY*2);
+  const watchY = H - padY - 0.45*(H-padY*2);
+  svg.innerHTML =
+    '<defs><linearGradient id="riskTLGrad" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="'+lineCol+'" stop-opacity="0.35"/>'+
+      '<stop offset="100%" stop-color="'+lineCol+'" stop-opacity="0.02"/>'+
+    '</linearGradient></defs>'+
+    '<line x1="'+padX+'" y1="'+thrY.toFixed(1)+'" x2="'+(W-padX)+'" y2="'+thrY.toFixed(1)+'" stroke="#ff4d4f" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.4"/>'+
+    '<line x1="'+padX+'" y1="'+watchY.toFixed(1)+'" x2="'+(W-padX)+'" y2="'+watchY.toFixed(1)+'" stroke="#f7d154" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.3"/>'+
+    '<path d="'+areaD+'" fill="url(#riskTLGrad)"/>'+
+    '<path d="'+pathD+'" fill="none" stroke="'+lineCol+'" stroke-width="1.8" stroke-linejoin="round"/>'+
+    '<circle cx="'+pts[maxIdx][0].toFixed(1)+'" cy="'+pts[maxIdx][1].toFixed(1)+'" r="3" fill="'+lineCol+'" stroke="#fff" stroke-width="1"/>'+
+    '<text x="'+padX+'" y="'+(H-1)+'" font-size="8" fill="var(--dim)" font-family="var(--mono)">'+(firstTime||"0h")+'</text>'+
+    '<text x="'+(W-padX-16)+'" y="'+(H-1)+'" font-size="8" fill="var(--dim)" font-family="var(--mono)">+23h</text>';
 }
 
 /* ---------- 渲染: 公路灾害表 ---------- */
@@ -2378,7 +2578,13 @@ async function main(){
     renderRecalc3D();
     // 地形底图
     const img = $("mapImg");
-    img.onload = ()=> renderMap();
+    img.onload = ()=>{
+      renderMap();
+      renderRiskMapSummary();
+      renderRiskDistBar();
+      renderRiskHotspots();
+      renderRiskTimeline();
+    };
     img.src = "assets/ailaoshan_map.png?_="+Date.now();
     img.style.display = "block";
     // 地形图
