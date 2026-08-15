@@ -461,6 +461,55 @@ body.bg-atmos-fog{
   #tourBtn{top:8px;right:8px;padding:5px 10px;font-size:11px}
   #windGauge{display:none!important}
 }
+
+/* ===== 悬浮快速导航 ===== */
+#floatNav{
+  position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:80;
+  display:flex;flex-direction:column;gap:5px;
+  background:rgba(5,13,9,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:10px;padding:8px 6px;
+  box-shadow:0 4px 24px rgba(0,0,0,.42);
+  transition:opacity .3s,transform .3s;
+}
+#floatNav .fn-item{
+  display:flex;align-items:center;gap:0;
+  cursor:pointer;border-radius:6px;padding:5px 7px;
+  color:var(--sub);font-size:13px;line-height:1;white-space:nowrap;
+  transition:color .2s,background .2s;
+}
+#floatNav .fn-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  background:var(--dim);border:1px solid var(--line-strong);
+  transition:background .2s,box-shadow .2s,transform .2s;
+}
+#floatNav .fn-label{
+  max-width:0;overflow:hidden;opacity:0;font-size:11.5px;
+  font-family:var(--mono);letter-spacing:.3px;
+  transition:max-width .25s ease,opacity .25s ease,margin .25s ease;
+}
+#floatNav .fn-item:hover{background:rgba(111,211,154,.08);color:var(--teal)}
+#floatNav .fn-item:hover .fn-label{max-width:120px;opacity:1;margin-left:7px}
+#floatNav .fn-item:hover .fn-dot{background:var(--teal);transform:scale(1.2)}
+#floatNav .fn-item.active{color:var(--teal)}
+#floatNav .fn-item.active .fn-dot{
+  background:var(--teal);border-color:var(--teal);
+  box-shadow:0 0 8px rgba(111,211,154,.6);
+}
+#floatNav .fn-top{
+  margin-top:4px;padding-top:6px;border-top:1px solid var(--line);
+  justify-content:center;color:var(--sub)
+}
+#floatNav .fn-top:hover{color:var(--blue)}
+#floatNav .fn-top:hover .fn-dot{background:var(--blue);box-shadow:0 0 8px rgba(98,196,232,.5)}
+/* 滚动时若靠近右侧则半透明，避免遮挡 */
+#floatNav.dim{opacity:.42}
+#floatNav.dim:hover{opacity:1}
+@media(max-width:760px){
+  #floatNav{right:8px;padding:6px 4px;gap:4px}
+  #floatNav .fn-item{padding:5px 5px}
+  #floatNav .fn-label{display:none}
+  #floatNav .fn-item:hover .fn-label{display:inline;max-width:100px;opacity:1;margin-left:6px}
+}
 </style>
 </head>
 <body>
@@ -533,7 +582,7 @@ body.bg-atmos-fog{
     </div>
   </section>
 
-  <div class="panel">
+  <div class="panel" id="riskIndexPanel">
     <h2>📊 综合风险指数总表 <span class="badge" id="riskCount">—</span></h2>
     <div class="desc">综合指数 = 40%×强对流峰值 + 15%×浓雾峰值 + 30%×地形敏感性(山洪/泥石流/塌方最高) + 15%×坡度因子 · 30 个网格点 + 主要公路统一排序 · 指数 0-100 · 每次刷新实时更新</div>
     <div class="legend-row">
@@ -575,7 +624,7 @@ body.bg-atmos-fog{
     <div class="alt-grid" id="altitudeContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
-  <div class="panel">
+  <div class="panel" id="chartPanel">
     <h2>📈 未来 72h 强对流/浓雾概率与气象要素</h2>
     <div class="desc">曲线 = 哀牢山区域 30 格点逐小时强对流概率最大值（左轴）；柱状 = 降水（mm）；面积 = 相对湿度/云量（右轴）。鼠标悬停看逐小时气温、湿度、降水、云量。</div>
     <div class="btn-group">
@@ -617,7 +666,7 @@ body.bg-atmos-fog{
     <div class="verify-note" id="routeRules"></div>
   </div>
 
-  <div class="panel">
+  <div class="panel" id="riskMapPanel">
     <h2>🗺 哀牢山精细地形与风险地图</h2>
     <div class="desc">底图 = 0.02° 精细 DEM 出行地图（微弱地形纹理 + 分级道路着色 + 河流 + 村镇 + 景点 + 禁区）· 色块 = 该格点未来 24h 峰值风险（仅颜色表示，鼠标悬停/点击看详情）· 适合进山出行前快速扫一眼风险分布</div>
     <div id="riskMapSummary" class="risk-map-summary"></div>
@@ -675,13 +724,13 @@ body.bg-atmos-fog{
     </table></div>
   </div>
 
-  <div class="panel">
+  <div class="panel" id="roadSafetyPanel">
     <h2>🚗 道路出行安全评估 <span class="badge" id="roadSafetyBadge">第9模型</span></h2>
     <div class="desc">综合考虑阳光（短波辐射）、昼夜、温度、能见度、风力、降水等因素，专门评估道路出行安全风险（道路出行重中之重）</div>
     <div id="roadSafetyPanel"><div class="loading">加载中…</div></div>
   </div>
 
-  <div class="panel">
+  <div class="panel" id="altVerifyPanel">
     <h2>🔁 双模型交叉验证</h2>
     <div class="desc" id="altDesc">加载中…</div>
     <div class="grid2">
@@ -945,18 +994,37 @@ body.bg-atmos-fog{
     <p style="margin-top:8px">模型基于 ERA5 再分析数据训练（2020-2026，含 2025-2026 增量数据，双模型交叉验证），实时预报来自 Open-Meteo，地形基于 MERIT DEM 精细重采样。本页为研究性预警，<b>实际出行/预警以中国气象局及哀牢山管护局官方发布为准</b>。进入保护区请严格遵守进山规范。</p>
     <p style="margin-top:6px">数据源：Open-Meteo · 每次打开/刷新本页即获取最新数据</p>
   </footer>
+
+  <!-- 悬浮快速导航 -->
+  <nav id="floatNav" aria-label="快速导航">
+    <div class="fn-item" data-target="heroSection" title="首屏 3D 数字孪生"><span class="fn-dot"></span><span class="fn-label">首屏 3D</span></div>
+    <div class="fn-item" data-target="riskIndexPanel" title="综合风险指数总表"><span class="fn-dot"></span><span class="fn-label">风险总表</span></div>
+    <div class="fn-item" data-target="warnCenterPanel" title="实时预警中心"><span class="fn-dot"></span><span class="fn-label">预警中心</span></div>
+    <div class="fn-item" data-target="weatherPanel" title="实况天气与气象要素"><span class="fn-dot"></span><span class="fn-label">实况天气</span></div>
+    <div class="fn-item" data-target="ecoIndexPanel" title="生态体验指数"><span class="fn-dot"></span><span class="fn-label">生态指数</span></div>
+    <div class="fn-item" data-target="altitudePanel" title="按海拔层天气差异"><span class="fn-dot"></span><span class="fn-label">海拔差异</span></div>
+    <div class="fn-item" data-target="chartPanel" title="未来 72h 概率与气象要素"><span class="fn-dot"></span><span class="fn-label">72h 图表</span></div>
+    <div class="fn-item" data-target="advicePanel" title="出行建议"><span class="fn-dot"></span><span class="fn-label">出行建议</span></div>
+    <div class="fn-item" data-target="poiPanel" title="景点一键聚焦"><span class="fn-dot"></span><span class="fn-label">景点聚焦</span></div>
+    <div class="fn-item" data-target="routePanel" title="景点路线推荐与禁区提示"><span class="fn-dot"></span><span class="fn-label">路线推荐</span></div>
+    <div class="fn-item" data-target="riskMapPanel" title="精细地形与风险地图"><span class="fn-dot"></span><span class="fn-label">风险地图</span></div>
+    <div class="fn-item" data-target="roadPanel" title="公路灾害预警"><span class="fn-dot"></span><span class="fn-label">公路预警</span></div>
+    <div class="fn-item" data-target="roadSafetyPanel" title="道路出行安全评估"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
+    <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
+    <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
+  </nav>
 </div>
 
-<script src="js/site.js?v=2026081511"></script>
-<script src="js/gb.js?v=2026081511"></script>
-<script src="js/fx.js?v=2026081511"></script>
-<script src="js/app.js?v=2026081511"></script>
-<script src="js/terrain3d.js?v=2026081511"></script>
+<script src="js/site.js?v=2026081512"></script>
+<script src="js/gb.js?v=2026081512"></script>
+<script src="js/fx.js?v=2026081512"></script>
+<script src="js/app.js?v=2026081512"></script>
+<script src="js/terrain3d.js?v=2026081512"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081511").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081512").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -980,6 +1048,85 @@ if("serviceWorker" in navigator){
     });
   });
 }
+</script>
+
+<script>
+/* ===== 悬浮快速导航：点击跳转 + 滚动联动高亮 ===== */
+(function(){
+  var nav = document.getElementById("floatNav");
+  if(!nav) return;
+  var items = Array.prototype.slice.call(nav.querySelectorAll(".fn-item"));
+  var sections = [];
+  items.forEach(function(it){
+    var id = it.getAttribute("data-target");
+    if(id === "__top"){ it._isTop = true; return; }
+    var el = document.getElementById(id);
+    if(el){ sections.push({el:el, item:it}); }
+  });
+  // 点击跳转
+  items.forEach(function(it){
+    it.addEventListener("click", function(){
+      if(it._isTop){ window.scrollTo({top:0,behavior:"smooth"}); return; }
+      var el = document.getElementById(it.getAttribute("data-target"));
+      if(el){
+        var top = el.getBoundingClientRect().top + window.pageYOffset - 12;
+        window.scrollTo({top:top, behavior:"smooth"});
+      }
+    });
+  });
+  // 滚动联动高亮（IntersectionObserver 优先，回退 scroll）
+  var activeItem = null;
+  function setActive(item){
+    if(activeItem === item) return;
+    if(activeItem) activeItem.classList.remove("active");
+    if(item) item.classList.add("active");
+    activeItem = item;
+  }
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      // 取最靠近视口顶部的可见区段
+      var best = null, bestRatio = 0;
+      sections.forEach(function(s){
+        var r = s.el.getBoundingClientRect();
+        var ratio = 0;
+        if(r.top < window.innerHeight * 0.4 && r.bottom > 60){
+          ratio = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+        }
+        if(ratio > bestRatio){ bestRatio = ratio; best = s; }
+      });
+      setActive(best ? best.item : null);
+    }, {root:null, threshold:[0,0.25,0.5,1], rootMargin:"-60px 0px -50% 0px"});
+    sections.forEach(function(s){ io.observe(s.el); });
+    window.addEventListener("scroll", function(){ io.takeRecords(); }, {passive:true});
+  } else {
+    // 回退：scroll 监听
+    var ticking = false;
+    function onScroll(){
+      if(ticking) return; ticking = true;
+      requestAnimationFrame(function(){
+        var best = null, bestTop = -1e9;
+        sections.forEach(function(s){
+          var t = s.el.getBoundingClientRect().top;
+          if(t <= 100 && t > bestTop){ bestTop = t; best = s; }
+        });
+        setActive(best ? best.item : null);
+        ticking = false;
+      });
+    }
+    window.addEventListener("scroll", onScroll, {passive:true});
+    onScroll();
+  }
+  // 鼠标接近右侧时半透明恢复，离开时半透明（避免长期遮挡）
+  var dimTimer = null;
+  function checkEdge(){
+    var x = lastX || 0;
+    var w = window.innerWidth;
+    nav.classList.toggle("dim", x < w - 140);
+  }
+  var lastX = null;
+  window.addEventListener("mousemove", function(e){ lastX = e.clientX; });
+  setInterval(checkEdge, 800);
+})();
 </script>
 </body>
 </html>
