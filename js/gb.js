@@ -188,9 +188,9 @@ async function fetchOneBatch(pts, retries, onProgress){
         if(onProgress) onProgress({type:"retry", attempt: attempt+1, total: retries, points: pts.length});
         await sleep((Math.pow(2, attempt) + Math.random()) * 1000);
       }
-      // 超时保护：30秒未响应则中止（99格点多变量大 JSON 在国内网络可能需 10-20 秒）
+      // 超时保护：45秒未响应则中止（99格点多变量大 JSON 在海外服务器可能需 10-30 秒）
       const ctrl = new AbortController();
-      const timer = setTimeout(function(){ ctrl.abort(); }, 30000);
+      const timer = setTimeout(function(){ ctrl.abort(); }, 45000);
       const resp = await fetch(url, {cache:"no-store", signal:ctrl.signal});
       clearTimeout(timer);
       if(!resp.ok){
@@ -234,20 +234,22 @@ async function fetchAllGrid(hours, onProgress){
 
   try{
     const pts = gridPoints();
-    // 分3批: 每3行一批 (33点 × 3批)
+    // 分3批并发拉取（浏览器对同域名通常限制6并发，3批安全）。实测比顺序快2-3倍。
     const batchSize = 33;
     const batches = [];
     for(let i=0; i<pts.length; i+=batchSize){
       batches.push(pts.slice(i, i+batchSize));
     }
-    const results = [];
-    for(let b=0; b<batches.length; b++){
-      if(onProgress) onProgress({type:"batch", current: b+1, total: batches.length, points: batches[b].length});
-      // 批间间隔 300ms 避免短时间并发
-      if(b>0) await sleep(300);
-      const batchResult = await fetchOneBatch(batches[b], 3, onProgress);
-      results.push(...batchResult);
-    }
+    if(onProgress) onProgress({type:"batch", current: 1, total: batches.length, points: pts.length});
+    const batchResults = await Promise.all(batches.map((batch, idx)=>
+      fetchOneBatch(batch, 3, function(ev){
+        if(ev.type === "retry" && onProgress) onProgress({...ev, batch: idx+1});
+      }).then(r => {
+        if(onProgress) onProgress({type:"batch", current: idx+1, total: batches.length, points: batch.length});
+        return r;
+      })
+    ));
+    const results = batchResults.flat();
     setOMCache(results);
     return results;
   }catch(e){

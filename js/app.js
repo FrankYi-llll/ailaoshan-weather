@@ -2735,7 +2735,7 @@ async function main(){
       " · 每次刷新实时重算" + cacheTag;
   }catch(e){
     const is429 = String(e.message).includes("429") || String(e.message).includes("Open-Meteo");
-    const isNetwork = String(e.message).includes("fetch") || String(e.message).includes("network");
+    const isNetwork = String(e.message).includes("fetch") || String(e.message).includes("network") || String(e.message).includes("timeout") || String(e.message).includes("超时");
     $("freshBadge").className = "badge red"; $("freshBadge").textContent = "加载失败";
     let msg;
     if(GRID && GRID._stale){
@@ -2748,7 +2748,14 @@ async function main(){
       msg = "❌ 加载失败: "+e.message+"（请检查网络后刷新重试）";
     }
     $("meta").innerHTML = msg + ' <button onclick="retryLoadWeather()" style="margin-left:8px;padding:4px 12px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer">🔄 立即重试</button>';
-    $("riskTbody").innerHTML = '<tr><td colspan="7" style="text-align:center;color:#ff4d4f">数据加载失败，请刷新重试</td></tr>';
+    const errNote = '<div class="desc" style="color:#ff4d4f">数据加载失败：'+e.message+'。<button onclick="retryLoadWeather()" style="margin-left:8px;padding:4px 12px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer">🔄 重试</button></div>';
+    ["riskTbody","warnCenterContent","weatherSummary","ecoIndexContent","altitudeContent","adviceContent","routeSummary","routeTbody","hikingTbody","roadTbody","roadSafetyContent","geoHazardContent","triModelContent"].forEach(function(id){
+      const el = document.getElementById(id);
+      if(el){
+        if(el.tagName === "TBODY") el.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#ff4d4f">数据加载失败，请刷新重试</td></tr>';
+        else el.innerHTML = errNote;
+      }
+    });
     console.error(e);
   }
 }
