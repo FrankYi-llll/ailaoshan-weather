@@ -564,37 +564,114 @@ function weatherAt(lat, lon){
 window.__weatherAt = weatherAt;   // 供 terrain3d.js 点击查询
 
 /* ---------- 渲染: 按海拔层天气差异 ---------- */
-// 坐标严格匹配 GRID 99 个格点中海拔最接近的，避免 IDW 在近距离点拿同一格点导致差异消失
-// 历史问题：原坐标 (23.939,101.50)/(23.945,101.51)/(24.08,101.60) 都落在 23.90,101.50（659m）和 24.10,101.60（1768m），
-// 导致山顶/原始森林/河谷用了相同格点，温度差异被压平。
-// elev=景区标称海拔（UI 显示），gridElev=GRID 实际格点海拔（IDW 基准）
+// 关键教训：Open-Meteo 返回的温度是其模型地形海拔处的实况，
+//           若用我们 DEM 上"高"的坐标但 OM 模型认为"低"，温度会完全反。
+//           所以这里三个坐标都先实测过 Open-Meteo 真实海拔：
+//   high (24.20,101.30) → OM 2510m → 修正到 2700m（-1.24°C）
+//   mid  (23.90,101.30) → OM 1638m → 修正到 2400m（-4.95°C）
+//   low  (24.00,101.60) → OM  801m → 修正到 560m  （+1.57°C）
+// 直接调 Open-Meteo 拉数据，不走 GRID IDW 插值（99 格点平均会把海拔梯度抹平）
 const ALT_BANDS = [
-  {key:"high", name:"高海拔 · 山顶草甸",  place:"金山丫口 / 大雪锅山", lat:24.20, lon:101.30, elev:2700, gridElev:2765, veg:"苔藓矮林 / 山顶草甸 / 云海"},
-  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:24.10, lon:101.30, elev:2400, gridElev:2648, veg:"湿性常绿阔叶林 / 石板路环线"},
-  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",   lat:24.00, lon:101.50, elev:560,  gridElev:688,  veg:"河谷雨林 / 花腰傣风情小镇"},
+  {key:"high", name:"高海拔 · 山顶草甸",  place:"金山丫口 / 大雪锅山", lat:24.20, lon:101.30, elev:2700, omElev:2510, veg:"苔藓矮林 / 山顶草甸 / 云海"},
+  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:23.90, lon:101.30, elev:2400, omElev:1638, veg:"湿性常绿阔叶林 / 石板路环线"},
+  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",            lat:24.00, lon:101.60, elev:560,  omElev:801,  veg:"河谷雨林 / 花腰傣风情小镇"},
 ];
-function renderAltitudeWeather(){
+// 海拔层独立 Open-Meteo 实时数据（不走 GRID 插值）
+let ALT_BANDS_OM = null;     // [{...band, omElev, series:[{t,temp,rh,cloud,ws,wg,precip,vis}]}]
+let ALT_BANDS_OM_LOADING = false;
+
+async function fetchAltitudeBands(){
+  if(ALT_BANDS_OM) return ALT_BANDS_OM;
+  if(ALT_BANDS_OM_LOADING) return null;
+  ALT_BANDS_OM_LOADING = true;
+  try{
+    const params = new URLSearchParams({
+      latitude: ALT_BANDS.map(b=>b.lat).join(","),
+      longitude: ALT_BANDS.map(b=>b.lon).join(","),
+      hourly: "temperature_2m,relative_humidity_2m,cloud_cover,wind_speed_10m,wind_gusts_10m,precipitation,visibility",
+      forecast_days: "2",
+      timezone: "Asia/Shanghai",
+    });
+    const url = "https://api.open-meteo.com/v1/forecast?" + params.toString();
+    const ctrl = new AbortController();
+    const timer = setTimeout(function(){ ctrl.abort(); }, 12000);
+    const resp = await fetch(url, {cache:"no-store", signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    const j = await resp.json();
+    ALT_BANDS_OM = j.map((g,i)=>{
+      const band = ALT_BANDS[i];
+      return Object.assign({}, band, {
+        omElev: g.elevation || band.omElev,
+        series: g.hourly.time.map((t,k)=>({
+          t: t, temp: g.hourly.temperature_2m[k],
+          rh: g.hourly.relative_humidity_2m[k],
+          cloud: g.hourly.cloud_cover[k],
+          ws: g.hourly.wind_speed_10m[k],
+          wg: g.hourly.wind_gusts_10m[k],
+          precip: g.hourly.precipitation[k],
+          vis: g.hourly.visibility ? g.hourly.visibility[k] : null,
+        })),
+      });
+    });
+    return ALT_BANDS_OM;
+  }catch(e){
+    console.warn("[altitude-bands] Open-Meteo 拉取失败:", e && e.message);
+    return null;
+  }finally{
+    ALT_BANDS_OM_LOADING = false;
+  }
+}
+async function renderAltitudeWeather(){
   const el = $("altitudeContent");
   if(!el) return;
+  // 先显示骨架
+  el.innerHTML = ALT_BANDS.map(band=>
+    '<div class="alt-card '+band.key+'" style="opacity:.4">'+
+      '<div class="alt-elev">'+band.elev+'m<small>'+band.name.split("·")[0]+'</small></div>'+
+      '<div class="alt-name">'+band.name+'</div>'+
+      '<div style="color:var(--sub);font-size:12px;margin-top:10px">正在拉取 Open-Meteo 实时数据…</div>'+
+    '</div>'
+  ).join("");
+  const data = await fetchAltitudeBands();
+  if(!data){ el.innerHTML = '<div style="grid-column:1/-1;color:var(--sub)">海拔层实时数据拉取失败，请刷新重试</div>'; return; }
   if(!GRID || !GRID.length){ el.innerHTML = '<div style="grid-column:1/-1;color:var(--sub)">暂无数据</div>'; return; }
   const lr = 0.0065;  // 温度直减率 °C/m
-  el.innerHTML = ALT_BANDS.map(band=>{
-    const w = weatherAt(band.lat, band.lon);
-    if(!w) return '';
-    const cur = w.series[0], next24 = w.series.slice(0, 24);
-    const t24 = next24.map(s=>s.temp);
-    const minT = Math.min(...t24), maxT = Math.max(...t24);
-    const totalP = next24.reduce((a,s)=>a+s.precip, 0);
-    const maxWg = Math.max(...next24.map(s=>s.wg||0));
-    // 温度校正到景区标称海拔：cur.temp 来自 GRID 实际格点（gridElev），需校正到标称海拔 elev
-    const dT = (band.gridElev - band.elev) * lr;
+  const now = new Date();
+  el.innerHTML = data.map(band=>{
+    // 找到距离 now 最近的时间索引
+    let bestI=0, bd=1e9;
+    band.series.forEach((s,i)=>{
+      const tt = new Date(s.t.replace(" ","T")+":00");
+      const diff = Math.abs((tt - now).total_seconds());
+      if(diff < bd){ bd = diff; bestI = i; }
+    });
+    const cur = band.series[bestI];
+    const next24 = band.series.slice(bestI, bestI + 24);
+    // 海拔校正：OM 在 omElev 处报的温度，需校正到 elev
+    // T_display = T_OM - (elev - omElev) * lr
+    const dT = (band.omElev - band.elev) * lr;
+    const t24 = next24.map(s => s.temp + dT);
     const tempNow = Math.round((cur.temp + dT) * 10) / 10;
+    const minT = Math.round(Math.min.apply(null, t24) * 10) / 10;
+    const maxT = Math.round(Math.max.apply(null, t24) * 10) / 10;
     const feel = Math.round((cur.temp + dT - (cur.ws||0) * 1.1) * 10) / 10;
-    const risk = Math.max(w.peakP, w.peakF);
+    const totalP = next24.reduce((a,s)=>a+(s.precip||0), 0);
+    const maxWg = Math.max.apply(null, next24.map(s=>s.wg||0));
+    // 风险等级：就近取 GRID 中最接近的格点
+    let peakP=0, peakF=0;
+    if(GRID && GRID.length){
+      let nb=null, nd=1e9;
+      for(const g of GRID){
+        const d = Math.hypot(g.lat - band.lat, g.lon - band.lon);
+        if(d < nd){ nd = d; nb = g; }
+      }
+      if(nb){ peakP = nb.peak_prob || 0; peakF = nb.fog_prob || 0; }
+    }
+    const risk = Math.max(peakP, peakF);
     const rlv = risk >= 0.6 ? "预警" : risk >= 0.45 ? "较高" : risk >= 0.30 ? "关注" : "低";
     const rcol = rlv === "预警" ? "#f0646c" : rlv === "较高" ? "#e8a35c" : rlv === "关注" ? "#e3cf7d" : "#6fd39a";
     const tempCol = tempNow >= 22 ? "#e8a35c" : tempNow <= 8 ? "#62c4e8" : "#fff";
-    // 着装建议（按景区标称海拔）
     let wear;
     if(band.elev >= 2500) wear = "<b>必备</b>冲锋衣/抓绒 · 防风手套 · 头灯 · 保温杯 · 防晒（高海拔紫外线强）";
     else if(band.elev >= 1800) wear = "<b>推荐</b>薄冲锋衣+速干衣 · 防滑登山鞋 · 雨具 · 帽子";
@@ -605,7 +682,7 @@ function renderAltitudeWeather(){
         '<div class="alt-name">'+band.name+'</div>'+
         '<div class="alt-meta">'+band.place+' · '+band.veg+'</div>'+
         '<div style="margin-top:8px"><span class="alt-risk" style="background:'+rcol+';color:#04130a">'+rlv+'</span>'+
-        '<span class="alt-risk" style="background:rgba(150,204,170,.12);color:var(--sub);margin-left:6px">强对流 '+Math.round(w.peakP*100)+'%</span></div>'+
+        '<span class="alt-risk" style="background:rgba(150,204,170,.12);color:var(--sub);margin-left:6px">强对流 '+Math.round(peakP*100)+'%</span></div>'+
       '</div>'+
       '<div>'+
         '<div class="alt-temp" style="color:'+tempCol+'">'+tempNow+'<small>°C</small></div>'+
@@ -614,10 +691,10 @@ function renderAltitudeWeather(){
       '<div class="alt-metrics">'+
         '<span>湿度 <b>'+Math.round(cur.rh)+'%</b></span>'+
         '<span>云量 <b>'+Math.round(cur.cloud)+'%</b></span>'+
-        '<span>能见度 <b>'+(cur.vis != null ? cur.vis+'km' : '—')+'</b></span>'+
+        '<span>能见度 <b>'+(cur.vis != null ? Math.round(cur.vis/1000)/10+'km' : '—')+'</b></span>'+
         '<span>阵风 <b>'+Math.round(maxWg*10)/10+'m/s</b></span>'+
         '<span>24h降水 <b>'+Math.round(totalP*10)/10+'mm</b></span>'+
-        '<span>浓雾峰值 <b>'+Math.round(w.peakF*100)+'%</b></span>'+
+        '<span>浓雾峰值 <b>'+Math.round(peakF*100)+'%</b></span>'+
         '<span style="color:var(--teal);cursor:pointer">📍 3D 查看 →</span>'+
       '</div>'+
       '<div class="alt-wear">🧥 着装建议：'+wear+'</div>'+
