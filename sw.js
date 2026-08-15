@@ -7,7 +7,7 @@
  *   - 外部 CDN（three.js/echarts）：缓存优先，失败走网络
  *   - 离线 fallback：所有导航请求失败时回退到 index.html
  * ===================================================================== */
-const CACHE = "ailaoshan-v2026081524";
+const CACHE = "ailaoshan-v2026081525";
 const CORE = [
   "./",
   "./index.html",

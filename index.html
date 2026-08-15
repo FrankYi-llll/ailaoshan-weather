@@ -864,27 +864,6 @@ body.view-public #altVerifyPanel{display:none!important}
 .mm-spark .mm-bar{flex:1;border-radius:1px 1px 0 0;min-height:2px;transition:height .3s}
 @media(max-width:760px){.mm-grid{grid-template-columns:1fr}}
 
-/* ===== 地质灾害分流域演算 ===== */
-.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.geo-zone{
-  background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:8px;padding:12px 14px;
-}
-.geo-zone.high{border-color:rgba(240,100,108,.25);background:rgba(240,100,108,.04)}
-.geo-zone .gz-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
-.geo-zone .gz-type{font-size:11px;padding:1px 8px;border-radius:3px;display:inline-block;margin-bottom:6px}
-.geo-zone .gz-metrics{font-size:12px;color:var(--sub);line-height:1.8}
-.geo-zone .gz-metrics b{color:var(--text);font-family:var(--mono)}
-.geo-zone .gz-thresh{
-  margin-top:6px;padding:6px 10px;border-radius:4px;font-size:11.5px;font-family:var(--mono);
-}
-.geo-thresh-bar{
-  height:6px;border-radius:3px;margin-top:4px;position:relative;overflow:hidden;
-  background:rgba(150,204,170,.08);
-}
-.geo-thresh-bar .gtb-fill{height:100%;border-radius:3px;transition:width .4s}
-.geo-thresh-bar .gtb-mark{position:absolute;top:-2px;width:2px;height:10px;background:var(--red)}
-@media(max-width:760px){.geo-grid{grid-template-columns:1fr}}
-
 /* ===== AI 智能出行建议 ===== */
 .ai-input{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-top:12px}
 .ai-input label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--sub)}
@@ -1288,15 +1267,6 @@ body.view-public #altVerifyPanel{display:none!important}
     </div>
   </div>
 
-  <!-- ===== 地质灾害分流域演算 ===== -->
-  <div class="panel" id="geoHazardPanel">
-    <h2>⛰️ 地质灾害分流域精细化演算</h2>
-    <div class="desc">DEM 地形敏感性 + 实时降水阈值（1h/3h/24h）耦合计算各流域地质灾害触发概率</div>
-    <div id="geoHazardContent" style="margin-top:10px">
-      <div class="desc" style="color:var(--dim)">正在等待 Open-Meteo 气象数据（99 格点，约需 10-30 秒）…</div>
-    </div>
-  </div>
-
   <div class="panel" id="calibPanel" style="display:none">
     <h2>📚 历史灾害关联复核</h2>
     <div class="desc" id="calibNote">加载中…</div>
@@ -1616,23 +1586,22 @@ body.view-public #altVerifyPanel{display:none!important}
     <div class="fn-item" data-target="roadPanel" title="道路出行安全"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
     <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
     <div class="fn-item pro-only" data-target="triModelPanel" title="三模型交叉比对"><span class="fn-dot"></span><span class="fn-label">三模型比对</span></div>
-    <div class="fn-item" data-target="geoHazardPanel" title="地质灾害分流域演算"><span class="fn-dot"></span><span class="fn-label">地质灾害</span></div>
     <div class="fn-item" data-target="safetyPanel" title="安全科普与应急指引"><span class="fn-dot"></span><span class="fn-label">安全科普</span></div>
     <div class="fn-item" data-target="seasonPanel" title="季节风险日历"><span class="fn-dot"></span><span class="fn-label">风险日历</span></div>
     <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081524"></script>
-<script src="js/gb.js?v=2026081524"></script>
-<script src="js/fx.js?v=2026081524"></script>
-<script src="js/app.js?v=2026081524"></script>
-<script src="js/terrain3d.js?v=2026081524"></script>
+<script src="js/site.js?v=2026081525"></script>
+<script src="js/gb.js?v=2026081525"></script>
+<script src="js/fx.js?v=2026081525"></script>
+<script src="js/app.js?v=2026081525"></script>
+<script src="js/terrain3d.js?v=2026081525"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081524").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081525").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -2227,105 +2196,6 @@ window.fetchTriModel = async function(){
   }catch(e){
     el.innerHTML = '<div class="desc" style="color:var(--red)">三模型拉取失败：'+(e.message||e)+'<br>可能是网络超时或 Open-Meteo 限流，请稍后重试。</div>';
   }
-};
-
-/* ===== 地质灾害分流域演算 ===== */
-window.renderGeoHazard = function(){
-  var el = document.getElementById("geoHazardContent");
-  if(!el || !window.GRID || !window.GRID.length || !window.TERR){
-    if(el) el.innerHTML = '<div class="desc" style="color:var(--dim)">正在等待 Open-Meteo 气象数据（约需 10-30 秒）…</div>';
-    return;
-  }
-  var grid = window.GRID;
-  var terr = window.TERR;
-  var now = new Date();
-  var zones = [];
-
-  grid.forEach(function(g){
-    var gf = terr.grid_factors[g.lat.toFixed(2)+","+g.lon.toFixed(2)];
-    if(!gf) return;
-    var s = g.series || [];
-    if(!s.length) return;
-
-    var p1 = (s[0] && s[0].precip) || 0;
-    var p3 = s.slice(0,3).reduce(function(a,x){ return a + (x.precip||0); }, 0);
-    var p24 = s.slice(0,24).reduce(function(a,x){ return a + (x.precip||0); }, 0);
-
-    var smProxy = Math.min(1, p24 / 50 + (gf.slope > 30 ? 0.2 : 0));
-
-    var debrisBase = gf.debris || 0;
-    var debrisTrigger = debrisBase * 0.4 + Math.min(0.4, p24/80) + Math.min(0.2, p3/30) + smProxy * 0.2;
-    var flashBase = gf.flash || 0;
-    var flashTrigger = flashBase * 0.4 + Math.min(0.4, p1/15) + Math.min(0.3, p3/25) + smProxy * 0.15;
-    var slumpBase = gf.slump || 0;
-    var slumpTrigger = slumpBase * 0.3 + Math.min(0.3, p24/60) + (gf.slope > 35 ? 0.2 : 0);
-    var geoRisk = Math.max(debrisTrigger, flashTrigger, slumpTrigger);
-    geoRisk = Math.min(1, geoRisk);
-
-    var lv = geoRisk >= 0.6 ? "高" : geoRisk >= 0.4 ? "中" : geoRisk >= 0.2 ? "低" : "极低";
-    var type = debrisTrigger >= flashTrigger && debrisTrigger >= slumpTrigger ? "泥石流" :
-               flashTrigger >= slumpTrigger ? "山洪" : "塌方";
-
-    zones.push({
-      lat: g.lat, lon: g.lon, elev: g.elev || gf.elev,
-      slope: gf.slope, debris: gf.debris, flash: gf.flash, slump: gf.slump,
-      p1: p1, p3: p3, p24: p24,
-      debrisTrigger: debrisTrigger, flashTrigger: flashTrigger, slumpTrigger: slumpTrigger,
-      geoRisk: geoRisk, level: lv, type: type, smProxy: smProxy
-    });
-  });
-
-  zones.sort(function(a,b){ return b.geoRisk - a.geoRisk; });
-  var topZones = zones.slice(0, 12);
-
-  var highCount = zones.filter(function(z){ return z.level === "高"; }).length;
-  var midCount = zones.filter(function(z){ return z.level === "中"; }).length;
-
-  var html = '';
-  html += '<div class="summary" style="margin-bottom:12px">';
-  html += '<div class="sum-item" style="border-color:rgba(240,100,108,.25);color:var(--red)">🔴 高风险：<b style="color:var(--red);font-size:16px">'+highCount+'</b></div>';
-  html += '<div class="sum-item" style="border-color:rgba(232,163,92,.25);color:var(--orange)">🟠 中风险：<b style="color:var(--orange);font-size:16px">'+midCount+'</b></div>';
-  html += '<div class="sum-item">📍 格点：<b style="font-size:16px">'+zones.length+'</b></div>';
-  html += '<div class="sum-item">⏱ <b>'+now.toLocaleTimeString("zh-CN").slice(0,8)+'</b></div>';
-  html += '</div>';
-
-  html += '<div class="desc" style="background:rgba(150,204,170,.04);border-left:3px solid var(--teal);padding:10px 14px;border-radius:4px;margin-bottom:12px;font-size:12px">';
-  html += '<b style="color:var(--teal)">阈值耦合模型</b>：地质灾害触发概率 = 地形敏感性基值×0.4 + 24h累积降水阈值 + 3h短时降水阈值 + 土壤含水量代理<br>';
-  html += '泥石流：24h降水 > 80mm 或 3h > 30mm 触发 · 山洪：1h > 15mm 或 3h > 25mm 触发 · 塌方：坡度 > 35° 且 24h > 60mm</div>';
-
-  html += '<div class="geo-grid">';
-  topZones.forEach(function(z){
-    var isHigh = z.level === "高";
-    var typeColor = z.type === "泥石流" ? "var(--red)" : z.type === "山洪" ? "var(--blue)" : "var(--orange)";
-    var riskPct = Math.round(z.geoRisk * 100);
-    var threshPct = Math.round(Math.max(z.debrisTrigger, z.flashTrigger, z.slumpTrigger) * 100);
-
-    html += '<div class="geo-zone'+(isHigh?' high':'')+'">';
-    html += '<div class="gz-name">📍 '+z.lat.toFixed(2)+'°N '+z.lon.toFixed(2)+'°E · '+z.elev+'m</div>';
-    html += '<span class="gz-type" style="background:'+typeColor+'22;color:'+typeColor+'">'+z.type+'风险</span>';
-    html += '<div class="gz-metrics">';
-    html += '坡度 <b>'+z.slope+'°</b> · 泥石流 <b>'+Math.round(z.debris*100)+'%</b> · 山洪 <b>'+Math.round(z.flash*100)+'%</b><br>';
-    html += '1h <b>'+Math.round(z.p1*10)/10+'mm</b> · 3h <b>'+Math.round(z.p3*10)/10+'mm</b> · 24h <b>'+Math.round(z.p24*10)/10+'mm</b><br>';
-    html += '土壤含水 <b>'+Math.round(z.smProxy*100)+'%</b> · 触发概率 <b style="color:'+(isHigh?'var(--red)':z.level==='中'?'var(--orange)':'var(--teal)')+'">'+riskPct+'%</b>';
-    html += '</div>';
-    html += '<div class="gz-thresh" style="background:'+(isHigh?'rgba(240,100,108,.08)':z.level==='中'?'rgba(232,163,92,.08)':'rgba(46,204,113,.08)')+'">';
-    html += '触发进度：'+threshPct+'%'+(isHigh?' ⚠️ 已超阈值！':'');
-    html += '<div class="geo-thresh-bar"><div class="gtb-fill" style="width:'+Math.min(100,threshPct)+'%;background:'+(isHigh?'var(--red)':z.level==='中'?'var(--orange)':'var(--teal)')+'"></div>';
-    if(isHigh) html += '<div class="gtb-mark" style="left:60%"></div>';
-    html += '</div></div>';
-    html += '</div>';
-  });
-  html += '</div>';
-
-  var flashAlert = zones.filter(function(z){ return z.flashTrigger >= 0.5; });
-  if(flashAlert.length > 0){
-    html += '<div class="mm-divergence high" style="margin-top:12px">';
-    html += '<b>⚠️ 短时强降雨山洪预警</b><br>';
-    html += '检测到 '+flashAlert.length+' 个格点 1h/3h 降水接近或超过山洪触发阈值。';
-    html += '峡谷区域可能提前 2 小时发生山洪，建议<b>立即远离河谷低洼地带</b>，不要涉水过河。</div>';
-  }
-
-  el.innerHTML = html;
 };
 
 /* ===== AI 智能出行建议 ===== */

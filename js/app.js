@@ -2691,8 +2691,6 @@ async function main(){
     renderRoadSafety(GRID, window.__chartSeries);
     // 出行建议面板
     renderAdvice(GRID, ROADS, window.__chartSeries);
-    // 地质灾害分流域演算
-    if(typeof window.renderGeoHazard === "function") window.renderGeoHazard();
     // 景点路线推荐面板
     renderRoutes();
     // 景点一键聚焦 + 预警中心
@@ -2754,7 +2752,7 @@ async function main(){
     }
     $("meta").innerHTML = msg + ' <button onclick="retryLoadWeather()" style="margin-left:8px;padding:4px 12px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer">🔄 立即重试</button>';
     const errNote = '<div class="desc" style="color:#ff4d4f">数据加载失败：'+e.message+'。<button onclick="retryLoadWeather()" style="margin-left:8px;padding:4px 12px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer">🔄 重试</button></div>';
-    ["riskTbody","warnCenterContent","weatherSummary","ecoIndexContent","altitudeContent","adviceContent","routeSummary","routeTbody","hikingTbody","roadTbody","roadSafetyContent","geoHazardContent","triModelContent"].forEach(function(id){
+    ["riskTbody","warnCenterContent","weatherSummary","ecoIndexContent","altitudeContent","adviceContent","routeSummary","routeTbody","hikingTbody","roadTbody","roadSafetyContent","triModelContent"].forEach(function(id){
       const el = document.getElementById(id);
       if(el){
         if(el.tagName === "TBODY") el.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#ff4d4f">数据加载失败，请刷新重试</td></tr>';
