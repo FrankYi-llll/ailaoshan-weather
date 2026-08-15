@@ -260,7 +260,11 @@ async function fetchAllGrid(hours, onProgress){
       stale._stale = true;
       return stale;
     }
-    throw e;
+    // 无缓存时自动切换到演示数据，保证页面可用
+    if(onProgress) onProgress({type:"demo"});
+    const demo = generateDemoGrid();
+    demo._demo = true;
+    return demo;
   }
 }
 
@@ -270,6 +274,61 @@ function getOMCacheAny(){
     if(!s) return null;
     return JSON.parse(s).data;
   }catch(e){ return null; }
+}
+
+/* ---------- 演示数据降级：Open-Meteo 彻底失败时保证页面可用 ---------- */
+function generateDemoGrid(){
+  const pts = gridPoints();
+  const now = new Date();
+  const out = pts.map(function(pt){
+    // 基于经纬度模拟海拔（哀牢山地形起伏：东南高西北低，中央高两侧低）
+    const latN = (pt.lat - 23.9) / 0.8; // 0~1
+    const lonN = (pt.lon - 100.9) / 1.0; // 0~1
+    const elev = Math.round(600 + 2200 * Math.sin(latN * Math.PI) * (0.6 + 0.4 * Math.sin(lonN * Math.PI * 2)));
+    const rows = [];
+    for(let h=0; h<24; h++){
+      const t = new Date(now.getTime() + h * 3600000);
+      const hour = t.getHours();
+      const iso = localHourKey(t);
+      // 哀牢山8月中旬典型气候模拟
+      const temp = 18 + 6 * Math.sin((hour - 9) * Math.PI / 12) + (elev - 2000) * -0.006 + (Math.random() - 0.5) * 2;
+      const rh = Math.min(98, Math.max(45, 75 + 15 * Math.sin((hour + 3) * Math.PI / 12) + (Math.random() - 0.5) * 10));
+      const press = 1013 - elev * 0.12 + (Math.random() - 0.5) * 3;
+      const cloud = Math.min(100, Math.max(10, 50 + 40 * Math.sin((hour - 14) * Math.PI / 12) + (Math.random() - 0.5) * 20));
+      const ws = 2 + 3 * Math.sin((hour - 15) * Math.PI / 12) + Math.random() * 2;
+      const wg = ws + 2 + Math.random() * 4;
+      // 午后对流性降水概率高
+      const isConvective = hour >= 13 && hour <= 18;
+      const precip = isConvective && Math.random() < 0.25 ? Math.random() * 8 : (Math.random() < 0.08 ? Math.random() * 2 : 0);
+      const dew = temp - (100 - rh) * 0.15;
+      const sm7 = 0.25 + Math.random() * 0.15;
+      const sm28 = 0.30 + Math.random() * 0.12;
+      const vis = cloud > 80 && hour < 10 ? 200 + Math.random() * 800 : 8000 + Math.random() * 12000;
+      const isDay = hour >= 7 && hour <= 19 ? 1 : 0;
+      const rad = isDay ? Math.max(0, 800 * Math.sin((hour - 6) * Math.PI / 13) * (1 - cloud / 150)) : 0;
+      const uv = isDay ? Math.max(0, 10 * Math.sin((hour - 6) * Math.PI / 13) * (1 - cloud / 180)) : 0;
+      rows.push({
+        time: iso, hour: hour,
+        temp: Math.round(temp * 10) / 10,
+        rh: Math.round(rh * 10) / 10,
+        press: Math.round(press * 10) / 10,
+        cloud: Math.round(cloud * 10) / 10,
+        ws: Math.round(ws * 10) / 10,
+        wg: Math.round(wg * 10) / 10,
+        precip: Math.round(precip * 10) / 10,
+        dew: Math.round(dew * 10) / 10,
+        sm7: Math.round(sm7 * 100) / 100,
+        sm28: Math.round(sm28 * 100) / 100,
+        vis: Math.round(vis),
+        isDay: isDay,
+        rad: Math.round(rad),
+        uv: Math.round(uv * 10) / 10,
+      });
+    }
+    return { lat: pt.lat, lon: pt.lon, elev: elev, hourly: rows };
+  });
+  out._demo = true;
+  return out;
 }
 
 /* 供页面调用的手动重试入口 */
@@ -330,6 +389,7 @@ async function predictGrid(modelT, modelF, hours=24, modelR, onProgress){
   const out = mapped;
   out._fromCache = raw._fromCache || false;
   out._stale = raw._stale || false;
+  out._demo = raw._demo || false;
   return out;
 }
 

@@ -2670,6 +2670,9 @@ async function main(){
         roadLevel:rlv, roadColor:LVL[rlv],
         riskIndex:ri, terrainHazard:th, agree:true};
     });
+    GRID._fromCache = raw._fromCache || false;
+    GRID._stale = raw._stale || false;
+    GRID._demo = raw._demo || false;
     ROADS = computeRoads(GRID);
     applyCalibration();
     renderRisk(GRID, ROADS);
@@ -2727,9 +2730,11 @@ async function main(){
     $("altThunder").innerHTML = "Pearson r <b style='color:var(--teal)'>0.909</b> · 同等级率 <b>90.1%</b> · 平均|Δp| 5.8%<br/>主模型预警处双模型同时预警 7.2% — 两模型均发预警的格点可信度显著增强";
     $("altFog").innerHTML = "Pearson r <b style='color:var(--teal)'>0.991</b> · 同等级率 <b>97.3%</b> · 平均|Δp| 1.3%<br/>浓雾预测两模型高度一致";
     const now = new Date();
-    const cacheTag = GRID._stale ? ' · <span style="color:#ff4d4f">⚠️ Open-Meteo 实时连接失败，已显示过期缓存数据（点击上方"刷新"可重试）</span>'
+    const cacheTag = GRID._demo ? ' · <span style="color:#ff4d4f">⚠️ 演示数据模式：Open-Meteo 连接失败，当前为模拟数据，仅供参考。点击"刷新"重试实时数据。</span>'
+      : GRID._stale ? ' · <span style="color:#ff4d4f">⚠️ Open-Meteo 实时连接失败，已显示过期缓存数据（点击上方"刷新"可重试）</span>'
       : GRID._fromCache ? ' · <span style="color:var(--orange)">已使用本地缓存（Open-Meteo 限流，10分钟内有效）</span>' : '';
-    $("freshBadge").textContent = "● 实时 "+now.toTimeString().slice(0,8);
+    $("freshBadge").textContent = GRID._demo ? "● 演示 "+now.toTimeString().slice(0,8) : "● 实时 "+now.toTimeString().slice(0,8);
+    if(GRID._demo) $("freshBadge").className = "badge orange";
     $("meta").innerHTML = "哀牢山生态站(徐家坝 24.54N,101.02E) · 数据更新 <b>"+now.toLocaleString("zh-CN")+"</b>"+
       ' · 强对流阈值 <b style="color:var(--blue)">'+(t.opt_threshold*100).toFixed(1)+'%</b> · 浓雾阈值 <b style="color:var(--teal)">'+(f.opt_threshold*100).toFixed(1)+'%</b>'+
       " · 每次刷新实时重算" + cacheTag;
