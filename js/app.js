@@ -718,12 +718,14 @@ function renderWarningCenter(){
   const R = MODEL_R ? MODEL_R.opt_threshold : 0.6;
   const maxOf = key => GRID.reduce((a,g)=>Math.max(a, g[key]||0), 0);
   const maxTer = key => GRID.reduce((a,g)=>(g.terrainHazard && g.terrainHazard[key] != null ? Math.max(a, g.terrainHazard[key]) : a), 0);
+  // terrainHazard 的 flash/debris/slump 已经是 0-100 的百分比，需先归一化再按概率逻辑处理
+  const maxTer01 = key => (maxTer(key) || 0) / 100;
   const items = [
     {icon:"🌩", name:"强对流", val:Math.round(maxOf("peak_prob")*100)+"%", lv:lvOf(maxOf("peak_prob"), T), tip:"雷暴/冰雹/短时强降水，午后高发"},
     {icon:"🌫", name:"浓雾", val:Math.round(maxOf("fog_prob")*100)+"%", lv:lvOf(maxOf("fog_prob"), F), tip:"能见度骤降，山区最危险的常态"},
-    {icon:"🌊", name:"山洪", val:Math.round(maxTer("flash")*100)+"%", lv:lvOf(maxTer("flash"), 0.6), tip:"谷地集水快，涨水极迅速"},
-    {icon:"🪨", name:"泥石流", val:Math.round(maxTer("debris")*100)+"%", lv:lvOf(maxTer("debris"), 0.6), tip:"陡坡松散堆积物 + 强降水触发"},
-    {icon:"⛰", name:"塌方", val:Math.round(maxTer("slump")*100)+"%", lv:lvOf(maxTer("slump"), 0.6), tip:"公路边坡/高切坡路段高发"},
+    {icon:"🌊", name:"山洪", val:Math.round(maxTer01("flash")*100)+"%", lv:lvOf(maxTer01("flash"), 0.6), tip:"谷地集水快，涨水极迅速"},
+    {icon:"🪨", name:"泥石流", val:Math.round(maxTer01("debris")*100)+"%", lv:lvOf(maxTer01("debris"), 0.6), tip:"陡坡松散堆积物 + 强降水触发"},
+    {icon:"⛰", name:"塌方", val:Math.round(maxTer01("slump")*100)+"%", lv:lvOf(maxTer01("slump"), 0.6), tip:"公路边坡/高切坡路段高发"},
     {icon:"🚗", name:"道路出行", val:Math.round(maxOf("road_prob")*100)+"%", lv:lvOf(maxOf("road_prob"), R), tip:"能见度+路面+昼夜综合评估"},
   ];
   const lvCol = lv => lv==="预警"?"#f0646c":lv==="较高"?"#e8a35c":lv==="关注"?"#e3cf7d":"#6fd39a";
@@ -900,7 +902,7 @@ function tipHtml(g){
     '🌫 浓雾峰值 <b style="color:'+g.fogColor+'">'+(g.fog_prob*100).toFixed(1)+'%</b> ('+g.fogLevel+') @'+g.fog_peak_time+'<br/>'+
     (g.agree!=null?('🔁 双模型 '+(g.agree?'<span class="agree-yes">✓ 一致</span>':'<span class="agree-no">✗ 分歧</span>')+'<br/>'):'')+
     (ri?('<b>📊 综合风险指数 '+(ri.value)+' ('+ri.level+')</b><br/>'):'')+
-    (th?('🏔 '+th.typeName+' · 山洪'+th.flash+'/泥石流'+th.debris+'/塌方'+th.slump+' · 坡度'+th.slope+'°'):'');
+    (th?('🏔 '+th.typeName+' · 山洪'+th.flash+'%/泥石流'+th.debris+'%/塌方'+th.slump+'% · 坡度'+th.slope+'°'):'');
 }
 function lngLat2px(lat, lon){
   const x = (lon - TERR.lon0)/(TERR.lon1-TERR.lon0)*100;
