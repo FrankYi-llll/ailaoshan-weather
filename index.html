@@ -47,86 +47,183 @@
 <script src="js/lib/three.min.js"></script>
 <script src="js/lib/OrbitControls.js"></script>
 <style>
+/* ============================================================
+ * 科研监测风 UI（深绿 × 黑 × 半透明玻璃拟态）
+ * 字体：系统 + 等宽（SF Mono / JetBrains Mono）用于指标读数
+ * ============================================================ */
 :root{
-  --bg:#0f1c30; --panel:#16263f; --line:#243349; --text:#e8eef7; --sub:#8fa3c0;
-  --blue:#4aa3ff; --teal:#2ecc71; --orange:#ff9f43; --yellow:#f7d154; --red:#ff4d4f;
+  --bg:#050d09; --bg2:#0a1811;
+  --panel:rgba(12,30,21,.66); --panel-solid:#0c1e15; --panel-hi:rgba(20,44,30,.82);
+  --line:rgba(150,204,170,.13); --line-strong:rgba(150,204,170,.28);
+  --text:#d8e7db; --sub:#7fa08a; --dim:#52705d;
+  --blue:#62c4e8; --teal:#6fd39a; --orange:#e8a35c; --yellow:#e3cf7d; --red:#f0646c;
+  --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,"Courier New",monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6}
-.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
-header{border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:18px}
-header h1{font-size:26px;font-weight:800;letter-spacing:.5px}
-header h1 small{font-size:13px;color:var(--sub);font-weight:400;margin-left:10px}
-.meta{font-size:12px;color:var(--sub);margin-top:8px}
-.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;background:rgba(46,204,113,.15);color:var(--teal);border:1px solid rgba(46,204,113,.35);margin-left:6px}
-.badge.red{background:rgba(255,77,79,.15);color:var(--red);border-color:rgba(255,77,79,.4)}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
-.panel h2{font-size:18px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.desc{font-size:12.5px;color:var(--sub);margin-bottom:12px}
-.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin:10px 0}
+body{
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(58,120,82,.14), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, rgba(40,90,64,.10), transparent 55%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.65;
+  background-attachment:fixed;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 64px}
+/* ---- 头部：监测台风格 ---- */
+header{border-bottom:1px solid var(--line);padding:16px 0 14px;margin-bottom:16px;
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px}
+.brand-id{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;opacity:.85}
+header h1{font-size:24px;font-weight:700;letter-spacing:.5px;margin-top:2px}
+header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px}
+.meta{font-size:11.5px;color:var(--sub);margin-top:6px;font-family:var(--mono)}
+/* ---- 通用 ---- */
+.badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-family:var(--mono);
+  background:rgba(111,211,154,.12);color:var(--teal);border:1px solid rgba(111,211,154,.35);margin-left:6px}
+.badge.red{background:rgba(240,100,108,.14);color:var(--red);border-color:rgba(240,100,108,.42)}
+.panel{
+  position:relative;
+  background:linear-gradient(180deg, var(--panel-hi), var(--panel));
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:18px 20px;
+  margin-bottom:16px;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 10px 30px rgba(0,0,0,.35);
+}
+.panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg, var(--teal), transparent 70%);opacity:.5}
+.panel h2{font-size:16px;font-weight:600;letter-spacing:.4px;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel h2 .sec-no{font-family:var(--mono);font-size:11px;color:var(--teal);opacity:.8;font-weight:400}
+.desc{font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.7}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--sub);margin:10px 0}
 .legend-row span{display:inline-flex;align-items:center;gap:5px}
-.legend-row i{width:14px;height:14px;border-radius:4px;display:inline-block}
-.legend-row i.line{height:4px;border-radius:2px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:rgba(255,255,255,.05);color:var(--sub);font-size:12px;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid rgba(36,51,73,.5);vertical-align:top}
-tr:hover td{background:rgba(255,255,255,.02)}
-.pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;color:#fff;font-weight:700}
-.pill.low{background:#2ecc71}.pill.watch{background:#f7d154}.pill.high{background:#ff9f43}.pill.warn{background:#ff4d4f}
-.risk-bar{display:inline-block;height:12px;border-radius:6px;background:rgba(255,255,255,.10);position:relative;min-width:110px;vertical-align:middle;margin-right:8px}
-.risk-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
-.tags{font-size:11.5px;color:var(--sub)}
+.legend-row i{width:13px;height:13px;border-radius:2px;display:inline-block}
+.legend-row i.line{height:3px;border-radius:1px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{background:rgba(150,204,170,.05);color:var(--sub);font-size:10.5px;letter-spacing:.6px;
+  text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;font-family:var(--mono)}
+td{padding:8px 10px;border-bottom:1px solid rgba(150,204,170,.08);vertical-align:top}
+tr:hover td{background:rgba(150,204,170,.03)}
+.pill{display:inline-block;padding:2px 9px;border-radius:3px;font-size:11px;color:#04130a;font-weight:700}
+.pill.low{background:#6fd39a}.pill.watch{background:#e3cf7d}.pill.high{background:#e8a35c}.pill.warn{background:#f0646c}
+.risk-bar{display:inline-block;height:10px;border-radius:2px;background:rgba(255,255,255,.09);position:relative;min-width:110px;vertical-align:middle;margin-right:8px}
+.risk-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
+.tags{font-size:11px;color:var(--dim)}
 .agree-yes{color:var(--teal);font-weight:700}
 .agree-no{color:var(--red);font-weight:700}
 .summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-.sum-item{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:12px}
-.sum-item b{font-size:20px;display:block;margin-top:2px}
-.rs-factor{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px}
-.rs-factor span{color:var(--text-dim);display:block;margin-bottom:2px}
+.sum-item{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:8px 14px;font-size:11.5px;color:var(--sub)}
+.sum-item b{font-size:19px;display:block;margin-top:2px;color:var(--text);font-family:var(--mono)}
+.rs-factor{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-size:12px}
+.rs-factor span{color:var(--dim);display:block;margin-bottom:2px}
 .rs-factor b{font-size:14px;display:block}
-#mapWrap{position:relative;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#0b1526}
+#mapWrap{position:relative;width:100%;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#04110b}
 #mapImg{display:block;width:100%;height:auto}
 #mapSvg{position:absolute;inset:0;width:100%;height:100%}
 #mapSvg .cell{cursor:pointer;stroke:rgba(40,40,40,0.16);stroke-width:0.22}
 #mapSvg .lbl{pointer-events:none}
-.tooltip{position:absolute;pointer-events:none;background:rgba(10,20,35,.96);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;z-index:50;display:none;max-width:280px;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.tooltip{position:absolute;pointer-events:none;background:rgba(4,14,9,.97);border:1px solid var(--line-strong);border-radius:6px;padding:10px 12px;font-size:12px;z-index:50;display:none;max-width:280px;box-shadow:0 6px 24px rgba(0,0,0,.6)}
 .tooltip b{color:var(--text)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}.legend-row{gap:8px}}
-.verify-note{font-size:12px;color:var(--sub);background:rgba(255,255,255,.03);border-left:3px solid var(--blue);padding:10px 12px;border-radius:8px;margin-top:12px}
-footer{border-top:1px solid var(--line);padding-top:16px;font-size:11.5px;color:var(--sub);text-align:center}
+.verify-note{font-size:12px;color:var(--sub);background:rgba(150,204,170,.04);border-left:3px solid var(--teal);padding:10px 12px;border-radius:4px;margin-top:12px}
+footer{border-top:1px solid var(--line);padding-top:16px;font-size:11px;color:var(--dim);text-align:center}
 footer b{color:var(--orange)}
 .btn-group{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.risk-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--sub);font-size:13px;cursor:pointer}
-.risk-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
-.loading{text-align:center;padding:40px;color:var(--sub);font-size:14px}
-.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--blue);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-4px;margin-right:8px}
+.risk-btn{padding:6px 15px;border-radius:4px;border:1px solid var(--line-strong);background:transparent;color:var(--sub);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.4px;transition:all .15s}
+.risk-btn:hover{color:var(--text);border-color:var(--teal);background:rgba(111,211,154,.08)}
+.risk-btn.active{background:rgba(98,196,232,.16);color:var(--blue);border-color:var(--blue);font-weight:700}
+.loading{text-align:center;padding:40px;color:var(--sub);font-size:13px;font-family:var(--mono)}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.18);border-top-color:var(--teal);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-4px;margin-right:8px}
 @keyframes sp{to{transform:rotate(360deg)}}
-h3{font-size:14.5px;margin:14px 0 8px;color:var(--text)}
+h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 /* ---- Three.js 3D 地形容器 ---- */
-#three3DContainer{position:relative;width:100%;height:520px;border-radius:12px;overflow:hidden;background:#0b1526;border:1px solid var(--line);cursor:grab}
+#three3DContainer{position:relative;width:100%;height:520px;border-radius:6px;overflow:hidden;background:#04110b;border:1px solid var(--line);cursor:grab}
 #three3DContainer canvas{display:block;width:100%;height:100%}
-#three3DTooltip{display:none;position:absolute;z-index:9;max-width:230px;background:rgba(8,15,26,.94);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:9px 11px;font-size:12px;line-height:1.5;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.45);color:var(--text)}
+#three3DTooltip{display:none;position:absolute;z-index:9;max-width:230px;background:rgba(4,14,9,.96);border:1px solid rgba(150,204,170,.3);border-radius:6px;padding:9px 11px;font-size:12px;line-height:1.5;pointer-events:none;box-shadow:0 4px 18px rgba(0,0,0,.5);color:var(--text)}
 #three3DTooltip .tip-main{font-weight:700;color:#fff}
-#three3DTooltip .tip-sub{color:#c8d6ea;margin-top:2px}
-#three3DTooltip .tip-note{color:var(--sub);font-size:11px;margin-top:3px;border-top:1px dashed rgba(255,255,255,.15);padding-top:3px}
-#three3DHint{position:absolute;left:12px;bottom:10px;z-index:8;font-size:11px;color:rgba(232,238,247,.55);pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.8)}
-#tourBtn{position:absolute;right:12px;top:12px;z-index:8;padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.35);background:rgba(10,20,36,.72);color:#fff;font-size:13px;cursor:pointer;backdrop-filter:blur(4px)}
-#tourBtn:hover{background:rgba(74,163,255,.25);border-color:var(--blue)}
-#tourBtn.active{background:var(--blue);border-color:var(--blue);font-weight:700;color:#fff}
+#three3DTooltip .tip-sub{color:#c3d8c8;margin-top:2px}
+#three3DTooltip .tip-note{color:var(--sub);font-size:11px;margin-top:3px;border-top:1px dashed rgba(150,204,170,.18);padding-top:3px}
+#three3DHint{position:absolute;left:12px;bottom:10px;z-index:8;font-size:10.5px;color:rgba(216,231,219,.5);pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.85);font-family:var(--mono)}
+#tourBtn{position:absolute;right:12px;top:12px;z-index:8;padding:7px 14px;border-radius:4px;border:1px solid rgba(150,204,170,.35);background:rgba(4,14,9,.72);color:#cfe6d4;font-size:12px;cursor:pointer;backdrop-filter:blur(6px);font-family:var(--mono)}
+#tourBtn:hover{background:rgba(111,211,154,.15);border-color:var(--teal)}
+#tourBtn.active{background:rgba(98,196,232,.2);border-color:var(--blue);font-weight:700;color:var(--blue)}
+/* 路线飞行按钮组（3D 右上角） */
+#three3DRoutes{position:absolute;right:12px;top:52px;z-index:8;display:flex;flex-direction:column;gap:6px}
+#three3DRoutes .rbtn{padding:6px 12px;border-radius:4px;border:1px solid rgba(150,204,170,.3);background:rgba(4,14,9,.72);color:#9fc4a8;font-size:11.5px;cursor:pointer;backdrop-filter:blur(6px);text-align:left;font-family:var(--mono);transition:all .15s}
+#three3DRoutes .rbtn:hover{color:#fff;border-color:var(--orange);background:rgba(232,163,92,.15)}
+#three3DRoutes .rbtn.active{color:#04130a;background:var(--orange);border-color:var(--orange);font-weight:700}
+/* 3D 点击信息面板（左下角） */
+#three3DClickInfo{display:none;position:absolute;left:12px;bottom:34px;z-index:10;width:250px;
+  background:rgba(4,14,9,.95);border:1px solid rgba(150,204,170,.3);border-radius:6px;padding:12px 14px;
+  font-size:12px;line-height:1.55;box-shadow:0 8px 26px rgba(0,0,0,.6);color:var(--text)}
+#three3DClickInfo .ci-close{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--dim);font-size:14px;line-height:1;padding:2px}
+#three3DClickInfo .ci-close:hover{color:var(--red)}
+#three3DClickInfo .ci-head{font-size:12.5px;font-weight:700;color:#fff;margin-bottom:2px;padding-right:18px}
+#three3DClickInfo .ci-sub{font-family:var(--mono);font-size:11px;color:var(--teal);margin-bottom:6px}
+#three3DClickInfo .ci-row{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:2.5px 0;border-bottom:1px dashed rgba(150,204,170,.12)}
+#three3DClickInfo .ci-row:last-child{border-bottom:none}
+#three3DClickInfo .ci-row span{color:var(--sub)}
+#three3DClickInfo .ci-row b{font-family:var(--mono);color:var(--text)}
 #three3DScale{position:absolute;right:12px;bottom:12px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none}
-#three3DScale .scale-title{font-size:10px;color:rgba(232,238,247,.6)}
-#three3DScale .scale-bar{width:14px;height:130px;border-radius:4px;border:1px solid rgba(255,255,255,.35);
+#three3DScale .scale-title{font-size:9.5px;color:rgba(216,231,219,.55);font-family:var(--mono);letter-spacing:1px}
+#three3DScale .scale-bar{width:12px;height:130px;border-radius:3px;border:1px solid rgba(150,204,170,.35);
   background:linear-gradient(to top,#1a4824 0%,#307032 14%,#589642 28%,#8eaa52 42%,#b49c5e 58%,#ac7c48 72%,#946240 86%,#e9e7f0 100%)}
-#three3DScale .scale-max,#three3DScale .scale-min{font-size:10px;color:rgba(232,238,247,.7)}
+#three3DScale .scale-max,#three3DScale .scale-min{font-size:9.5px;color:rgba(216,231,219,.65);font-family:var(--mono)}
+/* ---- 新增：海拔天气差异 ---- */
+.alt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.alt-grid{grid-template-columns:1fr}}
+.alt-card{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden}
+.alt-card::before{content:"";position:absolute;left:0;top:0;right:0;height:2px}
+.alt-card.low::before{background:#6fd39a}
+.alt-card.mid::before{background:#e3cf7d}
+.alt-card.high::before{background:#e8a35c}
+.alt-card .alt-name{font-size:14px;font-weight:700;color:#fff}
+.alt-card .alt-meta{font-family:var(--mono);font-size:10.5px;color:var(--sub);margin:3px 0 10px}
+.alt-card .alt-temp{font-family:var(--mono);font-size:34px;font-weight:700;color:#fff;line-height:1.05}
+.alt-card .alt-temp small{font-size:15px;color:var(--sub);font-weight:400}
+.alt-card .alt-feel{font-size:11.5px;color:var(--teal);margin:3px 0 10px}
+.alt-card .alt-metrics{font-size:11.5px;color:var(--sub);display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.alt-card .alt-metrics b{color:var(--text);font-family:var(--mono);font-weight:600}
+.alt-card .alt-wear{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(150,204,170,.16);font-size:11.5px;color:var(--dim);line-height:1.6}
+.alt-card .alt-wear b{color:var(--sub)}
+.alt-card .alt-risk{display:inline-block;margin-top:8px;font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:3px;font-weight:700}
+/* ---- 新增：数据来源 ---- */
+.src-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px}
+@media(max-width:900px){.src-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.src-grid{grid-template-columns:1fr}}
+.src-card{background:rgba(150,204,170,.04);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.src-card .src-tag{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase}
+.src-card .src-title{font-size:13px;font-weight:700;color:#fff;margin:4px 0 6px}
+.src-card ul{list-style:none;font-size:11.5px;color:var(--sub);line-height:1.8}
+.src-card li::before{content:"— ";color:var(--dim)}
+.src-card li b{color:var(--text);font-weight:600}
+/* ---- 登山建议大卡 ---- */
+.hike-card{display:flex;gap:18px;align-items:stretch;background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-bottom:12px;flex-wrap:wrap}
+.hike-score{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:120px;border-right:1px dashed rgba(150,204,170,.18);padding-right:18px}
+.hike-score .hs-stars{font-size:26px;letter-spacing:2px;line-height:1.2}
+.hike-score .hs-label{font-size:11px;color:var(--sub);margin-top:4px;font-family:var(--mono)}
+.hike-score .hs-big{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1.1}
+.hike-main{flex:1;min-width:220px}
+.hike-main .hs-verdict{font-size:14.5px;font-weight:700;margin-bottom:8px}
+.hike-main .hs-items{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:11.5px;color:var(--sub)}
+.hike-main .hs-items b{color:var(--text);font-family:var(--mono)}
+@media(max-width:600px){.hike-card{flex-direction:column}.hike-score{border-right:none;border-bottom:1px dashed rgba(150,204,170,.18);padding-right:0;padding-bottom:12px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>⛰ 哀牢山实时气象灾害预警 <small>公开版 · 双模型交叉验证 + 地形模拟</small>
-      <span class="badge" id="freshBadge">等待数据</span></h1>
-    <div class="meta" id="meta">正在加载模型与最新预报… <span style="color:var(--sub)">（本页每次刷新/打开都会重新拉取最新数据）</span></div>
+    <div>
+      <div class="brand-id">AILAOSHAN · WEATHER MONITORING STATION</div>
+      <h1>⛰ 哀牢山实时气象灾害预警 <small>公开版 · 9模型交叉验证 + 3D地形模拟</small>
+        <span class="badge" id="freshBadge">等待数据</span></h1>
+      <div class="meta" id="meta">正在加载模型与最新预报… <span style="color:var(--sub)">（本页每次刷新/打开都会重新拉取最新数据）</span></div>
+    </div>
   </header>
 
   <div class="panel">
@@ -148,9 +245,15 @@ h3{font-size:14.5px;margin:14px 0 8px;color:var(--text)}
   </div>
 
   <div class="panel" id="weatherPanel">
-    <h2>🌡 实况天气与气象要素</h2>
+    <h2><span class="sec-no">SYS-02</span>🌡 实况天气与气象要素</h2>
     <div class="desc">哀牢山区域 30 格点平均值 · 每次刷新实时拉取 Open-Meteo 最新预报 · 下方为当前时刻与未来 24h 概要</div>
     <div class="summary" id="weatherSummary"><div class="loading">加载中…</div></div>
+  </div>
+
+  <div class="panel" id="altitudePanel">
+    <h2><span class="sec-no">SYS-03</span>⛰ 按海拔层天气差异</h2>
+    <div class="desc">同一时刻不同海拔的天气截然不同：温度随海拔每升高 1000m 约下降 6.5°C，风速、湿度、浓雾概率随海拔升高而增强。下表基于各海拔代表点实时预报 + 地形校正，进山前请对照你的目标海拔。</div>
+    <div class="alt-grid" id="altitudeContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
   <div class="panel">
@@ -302,14 +405,25 @@ h3{font-size:14.5px;margin:14px 0 8px;color:var(--text)}
     <div class="desc">Three.js 实时渲染 169×209 精细 DEM 高度场（35,321 顶点 / 70,000+ 三角面）· 左上45°太阳光照与山体投影阴影 · 摄影风海拔配色 · 真实道路/河流/森林 · 鼠标悬停显示海拔、坡度与地形风险增强</div>
     <div id="three3DContainer">
       <div id="three3DTooltip"></div>
+      <div id="three3DClickInfo">
+        <span class="ci-close" onclick="window.closeClickInfo && window.closeClickInfo()">✕</span>
+        <div class="ci-head" id="ciHead">—</div>
+        <div class="ci-sub" id="ciSub">—</div>
+        <div id="ciRows"></div>
+      </div>
       <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
+      <div id="three3DRoutes">
+        <button class="rbtn" data-route="0">① 半日路线 · 耳海环线</button>
+        <button class="rbtn" data-route="1">② 深度路线 · 石门峡→金山森林</button>
+        <button class="rbtn" data-route="2">③ 日出挑战 · 金山丫口</button>
+      </div>
       <div id="three3DScale">
-        <div class="scale-title">海拔</div>
+        <div class="scale-title">海拔 ELEV</div>
         <div class="scale-bar"></div>
         <div class="scale-max" id="scaleMax">3078m</div>
         <div class="scale-min" id="scaleMin">452m</div>
       </div>
-      <div id="three3DHint">🖱️ 左键拖拽旋转 · 滚轮缩放 · 右键平移 · 悬停查看详情</div>
+      <div id="three3DHint">🖱️ 左键拖拽旋转 · 滚轮缩放 · 右键平移 · 悬停查看 · 点击地形查看当地天气</div>
     </div>
     <div class="legend-row" style="margin-top:8px">
       <span><i style="background:#1a4824"></i>&lt;1000m 河谷雨林</span>
@@ -393,6 +507,54 @@ h3{font-size:14.5px;margin:14px 0 8px;color:var(--text)}
     <p style="margin-top:8px">功能亮点：实时风险指数、未来24小时趋势图、3D全景地形、地名标注、景区开放状态、推荐徒步路线、道路安全出行建议。适用于登山、徒步、自驾、科考及保护区管理前的快速天气风险评估。</p>
   </section>
 
+  <section class="panel" id="sourcesPanel">
+    <h2><span class="sec-no">DATA</span>🔬 数据来源与技术说明</h2>
+    <div class="desc">所有数据在本页浏览器端实时计算与渲染，无需后端服务器；每次打开/刷新页面即拉取最新预报。</div>
+    <div class="src-grid">
+      <div class="src-card">
+        <div class="src-tag">Terrain · DEM</div>
+        <div class="src-title">精细地形高程</div>
+        <ul>
+          <li><b>MERIT DEM</b>（消除森林/噪声误差的高精度全球地形）</li>
+          <li>重采样至 <b>0.02°</b>（约 2km）· 169×209 网格</li>
+          <li>35,321 顶点 / 70,000+ 三角面，海拔 452–3078m</li>
+          <li>坡度、坡向、地形粗糙度、山脊谷地等衍生因子</li>
+        </ul>
+      </div>
+      <div class="src-card">
+        <div class="src-tag">Weather · API</div>
+        <div class="src-title">实时气象预报</div>
+        <ul>
+          <li><b>Open-Meteo</b> 开放预报 API（无密钥免费）</li>
+          <li>99 格点（9×11）覆盖全区域，分 3 批拉取</li>
+          <li>13 要素：温度/湿度/气压/云量/风速/阵风/降水/露点/土壤湿度/能见度/日照/短波辐射</li>
+          <li>未来 3 天逐小时，本页展示前 24–72h</li>
+        </ul>
+      </div>
+      <div class="src-card">
+        <div class="src-tag">Model · ML</div>
+        <div class="src-title">机器学习模型</div>
+        <ul>
+          <li><b>9 个模型</b>：强对流/浓雾/道路安全/地形校准/风与气候/联合研判/3D 重算等</li>
+          <li>基于 <b>ERA5 再分析</b>（2020–2026）3 海拔站点 174,087 条小时记录训练</li>
+          <li>HistGradientBoosting + GradientBoosting 双模型交叉验证</li>
+          <li>浏览器端逐小时推理：21 维特征工程 → 树推理 → 等渗校准</li>
+        </ul>
+      </div>
+      <div class="src-card">
+        <div class="src-tag">Render · WebGL</div>
+        <div class="src-title">可视化渲染</div>
+        <ul>
+          <li><b>Three.js r128</b> WebGL 真实 3D 地形（顶点海拔着色 + 多光源）</li>
+          <li><b>ECharts 5.4.3</b> 趋势图表</li>
+          <li>左上 45° 太阳光照 + 山体投影阴影 + 距离雾效</li>
+          <li>程序化森林 / 道路 / 河流 / 地名标签 / 等高线</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verify-note" style="margin-top:14px">⚠️ 本页为研究性预警系统，实际出行与预警请以<b style="color:var(--text)">中国气象局</b>及<b style="color:var(--text)">哀牢山管护局</b>官方发布为准；进入保护区请严格遵守进山规范。</div>
+  </section>
+
   <noscript>
     <div class="panel" style="background:rgba(255,77,79,.12);border-color:rgba(255,77,79,.35)">
       <h2>⚠️ 需要启用 JavaScript</h2>
@@ -407,9 +569,9 @@ h3{font-size:14.5px;margin:14px 0 8px;color:var(--text)}
   </footer>
 </div>
 
-<script src="js/site.js?v=2026081436"></script>
-<script src="js/gb.js?v=2026081436"></script>
-<script src="js/app.js?v=2026081436"></script>
-<script src="js/terrain3d.js?v=2026081436"></script>
+<script src="js/site.js?v=2026081501"></script>
+<script src="js/gb.js?v=2026081501"></script>
+<script src="js/app.js?v=2026081501"></script>
+<script src="js/terrain3d.js?v=2026081501"></script>
 </body>
 </html>

@@ -336,6 +336,100 @@ function renderWeather(series){
     card("☁️","当前云量", cur.cloud, "%");
 }
 
+/* ---------- 任意经纬度的天气插值（IDW，供 3D 点击/海拔层使用） ---------- */
+function weatherAt(lat, lon){
+  if(!GRID || !GRID.length) return null;
+  let n = 0, times = null;
+  for(const g of GRID){
+    if(g.series && g.series.length){ n = g.series.length; times = g.series.map(s=>s.t); break; }
+  }
+  if(!n) return null;
+  const acc = Array.from({length:n}, ()=>({p:0,f:0,r:0,temp:0,rh:0,precip:0,cloud:0,ws:0,wg:0,vis:0,visW:0,rad:0,radW:0}));
+  let W = 0;
+  for(const g of GRID){
+    const s = g.series; if(!s || s.length < n) continue;
+    const d = Math.hypot(g.lat-lat, g.lon-lon);
+    const w = 1.0 / Math.pow(Math.max(d*111.0, 0.4), 2);
+    W += w;
+    for(let i=0;i<n;i++){
+      const t = s[i], a = acc[i];
+      a.p += w*t.p; a.f += w*t.f; a.r += w*(t.r||0);
+      a.temp += w*t.temp; a.rh += w*t.rh; a.precip += w*t.precip;
+      a.cloud += w*t.cloud; a.ws += w*(t.ws||0); a.wg += w*(t.wg||0);
+      if(t.vis != null){ a.vis += w*t.vis; a.visW += w; }
+      if(t.rad != null){ a.rad += w*t.rad; a.radW += w; }
+    }
+  }
+  if(!W) return null;
+  const series = acc.map(a=>({
+    t: times[acc.indexOf(a)],  // 占位，下方重写
+    p: Math.round(a.p/W*10000)/10000, f: Math.round(a.f/W*10000)/10000, r: Math.round(a.r/W*10000)/10000,
+    temp: Math.round(a.temp/W*10)/10, rh: Math.round(a.rh/W*10)/10,
+    precip: Math.round(a.precip/W*10)/10, cloud: Math.round(a.cloud/W*10)/10,
+    ws: Math.round(a.ws/W*10)/10, wg: Math.round(a.wg/W*10)/10,
+    vis: a.visW ? Math.round(a.vis/a.visW/100)/10 : null,  // km
+    rad: a.radW ? Math.round(a.rad/a.radW) : null
+  }));
+  series.forEach((s,i)=> s.t = times[i]);
+  const elev = (typeof elevAt === "function" && window.HEIGHT_MAP) ? Math.round(elevAt(lat, lon)) : null;
+  const tp = Math.max(...series.map(s=>s.p)), fp = Math.max(...series.map(s=>s.f));
+  return {lat, lon, elev, times, series, peakP: tp, peakF: fp};
+}
+window.__weatherAt = weatherAt;   // 供 terrain3d.js 点击查询
+
+/* ---------- 渲染: 按海拔层天气差异 ---------- */
+const ALT_BANDS = [
+  {key:"low",  name:"低海拔 · 河谷雨林",  place:"戛洒镇",   lat:24.08,  lon:101.60, elev:560,  veg:"河谷雨林 / 花腰傣风情小镇"},
+  {key:"mid",  name:"中海拔 · 中山湿性林", place:"金山原始森林", lat:23.945, lon:101.51, elev:2400, veg:"湿性常绿阔叶林 / 石板路环线"},
+  {key:"high", name:"高海拔 · 山顶草甸",  place:"金山丫口 / 大雪锅山", lat:23.939, lon:101.50, elev:2700, veg:"苔藓矮林 / 山顶草甸 / 云海"},
+];
+function renderAltitudeWeather(){
+  const el = $("altitudeContent");
+  if(!el) return;
+  if(!GRID || !GRID.length){ el.innerHTML = '<div style="grid-column:1/-1;color:var(--sub)">暂无数据</div>'; return; }
+  const lr = 0.0065;  // 温度直减率 °C/m
+  el.innerHTML = ALT_BANDS.map(band=>{
+    const w = weatherAt(band.lat, band.lon);
+    if(!w) return '';
+    const cur = w.series[0], next24 = w.series.slice(0, 24);
+    const t24 = next24.map(s=>s.temp);
+    const minT = Math.min(...t24), maxT = Math.max(...t24);
+    const totalP = next24.reduce((a,s)=>a+s.precip, 0);
+    const maxWg = Math.max(...next24.map(s=>s.wg||0));
+    // 温度校正到标称海拔
+    const baseElev = w.elev || band.elev;
+    const dT = (baseElev - band.elev) * lr;
+    const tempNow = Math.round((cur.temp + dT) * 10) / 10;
+    const feel = Math.round((cur.temp + dT - (cur.ws||0) * 1.1) * 10) / 10;
+    const risk = Math.max(w.peakP, w.peakF);
+    const rlv = risk >= 0.6 ? "预警" : risk >= 0.45 ? "较高" : risk >= 0.30 ? "关注" : "低";
+    const rcol = rlv === "预警" ? "#f0646c" : rlv === "较高" ? "#e8a35c" : rlv === "关注" ? "#e3cf7d" : "#6fd39a";
+    const tempCol = tempNow >= 22 ? "#e8a35c" : tempNow <= 8 ? "#62c4e8" : "#fff";
+    // 着装建议
+    let wear;
+    if(band.elev >= 2500) wear = "<b>必备</b>冲锋衣/抓绒 · 防风手套 · 头灯 · 保温杯 · 防晒（高海拔紫外线强）";
+    else if(band.elev >= 1800) wear = "<b>推荐</b>薄冲锋衣+速干衣 · 防滑登山鞋 · 雨具 · 帽子";
+    else wear = "<b>轻装</b>速干衣 · 防滑鞋 · 雨伞/雨衣 · 注意河谷闷热与蚊虫";
+    return '<div class="alt-card '+band.key+'">'+
+      '<div class="alt-name">'+band.name+'</div>'+
+      '<div class="alt-meta">'+band.place+' · 标称 '+band.elev+'m · 实际 '+(w.elev||band.elev)+'m</div>'+
+      '<div class="alt-temp" style="color:'+tempCol+'">'+tempNow+'<small>°C</small></div>'+
+      '<div class="alt-feel">体感 '+feel+'°C · 今日 '+minT+'~'+maxT+'°C</div>'+
+      '<div class="alt-metrics">'+
+        '<span>湿度 <b>'+Math.round(cur.rh)+'%</b></span>'+
+        '<span>云量 <b>'+Math.round(cur.cloud)+'%</b></span>'+
+        '<span>能见度 <b>'+(cur.vis != null ? cur.vis+'km' : '—')+'</b></span>'+
+        '<span>阵风 <b>'+Math.round(maxWg*10)/10+'m/s</b></span>'+
+        '<span>24h降水 <b>'+Math.round(totalP*10)/10+'mm</b></span>'+
+        '<span>浓雾峰值 <b>'+Math.round(w.peakF*100)+'%</b></span>'+
+      '</div>'+
+      '<div><span class="alt-risk" style="background:'+rcol+';color:#04130a">风险等级 '+rlv+'</span>'+
+      '<span class="alt-risk" style="background:rgba(150,204,170,.12);color:var(--sub);margin-left:6px">强对流峰值 '+Math.round(w.peakP*100)+'%</span></div>'+
+      '<div class="alt-wear">🧥 着装建议：'+wear+'</div>'+
+    '</div>';
+  }).join("");
+}
+
 /* ---------- 渲染: 出行建议面板 ---------- */
 function renderAdvice(grid, roads, series){
   const adviceEl = $("adviceContent");
@@ -353,6 +447,35 @@ function renderAdvice(grid, roads, series){
   const curT = next24[0]?.temp || 0;
   const maxP = Math.max(...next24.map(s=>s.p||0), 0);
   const maxF = Math.max(...next24.map(s=>s.f||0), 0);
+  /* ---- 登山建议大卡（普通人视角：星级 + 一句话结论 + 关键指标） ---- */
+  let hs = 4, verdict = "风险较低，适合出行：仍须注意山区天气突变，建议 14:00 前下山", vColor = "#6fd39a";
+  if(maxRI >= 75){ hs = 0; verdict = "今日不宜进山：综合风险已达预警级，建议取消一切进山计划，已进山者尽快下山"; vColor = "#f0646c"; }
+  else if(maxRI >= 55){ hs = 1; verdict = "谨慎出行：综合风险较高，如必须进山请 12:00 前完成并避开陡坡、河道"; vColor = "#e8a35c"; }
+  else if(maxRI >= 35){ hs = 3; verdict = "可出行但需留意：午后易发强对流，建议 14:00 前完成下山"; vColor = "#e3cf7d"; }
+  if(maxRI < 35 && totalP >= 10) hs = Math.min(hs, 3);
+  if(maxRI < 35 && (maxP >= 0.4 || maxF >= 0.5)) hs = Math.min(hs, 3);
+  if(maxRI >= 55 && (maxP >= 0.4 || maxF >= 0.5)) hs = Math.min(hs, 0);
+  const starStr = hs >= 4 ? "★★★★★" : hs === 3 ? "★★★☆☆" : hs === 2 ? "★★☆☆☆" : hs === 1 ? "★☆☆☆☆" : "☆☆☆☆☆";
+  const feelT = Math.round((curT - (next24[0]?.ws || 0) * 1.1) * 10) / 10;
+  const hikeCard =
+    '<div class="hike-card">'+
+      '<div class="hike-score">'+
+        '<div class="hs-stars" style="color:'+vColor+'">'+starStr+'</div>'+
+        '<div class="hs-big" style="color:'+vColor+'">'+maxRI+'</div>'+
+        '<div class="hs-label">综合风险指数 / 100</div>'+
+      '</div>'+
+      '<div class="hike-main">'+
+        '<div class="hs-verdict" style="color:'+vColor+'">'+verdict+'</div>'+
+        '<div class="hs-items">'+
+          '<span>🌡 体感 <b>'+feelT+'°C</b>（区域均温 '+curT+'°C）</span>'+
+          '<span>🌧 24h降水 <b>'+Math.round(totalP*10)/10+'mm</b></span>'+
+          '<span>🌫 浓雾峰值 <b>'+Math.round(maxF*100)+'%</b> · 湿度 '+Math.round(curRh)+'%</span>'+
+          '<span>🌩 强对流峰值 <b>'+Math.round(maxP*100)+'%</b></span>'+
+          '<span>💨 阵风峰值 <b>'+Math.round(maxWg*10)/10+'m/s</b></span>'+
+          '<span>🏔 高海拔注意 <b>每升1000m约降6.5°C</b></span>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
   // 生成建议
   let items = [];
   // 主风险等级建议
@@ -415,8 +538,8 @@ function renderAdvice(grid, roads, series){
   // 通用建议
   items.push({icon:"🛡", title:"通用安全提示", color:"var(--sub)",
     text:"哀牢山地形陡峭、气候多变。任何等级下：①14:00前完成下山 ②远离河道、陡坡、滚石区 ③保持手机信号 ④告知他人行程 ⑤遵守保护区规定，以中国气象局和哀牢山管护局官方发布为准。"});
-  // 渲染
-  adviceEl.innerHTML = items.map(it=>
+  // 渲染（登山建议大卡置顶）
+  adviceEl.innerHTML = hikeCard + items.map(it=>
     '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">'+
     '<div style="font-size:22px;flex-shrink:0">'+it.icon+'</div>'+
     '<div><div style="font-weight:700;color:'+it.color+';font-size:14px;margin-bottom:3px">'+it.title+'</div>'+
@@ -1914,6 +2037,8 @@ async function main(){
     renderChart(window.__chartSeries);
     // 实况天气面板
     renderWeather(window.__chartSeries);
+    // 按海拔层天气差异面板
+    renderAltitudeWeather();
     // 道路出行安全评估面板
     renderRoadSafety(GRID, window.__chartSeries);
     // 出行建议面板

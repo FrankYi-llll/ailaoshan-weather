@@ -18,6 +18,9 @@
       treesGroup = null, contoursLine = null, forbiddenGroup = null, routesGroup = null;
   let initialized = false, tourMode = false;
   let mouse = new THREE.Vector2(), hoverTimer = null;
+  let tourCurves = [];        // 路线相机飞行用（buildTourRoutes 填充）
+  let clickDown = null;       // 点击/拖拽识别
+  let flyState = null;        // 相机飞行动画句柄
 
   // 全局数据来自 app.js（必须在 initThreeTerrain 前设置 window.HEIGHT_MAP/TERRAIN3D/TERR）
   const HM = () => window.HEIGHT_MAP;
@@ -205,8 +208,25 @@
     renderer.domElement.addEventListener("mousemove", onMouseMove);
     renderer.domElement.addEventListener("mouseleave", hideTooltip);
     renderer.domElement.style.cursor = "grab";
-    renderer.domElement.addEventListener("mousedown", ()=> renderer.domElement.style.cursor = "grabbing");
-    renderer.domElement.addEventListener("mouseup", ()=> renderer.domElement.style.cursor = "grab");
+    renderer.domElement.addEventListener("mousedown", (e)=>{
+      clickDown = {x: e.clientX, y: e.clientY};
+      renderer.domElement.style.cursor = "grabbing";
+    });
+    renderer.domElement.addEventListener("mouseup", (e)=>{
+      renderer.domElement.style.cursor = "grab";
+      if(!clickDown) return;
+      const dx = e.clientX - clickDown.x, dy = e.clientY - clickDown.y;
+      clickDown = null;
+      if(e.button !== 0) return;
+      if(Math.hypot(dx, dy) > 6) return;   // 拖拽旋转不算点击
+      onTerrainClick(e);
+    });
+    // 用户开始拖拽/缩放时停止相机飞行
+    controls.addEventListener("start", ()=> stopFly());
+    // 路线飞行按钮
+    document.querySelectorAll("#three3DRoutes .rbtn").forEach((b, k)=>{
+      b.addEventListener("click", ()=> flyRoute(parseInt(b.dataset.route, 10)));
+    });
 
     /* ---- 海拔色标文字 ---- */
     $("scaleMax").textContent = Math.round(HM().max_elev) + "m";
@@ -683,6 +703,7 @@
       if(pts.length < 2) return;
       const v3 = pts.map(p => surfPt(p.lat, p.lon));
       const curve = new THREE.CatmullRomCurve3(v3, false, "centripetal", 0.5);
+      tourCurves.push({name: rt.name, color: rt.color, curve});   // 供相机飞行
       const tube = new THREE.Mesh(
         new THREE.TubeGeometry(curve, 64, 0.035, 8, false),
         new THREE.MeshLambertMaterial({color: rt.color, emissive: rt.color, emissiveIntensity: 0.35})
@@ -810,6 +831,106 @@
     if(tt) tt.style.display = "none";
   }
 
+  /* ---------- 3D 点击：显示该点海拔/坡度/当地天气 ---------- */
+  function nearestPlaceName(lat, lon){
+    let best = null, bd = 1e9;
+    const cands = [];
+    (window.WAYPOINTS || []).forEach(wp => cands.push({name: wp.name.replace(/\(.*?\)/g,""), lat: wp.lat, lon: wp.lon}));
+    GEO_LANDMARKS.forEach(g => cands.push({name: g.name, lat: g.lat, lon: g.lon}));
+    for(const c of cands){
+      const d = Math.hypot(c.lat - lat, c.lon - lon) * 111;
+      if(d < bd){ bd = d; best = c; }
+    }
+    return best && bd < 14 ? best.name + (bd > 6 ? " 附近" : "") : "所选位置";
+  }
+  function onTerrainClick(e){
+    const dom = renderer.domElement;
+    const rect = dom.getBoundingClientRect();
+    const mx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const my = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(new THREE.Vector2(mx, my), camera);
+    const hits = raycaster.intersectObject(terrainMesh, false);
+    if(!hits.length) return;
+    const pt = hits[0].point;
+    const lon = HM().lon_range[0] + (pt.x + X0) / KX;
+    const lat = HM().lat_range[0] + (pt.z + Z0) / KZ;
+    const e2 = elevAt(lat, lon);
+    const slope = slopeDegAt(lat, lon);
+    let w = null;
+    try{ w = window.__weatherAt ? window.__weatherAt(lat, lon) : null; }catch(err){}
+    const panel = $("three3DClickInfo");
+    if(!panel) return;
+    const name = nearestPlaceName(lat, lon);
+    const row = (k, v, col) => '<div class="ci-row"><span>'+k+'</span><b style="'+(col?'color:'+col+';':'')+'">'+v+'</b></div>';
+    let rows = row("海拔", Math.round(e2) + " m") + row("坡度", slope.toFixed(1) + "°");
+    if(w && w.series && w.series.length){
+      const cur = w.series[0];
+      const next24 = w.series.slice(0, 24);
+      const totalP = next24.reduce((a,s)=>a+(s.precip||0), 0);
+      const maxWg = Math.max(...next24.map(s=>s.wg||0));
+      const tempCol = cur.temp >= 22 ? "#e8a35c" : cur.temp <= 5 ? "#62c4e8" : "#fff";
+      rows += row("当前气温", cur.temp + "°C", tempCol);
+      rows += row("湿度 / 云量", Math.round(cur.rh) + "% / " + Math.round(cur.cloud) + "%");
+      rows += row("阵风", Math.round(maxWg*10)/10 + " m/s");
+      rows += row("24h 降水", Math.round(totalP*10)/10 + " mm");
+      rows += row("强对流峰值", Math.round(w.peakP*100) + "%", w.peakP >= 0.5 ? "#f0646c" : w.peakP >= 0.3 ? "#e3cf7d" : "#6fd39a");
+      rows += row("浓雾峰值", Math.round(w.peakF*100) + "%", w.peakF >= 0.5 ? "#f0646c" : w.peakF >= 0.3 ? "#e3cf7d" : "#6fd39a");
+      rows += row("能见度", cur.vis != null ? cur.vis + " km" : "—");
+    } else {
+      rows += row("天气", "数据加载中…");
+    }
+    const h = panel.querySelector("#ciHead"), s = panel.querySelector("#ciSub");
+    if(h) h.textContent = "📍 " + name;
+    if(s) s.textContent = lat.toFixed(3) + "°N, " + lon.toFixed(3) + "°E";
+    const rowsEl = document.getElementById("ciRows");
+    if(rowsEl) rowsEl.innerHTML = rows;
+    panel.style.display = "block";
+  }
+  window.closeClickInfo = function(){
+    const panel = $("three3DClickInfo");
+    if(panel) panel.style.display = "none";
+  };
+
+  /* ---------- 路线相机飞行（点击路线按钮后沿路线巡航） ---------- */
+  function stopFly(){ flyState = null; }
+  window.stopRouteFly = stopFly;
+  function flyRoute(i){
+    if(!initialized || !tourCurves.length) return;
+    const rc = tourCurves[i];
+    if(!rc) return;
+    stopFly();
+    // 显示路线并高亮按钮
+    tourMode = true;
+    routesGroup.visible = true;
+    const tb = $("tourBtn"); if(tb) tb.classList.add("active");
+    document.querySelectorAll("#three3DRoutes .rbtn").forEach((b, k)=> b.classList.toggle("active", k === i));
+    // 采样曲线点
+    const N = 240;
+    const pts = [];
+    for(let k = 0; k < N; k++) pts.push(rc.curve.getPoint(k / (N - 1)));
+    const D = 20000;              // 全程 20 秒
+    const t0 = performance.now();
+    let last = -1;
+    function step(now){
+      if(flyState !== step) return;
+      const t = Math.min(1, (now - t0) / D);
+      const idx = Math.floor(t * (N - 1));
+      if(idx !== last){
+        last = idx;
+        const p = pts[idx];
+        const nxt = pts[Math.min(N - 1, idx + 16)];
+        // 相机位于路线点侧上方，视线朝向前方路线
+        camera.position.set(p.x + 1.4, p.y + 2.8, p.z + 1.4);
+        controls.target.set(nxt.x, nxt.y + 0.9, nxt.z);
+        controls.update();
+      }
+      if(t < 1){ requestAnimationFrame(step); }
+      else { flyState = null; }
+    }
+    flyState = step;
+    requestAnimationFrame(step);
+  }
+
   /* ---------- 旅游模式切换（相机飞行 + 显示路线） ---------- */
   function easeInOut(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
   function flyTo(pos, target){
@@ -830,8 +951,12 @@
     if(!initialized) return;
     tourMode = !tourMode;
     routesGroup.visible = tourMode;
+    if(!tourMode) stopFly();
     const btn = $("tourBtn");
     if(btn) btn.classList.toggle("active", tourMode);
+    if(!tourMode){
+      document.querySelectorAll("#three3DRoutes .rbtn").forEach(b=> b.classList.remove("active"));
+    }
     // 景区标签在旅游模式下放大（基于 baseScale）
     labelsGroup.children.forEach(c => {
       if(c.isSprite && c.userData.baseScale && (c.userData.kind === "wp" || c.userData.kind === "wpClosed")){
