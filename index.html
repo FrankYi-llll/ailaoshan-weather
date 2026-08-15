@@ -1073,7 +1073,7 @@ body.view-public #altVerifyPanel{display:none!important}
 
   <div class="panel" id="riskIndexPanel">
     <h2>📊 综合风险指数总表 <span class="badge" id="riskCount">—</span></h2>
-    <div class="desc">综合指数 = 40%×强对流峰值 + 15%×浓雾峰值 + 30%×地形敏感性(山洪/泥石流/塌方最高) + 15%×坡度因子 · 30 个网格点 + 主要公路统一排序 · 指数 0-100 · 每次刷新实时更新</div>
+    <div class="desc">综合指数 = 40%×强对流 + 15%×浓雾 + 30%×地形敏感性 + 15%×坡度 · 30 格点 + 主要公路统一排序 · 每次刷新实时更新</div>
     <div class="legend-row">
       <span><i style="background:#2ecc71"></i>低 &lt;35</span>
       <span><i style="background:#f7d154"></i>关注 35-55</span>
@@ -1091,7 +1091,7 @@ body.view-public #altVerifyPanel{display:none!important}
 
   <div class="panel" id="warnCenterPanel">
     <h2><span class="sec-no">SYS-01</span>🚨 实时预警中心</h2>
-    <div class="desc">聚合 9 模型与 3D 地形增强结果，输出六大类风险当前最高等级与未来 24h 峰值 · 等级按"预警 &gt; 较高 &gt; 关注 &gt; 低"取最高</div>
+    <div class="desc">9 模型 + 3D 地形增强 · 六类风险当前最高等级与未来 24h 峰值</div>
     <div class="warn-grid" id="warnCenterContent"><div class="loading">计算中…</div></div>
   </div>
 
@@ -1109,13 +1109,13 @@ body.view-public #altVerifyPanel{display:none!important}
 
   <div class="panel" id="altitudePanel">
     <h2><span class="sec-no">SYS-03</span>⛰ 按海拔层天气差异</h2>
-    <div class="desc">同一时刻不同海拔的天气截然不同：温度随海拔每升高 1000m 约下降 6.5°C，风速、湿度、浓雾概率随海拔升高而增强。下表基于各海拔代表点实时预报 + 地形校正，进山前请对照你的目标海拔。</div>
+    <div class="desc">温度随海拔每升 1000m 约降 6.5°C，风速/湿度/浓雾概率随海拔升高而增强。下表基于各海拔代表点实时预报 + 地形校正。</div>
     <div class="alt-grid" id="altitudeContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
   <div class="panel" id="chartPanel">
     <h2>📈 未来 72h 强对流/浓雾概率与气象要素</h2>
-    <div class="desc">曲线 = 哀牢山区域 30 格点逐小时强对流概率最大值（左轴）；柱状 = 降水（mm）；面积 = 相对湿度/云量（右轴）。鼠标悬停看逐小时气温、湿度、降水、云量。</div>
+    <div class="desc">曲线 = 30 格点逐小时强对流/浓雾概率最大值 · 柱状 = 降水 · 面积 = 湿度/云量 · 鼠标悬停看逐小时详情</div>
     <div class="btn-group">
       <button class="risk-btn active" id="btnChartT" onclick="setChart('thunder')">🌩 强对流</button>
       <button class="risk-btn" id="btnChartF" onclick="setChart('fog')">🌫 浓雾</button>
@@ -1124,40 +1124,57 @@ body.view-public #altVerifyPanel{display:none!important}
   </div>
 
   <div class="panel" id="advicePanel">
-    <h2>🧭 出行建议</h2>
-    <div class="desc">基于综合风险指数、强对流/浓雾概率、地形敏感性与气象条件自动生成 · 仅供参考，以官方发布为准</div>
+    <h2>🧭 出行建议与智能规划</h2>
+    <div class="desc">基于综合风险指数、强对流/浓雾概率、地形敏感性自动生成建议 · 下方可输入徒步计划生成分段避险方案</div>
     <div id="adviceContent"><div class="loading">加载中…</div></div>
+    <h3 style="margin-top:16px">🤖 AI 智能出行方案</h3>
+    <div class="ai-input">
+      <label>徒步路线
+        <select id="aiRoute">
+          <option value="north">北线：戛洒→大平地→金山丫口</option>
+          <option value="south">南线：镇沅→千家寨→大雪锅山</option>
+          <option value="east">东线：新平→南恩瀑布→石门峡</option>
+          <option value="summit">登顶线：金山丫口→大雪锅山顶</option>
+          <option value="short">短途：石门峡景区步道</option>
+        </select>
+      </label>
+      <label>出发时间
+        <input type="time" id="aiStartTime" value="07:00">
+      </label>
+      <label>预计时长(小时)
+        <input type="number" id="aiDuration" value="6" min="1" max="16" step="0.5">
+      </label>
+      <label>队伍人数
+        <input type="number" id="aiGroupSize" value="3" min="1" max="20">
+      </label>
+    </div>
+    <button class="ai-btn" onclick="generateAIAdvice()">🧠 生成智能出行方案</button>
+    <div class="ai-result" id="aiResult"></div>
   </div>
 
   <div class="panel" id="poiPanel">
-    <h2>📍 景点一键聚焦 <span class="badge" id="poiBadge">点击 → 3D 聚焦</span></h2>
-    <div class="desc">点击景点，3D 地形相机将自动飞向该点位并弹出当地天气卡（海拔/气温/能见度/云海概率）· 若 3D 尚未加载完成会自动滚动到 3D 面板</div>
+    <h2>📍 景点聚焦与路线推荐 <span class="badge" id="poiBadge">点击 → 3D 聚焦</span></h2>
+    <div class="desc">点击景点按钮可在 3D 地形中飞行聚焦 · 下方表格按实时风险排序并推荐徒步路线</div>
     <div class="poi-grid" id="poiGrid"><div class="loading">加载中…</div></div>
     <div id="poiDetail" style="display:none;margin-top:12px"></div>
-  </div>
-
-  <div class="panel" id="routePanel">
-    <h2>🧭 景点路线推荐与禁区提示 <span class="badge" id="routeBadge">—</span></h2>
-    <div class="desc">基于 30 格点实时预警 IDW 插值计算每个景点未来 24h 强对流/浓雾风险 · 推荐指数 = 综合风险 + 海拔 + 景点类型动态评分 · 每次刷新实时更新</div>
-    <div class="summary" id="routeSummary"><div class="loading">计算中…</div></div>
-    <div style="overflow-x:auto"><table>
+    <div class="summary" id="routeSummary" style="margin-top:14px"><div class="loading">计算中…</div></div>
+    <div style="overflow-x:auto;margin-top:8px"><table>
       <thead><tr><th>景点</th><th>类型</th><th>海拔</th><th>实时风险</th><th>强对流峰值</th><th>浓雾峰值</th><th>推荐指数</th><th>建议游览时段</th><th>提示</th></tr></thead>
       <tbody id="routeTbody"><tr><td colspan="9" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
     </table></div>
-    <h3 style="margin-top:16px">🥾 推荐徒步路线（较安全 · 仅限开放景区）</h3>
-    <div class="desc">以下路线均位于已开放景区/一般控制区，避开核心保护区与未开发区域。请严格按标识行走，不要擅自偏离路线。</div>
+    <h3 style="margin-top:16px">🥾 推荐徒步路线（仅限开放景区）</h3>
     <div style="overflow-x:auto"><table>
       <thead><tr><th>路线</th><th>起止点</th><th>距离/耗时</th><th>海拔</th><th>类型</th><th>难度</th><th>主要风险</th><th>安全提示</th></tr></thead>
       <tbody id="hikingTbody"><tr><td colspan="8" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
     </table></div>
-    <h3 style="margin-top:16px">🚫 禁区示意（以管护局界桩/公告为准）</h3>
+    <h3 style="margin-top:16px">🚫 禁区示意</h3>
     <div id="forbiddenList" class="desc"></div>
     <div class="verify-note" id="routeRules"></div>
   </div>
 
   <div class="panel" id="riskMapPanel">
     <h2>🗺 哀牢山精细地形与风险地图</h2>
-    <div class="desc">底图 = 0.02° 精细 DEM 出行地图（微弱地形纹理 + 分级道路着色 + 河流 + 村镇 + 景点 + 禁区）· 色块 = 该格点未来 24h 峰值风险（仅颜色表示，鼠标悬停/点击看详情）· 适合进山出行前快速扫一眼风险分布</div>
+    <div class="desc">0.02° 精细 DEM 出行底图 · 色块 = 该格点未来 24h 峰值风险 · 鼠标悬停/点击看详情</div>
     <div id="riskMapSummary" class="risk-map-summary"></div>
     <div class="btn-group">
       <button class="risk-btn active" id="btnThunder" onclick="setRisk('thunder')">🌩 强对流</button>
@@ -1205,18 +1222,14 @@ body.view-public #altVerifyPanel{display:none!important}
   </div>
 
   <div class="panel" id="roadPanel">
-    <h2>🚧 公路灾害预警 <span class="badge" id="roadCount">—</span></h2>
-    <div class="desc">结合未来 24h 强对流/浓雾概率 + 精细地形敏感性(0-100) + 历史灾害案例，对大雾/泥石流/山洪/塌方四类风险评级</div>
+    <h2>🚗 道路出行安全 <span class="badge" id="roadCount">—</span></h2>
+    <div class="desc">综合公路灾害预警（大雾/泥石流/山洪/塌方）与道路出行安全评估（阳光/能见度/风力/降水），每次刷新实时更新</div>
     <div style="overflow-x:auto"><table>
       <thead><tr><th>路段</th><th>综合风险</th><th>大雾</th><th>泥石流</th><th>山洪</th><th>塌方</th><th>最需警惕 / 建议</th></tr></thead>
       <tbody id="roadTbody"></tbody>
     </table></div>
-  </div>
-
-  <div class="panel" id="roadSafetyPanel">
-    <h2>🚗 道路出行安全评估 <span class="badge" id="roadSafetyBadge">第9模型</span></h2>
-    <div class="desc">综合考虑阳光（短波辐射）、昼夜、温度、能见度、风力、降水等因素，专门评估道路出行安全风险（道路出行重中之重）</div>
-    <div id="roadSafetyPanel"><div class="loading">加载中…</div></div>
+    <h3 style="margin-top:14px">🚗 道路出行安全评估 <span class="badge" id="roadSafetyBadge">第9模型</span></h3>
+    <div id="roadSafetyContent"><div class="loading">加载中…</div></div>
   </div>
 
   <div class="panel" id="altVerifyPanel">
@@ -1237,7 +1250,7 @@ body.view-public #altVerifyPanel{display:none!important}
   <!-- ===== 三模型比对（专业视图） ===== -->
   <div class="panel pro-only" id="triModelPanel">
     <h2>🔬 三模型交叉比对（GFS · ECMWF · ICON）</h2>
-    <div class="desc">同时拉取 Open-Meteo 三大全球预报模型数据，计算模型间分歧度。分歧越大代表天气不确定性越高，风险等级自动上调。点击「刷新比对」获取最新数据。</div>
+    <div class="desc">同时拉取 GFS/ECMWF/ICON 三大模型数据，计算分歧度。分歧越大不确定性越高，风险自动上调。</div>
     <button class="risk-btn active" onclick="fetchTriModel()" style="margin-top:8px">🔄 刷新三模型比对</button>
     <div id="triModelContent" style="margin-top:10px">
       <div class="desc" style="color:var(--dim)">点击上方按钮拉取三模型预报数据…</div>
@@ -1247,38 +1260,10 @@ body.view-public #altVerifyPanel{display:none!important}
   <!-- ===== 地质灾害分流域演算 ===== -->
   <div class="panel" id="geoHazardPanel">
     <h2>⛰️ 地质灾害分流域精细化演算</h2>
-    <div class="desc">基于 DEM 地形敏感性（坡度/泥石流/山洪/塌方）耦合实时降水阈值（1h/3h/24h累积），动态计算各流域单元地质灾害触发概率。区分干沟、河谷陡坡、松散堆积层等高风险单元。</div>
+    <div class="desc">DEM 地形敏感性 + 实时降水阈值（1h/3h/24h）耦合计算各流域地质灾害触发概率</div>
     <div id="geoHazardContent" style="margin-top:10px">
       <div class="desc" style="color:var(--dim)">正在计算地质灾害风险…</div>
     </div>
-  </div>
-
-  <!-- ===== AI 智能出行建议 ===== -->
-  <div class="panel" id="aiAdvicePanel">
-    <h2>🤖 AI 智能出行建议（分段避险方案）</h2>
-    <div class="desc">输入你的徒步计划，系统将根据实时气象预报、地形风险、海拔温差生成分段避险时间表和装备建议。</div>
-    <div class="ai-input">
-      <label>徒步路线
-        <select id="aiRoute">
-          <option value="north">北线：戛洒→大平地→金山丫口</option>
-          <option value="south">南线：镇沅→千家寨→大雪锅山</option>
-          <option value="east">东线：新平→南恩瀑布→石门峡</option>
-          <option value="summit">登顶线：金山丫口→大雪锅山顶</option>
-          <option value="short">短途：石门峡景区步道</option>
-        </select>
-      </label>
-      <label>出发时间
-        <input type="time" id="aiStartTime" value="07:00">
-      </label>
-      <label>预计时长(小时)
-        <input type="number" id="aiDuration" value="6" min="1" max="16" step="0.5">
-      </label>
-      <label>队伍人数
-        <input type="number" id="aiGroupSize" value="3" min="1" max="20">
-      </label>
-    </div>
-    <button class="ai-btn" onclick="generateAIAdvice()">🧠 生成智能出行方案</button>
-    <div class="ai-result" id="aiResult"></div>
   </div>
 
   <div class="panel" id="calibPanel" style="display:none">
@@ -1404,118 +1389,68 @@ body.view-public #altVerifyPanel{display:none!important}
     <div id="recalc3DFindings" class="desc"></div>
   </div>
 
-  <div class="panel" id="terrainPanel">
-    <h2>🏔 精细地形模拟</h2>
-    <div class="desc" id="terrainDesc">加载中…</div>
-    <img id="terrainImg" alt="哀牢山精细 DEM 地形图" style="width:100%;border-radius:12px;border:1px solid var(--line);display:none">
-  </div>
-
-  <!-- 静态 SEO 内容：便于搜索引擎/无 JavaScript 环境抓取核心信息 -->
-  <section class="panel" id="aboutSection" style="font-size:13px;line-height:1.8;color:var(--sub)">
-    <h2 style="font-size:16px;color:var(--text)">关于哀牢山天气预警</h2>
-    <p>本页面提供<strong>哀牢山天气</strong>实时预警服务，覆盖云南玉溪新平县（戛洒镇、漠沙镇）、楚雄双柏县、普洱镇沅县等哀牢山核心区域。通过9个机器学习模型交叉验证，结合 169×209 精细 DEM 地形与 Three.js 3D 可视化，预测未来24小时强对流、浓雾、山洪、泥石流、塌方及道路出行安全风险。</p>
-    <p style="margin-top:8px">关注区域包括：<strong>大雪锅山</strong>（哀牢山最高峰，3137.6m）、<strong>金山丫口</strong>、<strong>石门峡</strong>、<strong>茶马古道</strong>、<strong>金山原始森林</strong>、<strong>千家寨</strong>、<strong>徐家坝</strong>、<strong>哀牢山国家级自然保护区</strong>核心区等。数据基于 Open-Meteo 实时预报与 ERA5 历史再分析（2020–2026）训练，每次刷新实时更新。</p>
-    <p style="margin-top:8px">功能亮点：实时风险指数、未来24小时趋势图、3D全景地形、地名标注、景区开放状态、推荐徒步路线、道路安全出行建议。适用于登山、徒步、自驾、科考及保护区管理前的快速天气风险评估。</p>
-  </section>
-
-  <section class="panel science" id="sciencePanel">
-    <h2>🔭 关于哀牢山 · 科普小贴士</h2>
-    <div class="desc">进山前 5 分钟，了解这座山的脾气。</div>
-    <details>
-      <summary>🧭 为什么哀牢山"磁场异常"、指南针会失灵？</summary>
-      <div class="sci-body">哀牢山地处横断山脉南延余脉，山体由数条深大断裂带（红河断裂等）控制。山体含大量铁磁性矿物（玄武岩、辉长岩类），在地质图上呈明显磁异常条带；加上峡谷深切、地形起伏剧烈，局部地磁要素（磁偏角/磁倾角）与全球磁场模型差异较大。因此林深处、峡谷中指南针可能出现明显偏差，官方一再提醒：<b>切勿仅凭指南针在原始林中导航，务必结伴、沿既定路线、带 GPS 设备</b>。</div>
-    </details>
-    <details>
-      <summary>🌫 为什么哀牢山常年云雾缭绕、雾气特别重？</summary>
-      <div class="sci-body">哀牢山是云南南北向的巨大屏障（最高 3137.6m），从红河谷地到山脊相对高差超 2600m。印度洋/孟加拉湾暖湿气流被山体强迫抬升，冷却凝结成云；山间"U 型谷"地形又形成冷池效应，夜间辐射降温后水汽近地面饱和，清晨极易形成浓雾与平流雾。<b>能见度常低于 200m，是本系统把它列为最高优先级指标的原因</b>。</div>
-    </details>
-    <details>
-      <summary>🌄 为什么这里是"云海摄影天堂"？</summary>
-      <div class="sci-body">云海形成三要素：高湿度 + 明显昼夜温差 + 微风。秋冬清晨，山体夜间辐射冷却、谷底形成逆温层，暖湿空气在逆温层顶凝结成云海，日出前后温差最大、风力最小，云海概率最高。本系统基于湿度/温差/风速给出<b>云海概率</b>启发式指数（见实况天气面板），供摄影爱好者参考。</div>
-    </details>
-    <details>
-      <summary>⛈ 为什么强对流、山洪风险集中在午后？</summary>
-      <div class="sci-body">夏季午后太阳加热坡面，暖湿空气沿谷地辐合上升，触发对流单体（局地雷暴），伴随短时强降水。山区集水面积小、河道比降大，洪水上涨极快；谷底与山脊温差大，还易出现阵性大风。本系统建议：<b>14:00 前完成下山、远离河道与陡坡</b>。</div>
-    </details>
-  </section>
-
+  <!-- 静态 SEO 内容 + 数据来源（合并） -->
   <section class="panel" id="sourcesPanel">
-    <h2><span class="sec-no">DATA</span>🔬 数据来源与数字孪生说明</h2>
-    <div class="desc">所有数据在本页浏览器端实时计算与渲染，无需后端服务器；每次打开/刷新页面即拉取最新预报。</div>
-    <h3 style="margin-top:4px;color:var(--teal)">🌐 什么是哀牢山数字孪生？</h3>
-    <div class="desc" style="background:rgba(98,196,232,.04);border-left:3px solid var(--blue);padding:12px 16px;border-radius:4px;margin-bottom:14px;line-height:1.9">
-      本系统将<b style="color:var(--text)">哀牢山真实地形</b>（MERIT DEM 精细高程，35,321 顶点）与<b style="color:var(--text)">实时气象数据</b>（Open-Meteo 99 格点逐小时预报）在浏览器中融合为三维数字孪生体。<br>
-      <b style="color:var(--text)">数字孪生 ≠ 3D 地图</b>：它不仅还原山体形态，更在每一帧将 9 个机器学习模型的预测结果（强对流、浓雾、山洪、泥石流、塌方、道路安全）叠加到对应海拔与地形位置上，使 3D 场景中的云雾飘移、风险色块、景点天气都与真实气象同步变化。<br>
-      你可以拖拽旋转 3D 山体、点击任意位置查看当地天气、一键飞行探索三条经典路线——看到的就是当前真实气象驱动下的哀牢山。
+    <h2>🔬 关于本系统与数据来源</h2>
+    <div class="desc">覆盖云南新平（戛洒镇）、双柏、镇沅等哀牢山核心区域 · 9 模型交叉验证 + 169×209 精细 DEM + Three.js 3D 可视化 · 浏览器端实时计算，每次刷新获取最新预报</div>
+    <div class="desc" style="background:rgba(98,196,232,.04);border-left:3px solid var(--blue);padding:10px 16px;border-radius:4px;margin:10px 0;line-height:1.8">
+      关注区域：大雪锅山(3137m) · 金山丫口 · 石门峡 · 茶马古道 · 金山原始森林 · 千家寨 · 徐家坝 · 哀牢山国家级自然保护区核心区等。数据基于 Open-Meteo 实时预报与 ERA5 历史再分析（2020–2026）训练。
     </div>
     <div class="src-grid">
       <div class="src-card">
         <div class="src-tag">Terrain · DEM</div>
         <div class="src-title">精细地形高程</div>
         <ul>
-          <li><b>MERIT DEM</b>（消除森林/噪声误差的高精度全球地形）</li>
-          <li>重采样至 <b>0.02°</b>（约 2km）· 169×209 网格</li>
-          <li>35,321 顶点 / 70,000+ 三角面，海拔 452–3078m</li>
-          <li>坡度、坡向、地形粗糙度、山脊谷地等衍生因子</li>
+          <li><b>MERIT DEM</b> 0.02°（~2km）· 169×209 网格 · 35,321 顶点</li>
+          <li>海拔 452–3078m · 坡度/坡向/粗糙度/山脊谷地</li>
         </ul>
       </div>
       <div class="src-card">
         <div class="src-tag">Weather · API</div>
         <div class="src-title">实时气象预报</div>
         <ul>
-          <li><b>Open-Meteo</b> 开放预报 API（无密钥免费）</li>
-          <li>99 格点（9×11）覆盖全区域，分 3 批拉取</li>
-          <li>13 要素：温度/湿度/气压/云量/风速/阵风/降水/露点/土壤湿度/能见度/日照/短波辐射</li>
-          <li>未来 3 天逐小时，本页展示前 24–72h</li>
+          <li><b>Open-Meteo</b> 99 格点 · 13 要素逐小时</li>
+          <li>温度/湿度/气压/云量/风速/阵风/降水/能见度等 · 未来 72h</li>
         </ul>
       </div>
       <div class="src-card">
         <div class="src-tag">Model · ML</div>
         <div class="src-title">机器学习模型</div>
         <ul>
-          <li><b>9 个模型</b>：强对流/浓雾/道路安全/地形校准/风与气候/联合研判/3D 重算等</li>
-          <li>基于 <b>ERA5 再分析</b>（2020–2026）3 海拔站点 174,087 条小时记录训练</li>
-          <li>HistGradientBoosting + GradientBoosting 双模型交叉验证</li>
-          <li>浏览器端逐小时推理：21 维特征工程 → 树推理 → 等渗校准</li>
+          <li><b>9 个模型</b>：强对流/浓雾/道路安全/地形校准/联合研判等</li>
+          <li>ERA5 训练 · 双模型交叉验证 · 浏览器端实时推理</li>
         </ul>
       </div>
       <div class="src-card">
         <div class="src-tag">Render · WebGL</div>
         <div class="src-title">可视化渲染</div>
         <ul>
-          <li><b>Three.js r128</b> WebGL 真实 3D 地形（顶点海拔着色 + 多光源）</li>
-          <li><b>ECharts 5.4.3</b> 趋势图表</li>
-          <li>左上 45° 太阳光照 + 山体投影阴影 + 距离雾效</li>
-          <li>程序化森林 / 道路 / 河流 / 地名标签 / 等高线</li>
-          <li><b>云雾粒子系统</b>：56 个半透明精灵，随风速实时漂移</li>
-          <li>相机飞行路线动画 · 景点点击聚焦 · 探索模式</li>
+          <li><b>Three.js</b> 3D 地形 + <b>ECharts</b> 图表</li>
+          <li>程序化森林/道路/河流/云雾粒子 · 路线飞行 · 景点聚焦</li>
         </ul>
       </div>
     </div>
-    <h3 style="margin-top:16px;color:var(--teal)">🗂 数字孪生四层架构</h3>
-    <div class="desc" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px" id="twinLayers">
-      <div class="src-card" style="text-align:center">
-        <div class="src-tag" style="color:var(--orange)">L1 · 地形层</div>
-        <div style="font-size:22px;margin:6px 0">🏔️</div>
-        <div style="font-size:12px;color:var(--sub);line-height:1.6">MERIT DEM 高程场<br>坡度/坡向/粗糙度<br>山脊谷地识别</div>
-      </div>
-      <div class="src-card" style="text-align:center">
-        <div class="src-tag" style="color:var(--blue)">L2 · 气象层</div>
-        <div style="font-size:22px;margin:6px 0">🌦️</div>
-        <div style="font-size:12px;color:var(--sub);line-height:1.6">Open-Meteo 99 格点<br>13 要素逐小时<br>未来 72h 预报</div>
-      </div>
-      <div class="src-card" style="text-align:center">
-        <div class="src-tag" style="color:var(--teal)">L3 · 模型层</div>
-        <div style="font-size:22px;margin:6px 0">🧠</div>
-        <div style="font-size:12px;color:var(--sub);line-height:1.6">9 个 ML 模型推理<br>双模型交叉验证<br>等渗校准 + 地形增强</div>
-      </div>
-      <div class="src-card" style="text-align:center">
-        <div class="src-tag" style="color:var(--yellow)">L4 · 孪生层</div>
-        <div style="font-size:22px;margin:6px 0">🌐</div>
-        <div style="font-size:12px;color:var(--sub);line-height:1.6">3D 场景实时同步<br>云雾/风险/天气联动<br>交互式探索</div>
-      </div>
-    </div>
-    <div class="verify-note" style="margin-top:14px">⚠️ 本页为研究性预警系统，实际出行与预警请以<b style="color:var(--text)">中国气象局</b>及<b style="color:var(--text)">哀牢山管护局</b>官方发布为准；进入保护区请严格遵守进山规范。</div>
+    <div class="verify-note" style="margin-top:14px">⚠️ 本页为研究性预警系统，实际出行请以<b style="color:var(--text)">中国气象局</b>及<b style="color:var(--text)">哀牢山管护局</b>官方发布为准。</div>
+  </section>
+
+  <section class="panel science" id="sciencePanel">
+    <h2>🔭 哀牢山科普小贴士</h2>
+    <details>
+      <summary>🧭 为什么哀牢山"磁场异常"、指南针会失灵？</summary>
+      <div class="sci-body">山体含大量铁磁性矿物（玄武岩、辉长岩），峡谷深切导致局部地磁偏差较大。<b>切勿仅凭指南针在原始林中导航，务必带 GPS 设备</b>。</div>
+    </details>
+    <details>
+      <summary>🌫 为什么哀牢山常年云雾缭绕？</summary>
+      <div class="sci-body">印度洋暖湿气流被山体抬升凝结成云，"U型谷"冷池效应使清晨极易形成浓雾。<b>能见度常低于 200m</b>。</div>
+    </details>
+    <details>
+      <summary>🌄 为什么这里是"云海摄影天堂"？</summary>
+      <div class="sci-body">秋冬清晨高湿度+昼夜温差+微风形成逆温层云海，日出前后概率最高。本系统提供<b>云海概率</b>指数参考。</div>
+    </details>
+    <details>
+      <summary>⛈ 为什么强对流、山洪风险集中在午后？</summary>
+      <div class="sci-body">夏季午后坡面加热触发局地雷暴，山区集水快、河道比降大，洪水上涨极快。<b>建议 14:00 前完成下山</b>。</div>
+    </details>
   </section>
 
   <noscript>
@@ -1642,35 +1577,31 @@ body.view-public #altVerifyPanel{display:none!important}
     <div class="fn-item" data-target="riskIndexPanel" title="综合风险指数总表"><span class="fn-dot"></span><span class="fn-label">风险总表</span></div>
     <div class="fn-item" data-target="warnCenterPanel" title="实时预警中心"><span class="fn-dot"></span><span class="fn-label">预警中心</span></div>
     <div class="fn-item" data-target="weatherPanel" title="实况天气与气象要素"><span class="fn-dot"></span><span class="fn-label">实况天气</span></div>
-    <div class="fn-item" data-target="ecoIndexPanel" title="生态体验指数"><span class="fn-dot"></span><span class="fn-label">生态指数</span></div>
     <div class="fn-item" data-target="altitudePanel" title="按海拔层天气差异"><span class="fn-dot"></span><span class="fn-label">海拔差异</span></div>
     <div class="fn-item" data-target="chartPanel" title="未来 72h 概率与气象要素"><span class="fn-dot"></span><span class="fn-label">72h 图表</span></div>
-    <div class="fn-item" data-target="advicePanel" title="出行建议"><span class="fn-dot"></span><span class="fn-label">出行建议</span></div>
-    <div class="fn-item" data-target="poiPanel" title="景点一键聚焦"><span class="fn-dot"></span><span class="fn-label">景点聚焦</span></div>
-    <div class="fn-item" data-target="routePanel" title="景点路线推荐与禁区提示"><span class="fn-dot"></span><span class="fn-label">路线推荐</span></div>
+    <div class="fn-item" data-target="advicePanel" title="出行建议与智能规划"><span class="fn-dot"></span><span class="fn-label">出行建议</span></div>
+    <div class="fn-item" data-target="poiPanel" title="景点聚焦与路线推荐"><span class="fn-dot"></span><span class="fn-label">景点路线</span></div>
     <div class="fn-item" data-target="riskMapPanel" title="精细地形与风险地图"><span class="fn-dot"></span><span class="fn-label">风险地图</span></div>
-    <div class="fn-item" data-target="roadPanel" title="公路灾害预警"><span class="fn-dot"></span><span class="fn-label">公路预警</span></div>
-    <div class="fn-item" data-target="roadSafetyPanel" title="道路出行安全评估"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
+    <div class="fn-item" data-target="roadPanel" title="道路出行安全"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
     <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
     <div class="fn-item pro-only" data-target="triModelPanel" title="三模型交叉比对"><span class="fn-dot"></span><span class="fn-label">三模型比对</span></div>
     <div class="fn-item" data-target="geoHazardPanel" title="地质灾害分流域演算"><span class="fn-dot"></span><span class="fn-label">地质灾害</span></div>
-    <div class="fn-item" data-target="aiAdvicePanel" title="AI智能出行建议"><span class="fn-dot"></span><span class="fn-label">AI出行建议</span></div>
     <div class="fn-item" data-target="safetyPanel" title="安全科普与应急指引"><span class="fn-dot"></span><span class="fn-label">安全科普</span></div>
     <div class="fn-item" data-target="seasonPanel" title="季节风险日历"><span class="fn-dot"></span><span class="fn-label">风险日历</span></div>
     <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081519"></script>
-<script src="js/gb.js?v=2026081519"></script>
-<script src="js/fx.js?v=2026081519"></script>
-<script src="js/app.js?v=2026081519"></script>
-<script src="js/terrain3d.js?v=2026081519"></script>
+<script src="js/site.js?v=2026081520"></script>
+<script src="js/gb.js?v=2026081520"></script>
+<script src="js/fx.js?v=2026081520"></script>
+<script src="js/app.js?v=2026081520"></script>
+<script src="js/terrain3d.js?v=2026081520"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081519").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081520").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;

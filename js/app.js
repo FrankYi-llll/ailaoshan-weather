@@ -223,7 +223,7 @@ function computeRoads(grid){
 
 /* ---------- 渲染: 道路出行安全评估面板 ---------- */
 function renderRoadSafety(grid, series){
-  const el = $("roadSafetyPanel");
+  const el = $("roadSafetyContent");
   if(!el) return;
   if(!MODEL_R){ el.innerHTML = '<div class="desc" style="padding:12px">道路安全模型未加载</div>'; return; }
   if(!grid || !grid.length){ el.innerHTML = '<div class="desc" style="padding:12px">暂无数据</div>'; return; }
@@ -1157,7 +1157,7 @@ function renderRoutes(){
   const ok = open.filter(w=>w.recIndex>=60).length;
   const caution = open.filter(w=>w.recIndex>=30 && w.recIndex<60).length;
   const bad = open.filter(w=>w.recIndex<30).length;
-  $("routeBadge").textContent = open.length+" 景点";
+  var rb = $("routeBadge"); if(rb) rb.textContent = open.length+" 景点";
   $("routeSummary").innerHTML =
     '<div class="sum-item" style="border-left:3px solid '+data.verdictColor+'">路线结论<b style="color:'+data.verdictColor+';font-size:14px">'+data.verdict+'</b></div>'+
     '<div class="sum-item">✅ 推荐(≥60)<b style="color:#2ecc71">'+ok+'</b></div>'+
@@ -2704,10 +2704,10 @@ async function main(){
     };
     img.src = "assets/ailaoshan_map.png?_="+Date.now();
     img.style.display = "block";
-    // 地形图
-    $("terrainImg").src = "assets/ailaoshan_map.png?_="+Date.now();
-    $("terrainImg").style.display = "block";
-    $("terrainDesc").textContent = "0.02° 精细 DEM 重采样（"+TERR.region+"）· 最高海拔 "+TERR.max_elev+"m · 清爽出行底图（微弱高程纹理 + 分级道路着色 + 河线 + 村镇）";
+    // 地形图（面板已移除，安全跳过）
+    var tImg = $("terrainImg"), tDesc = $("terrainDesc");
+    if(tImg){ tImg.src = "assets/ailaoshan_map.png?_="+Date.now(); tImg.style.display = "block"; }
+    if(tDesc){ tDesc.textContent = "0.02° 精细 DEM 重采样（"+TERR.region+"）· 最高海拔 "+TERR.max_elev+"m"; }
     // 双模型验证
     $("altDesc").textContent = "主模型(HistGradientBoosting 直方图分箱) vs 第二模型(GradientBoosting 精确分裂) 在 2026 留出集交叉验证，实时预测两模型相互印证：";
     const p = (x)=> (x*100).toFixed(1)+"%";
