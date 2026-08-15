@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <script>
@@ -103,7 +103,8 @@ window.addEventListener("unhandledrejection", function(e){
   --blue:#62c4e8; --teal:#6fd39a; --orange:#e8a35c; --yellow:#e3cf7d; --red:#f0646c;
   --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,"Courier New",monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+html{overflow-x:hidden}
 body{
   background:
     radial-gradient(1200px 600px at 80% -10%, rgba(58,120,82,.14), transparent 60%),
@@ -113,6 +114,7 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
   line-height:1.7;
   background-attachment:fixed;
+  overflow-x:hidden;
 }
 /* 微妙地形等高线纹理 */
 body::before{
@@ -164,6 +166,7 @@ header h1 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:10px
 .legend-row span{display:inline-flex;align-items:center;gap:5px}
 .legend-row i{width:13px;height:13px;border-radius:2px;display:inline-block}
 .legend-row i.line{height:3px;border-radius:1px}
+[style*="overflow-x:auto"]{-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{background:rgba(150,204,170,.06);color:var(--sub);font-size:11.5px;letter-spacing:.6px;
   text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;font-family:var(--mono)}
@@ -203,7 +206,7 @@ footer b{color:var(--orange)}
 .risk-map-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
 .rms-card{background:rgba(150,204,170,.05);border:1px solid var(--line);border-radius:6px;padding:10px 14px;position:relative;overflow:hidden}
 .rms-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-color,var(--teal));opacity:.7}
-.rms-label{font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:4px}
+.rms-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:4px}
 .rms-value{font-size:22px;font-weight:700;line-height:1.2;color:var(--text)}
 .rms-sub{font-size:12px;color:var(--sub);margin-top:2px}
 .rms-dist{display:flex;align-items:center;gap:6px;font-size:12px}
@@ -217,7 +220,7 @@ footer b{color:var(--orange)}
 .risk-hotspots{margin-top:14px}
 .risk-hotspots h3{margin-bottom:8px}
 .risk-hotspot-table{width:100%;border-collapse:collapse;font-size:12px}
-.risk-hotspot-table th{text-align:left;padding:6px 8px;color:var(--sub);font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;font-family:var(--mono);border-bottom:1px solid var(--line);font-weight:500}
+.risk-hotspot-table th{text-align:left;padding:6px 8px;color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.8px;font-family:var(--mono);border-bottom:1px solid var(--line);font-weight:500}
 .risk-hotspot-table td{padding:7px 8px;border-bottom:1px solid rgba(150,204,170,.07);color:var(--text)}
 .risk-hotspot-table tr:hover td{background:rgba(150,204,170,.05)}
 .risk-hotspot-table .hs-rank{font-family:var(--mono);color:var(--dim);width:28px}
@@ -342,7 +345,7 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 .alt-card .alt-feel{font-size:12px;color:var(--sub);text-align:center;margin-top:2px}
 .alt-card .alt-metrics{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--sub);justify-content:flex-end}
 .alt-card .alt-metrics b{color:var(--text);font-family:var(--mono);font-weight:600}
-.alt-card .alt-risk{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:700}
+.alt-card .alt-risk{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700}
 .alt-card .alt-wear{font-size:12px;color:var(--sub);border-top:1px dashed rgba(150,204,170,.15);padding-top:6px;margin-top:6px;grid-column:1/-1}
 .alt-card .alt-wear b{color:var(--sub)}
 @media(max-width:900px){
@@ -434,7 +437,7 @@ body.bg-atmos-fog{
 .warn-item .warn-name{font-size:12.5px;font-weight:700;margin:4px 0 2px}
 .warn-item .warn-val{font-family:var(--mono);font-size:22px;font-weight:700}
 .warn-item .warn-lv{font-size:11px;font-family:var(--mono);margin-top:4px;padding:2px 8px;border-radius:3px;display:inline-block}
-.warn-item .warn-tip{font-size:10.5px;color:var(--dim);margin-top:6px;line-height:1.5}
+.warn-item .warn-tip{font-size:11.5px;color:var(--sub);margin-top:6px;line-height:1.55}
 /* ============================================================
  * 科普模块
  * ============================================================ */
@@ -448,18 +451,103 @@ body.bg-atmos-fog{
  * 响应式优化（手机端）
  * ============================================================ */
 @media(max-width:760px){
-  .wrap{padding:12px 10px 48px}
-  header h1{font-size:18px}
-  header h1 small{display:block;margin-left:0;margin-top:3px}
+  .wrap{padding:10px 8px 40px}
+  /* 头部 */
+  header{padding:12px 0 10px;margin-bottom:12px}
+  header h1{font-size:17px;line-height:1.4}
+  header h1 small{display:block;margin-left:0;margin-top:4px;font-size:11px}
   .brand-id{font-size:9px;letter-spacing:1.5px}
-  .panel{padding:14px 14px}
-  #three3DContainer{height:360px}
-  #weatherChart{height:300px}
-  #three3DClickInfo{width:210px;font-size:11px}
-  #three3DRoutes{top:auto;bottom:12px;left:12px;right:auto;flex-direction:row;flex-wrap:wrap;max-width:60%}
+  .meta{font-size:11px;line-height:1.5}
+  .badge{font-size:10.5px;padding:1px 8px}
+  /* 面板 */
+  .panel{padding:12px 12px;margin-bottom:12px}
+  .panel h2{font-size:14.5px}
+  .desc{font-size:11.5px;line-height:1.65}
+  /* 表格 —— 允许换行，缩小字号 */
+  table{font-size:12px}
+  th{white-space:normal;font-size:10.5px;padding:6px 7px}
+  td{padding:6px 7px;font-size:11.5px}
+  .risk-hotspot-table{font-size:11px}
+  .risk-hotspot-table th{font-size:10px}
+  /* Hero */
+  #heroHeader{padding:14px 14px 8px;flex-direction:column;align-items:flex-start;gap:6px}
+  #heroHeader .hero-title{font-size:24px}
+  #heroHeader .hero-title small{font-size:11px}
+  #heroHeader .hero-meta{text-align:left;font-size:10.5px;line-height:1.5}
+  #hero3DWrap{min-height:340px}
+  #hero3DWrap #three3DContainer{min-height:340px}
+  .hero-card{padding:10px 12px}
+  .hero-card .hc-value{font-size:24px}
+  #heroSide{padding:12px 14px;gap:10px}
+  /* 3D + 图表 */
+  #three3DContainer{height:340px}
+  #weatherChart{height:280px}
+  #three3DClickInfo{width:180px;font-size:11px;max-width:calc(100vw - 24px)}
+  #three3DRoutes{top:auto;bottom:10px;left:10px;right:auto;flex-direction:row;flex-wrap:wrap;max-width:55%}
   #three3DRoutes .rbtn{padding:4px 8px;font-size:10px}
   #tourBtn{top:8px;right:8px;padding:5px 10px;font-size:11px}
   #windGauge{display:none!important}
+  #three3DTooltip{max-width:200px;font-size:11px}
+  /* 触摸目标 —— 按钮加大 */
+  .risk-btn{padding:8px 14px;font-size:12px}
+  .poi-btn{padding:8px 12px;font-size:11.5px}
+  /* 汇总卡 */
+  .summary{gap:8px}
+  .sum-item{padding:6px 10px;font-size:11.5px}
+  .sum-item b{font-size:17px}
+  /* 风险地图 */
+  .risk-map-summary{grid-template-columns:repeat(2,1fr);gap:8px}
+  .rms-card{padding:8px 10px}
+  .rms-value{font-size:18px}
+  /* 预警卡 */
+  .warn-item{padding:10px 12px}
+  .warn-item .warn-val{font-size:18px}
+  /* 生态卡 */
+  .eco-card{padding:12px 14px}
+  .eco-card .eco-value{font-size:24px}
+  .eco-card .eco-stars{font-size:17px}
+  /* 海拔卡 */
+  .alt-card{grid-template-columns:70px 1fr;gap:6px;padding:10px 12px}
+  .alt-card .alt-temp{font-size:22px}
+  /* 科普折叠 */
+  .science summary{font-size:12.5px;padding:10px 12px}
+  .science .sci-body{font-size:12px;padding:0 12px 12px}
+  /* 页脚 */
+  footer{font-size:11px;padding-top:12px}
+  /* 悬浮导航 —— 极简模式 */
+  #floatNav{right:4px;padding:5px 4px;gap:1px;min-width:auto}
+  #floatNav .fn-title{display:none}
+  #floatNav .fn-item{padding:4px 5px;gap:4px}
+  #floatNav .fn-label{display:none}
+  #floatNav .fn-item:hover .fn-label{display:inline;opacity:1}
+  #floatNav .fn-item.active .fn-label{display:inline;opacity:1;font-weight:600}
+}
+/* ---- 超小屏（≤480px）---- */
+@media(max-width:480px){
+  .wrap{padding:8px 6px 32px}
+  header h1{font-size:15px}
+  header h1 small{font-size:10.5px}
+  .brand-id{font-size:8.5px;letter-spacing:1px}
+  .panel{padding:10px 10px}
+  .panel h2{font-size:13.5px}
+  .desc{font-size:11px}
+  #heroHeader .hero-title{font-size:20px}
+  #hero3DWrap{min-height:280px}
+  #hero3DWrap #three3DContainer{min-height:280px}
+  #three3DContainer{height:280px}
+  #weatherChart{height:240px}
+  .risk-map-summary{grid-template-columns:1fr}
+  .eco-card .eco-value{font-size:20px}
+  .alt-card .alt-temp{font-size:18px}
+  .sum-item b{font-size:15px}
+  .hero-card .hc-value{font-size:20px}
+  .warn-item .warn-val{font-size:16px}
+  table{font-size:11px}
+  th{font-size:10px}
+  td{font-size:10.5px}
+  /* 悬浮导航 —— 仅显示 active 项标签 */
+  #floatNav .fn-dot{width:6px;height:6px}
+  #floatNav .fn-item{padding:3px 4px}
 }
 
 /* ===== 悬浮快速导航（标签常驻 · 高亮联动） ===== */
@@ -1029,16 +1117,16 @@ body.bg-atmos-fog{
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081514"></script>
-<script src="js/gb.js?v=2026081514"></script>
-<script src="js/fx.js?v=2026081514"></script>
-<script src="js/app.js?v=2026081514"></script>
-<script src="js/terrain3d.js?v=2026081514"></script>
+<script src="js/site.js?v=2026081515"></script>
+<script src="js/gb.js?v=2026081515"></script>
+<script src="js/fx.js?v=2026081515"></script>
+<script src="js/app.js?v=2026081515"></script>
+<script src="js/terrain3d.js?v=2026081515"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081514").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081515").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
