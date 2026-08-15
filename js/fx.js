@@ -8,7 +8,7 @@
 (function(){
   "use strict";
   const $ = id => document.getElementById(id);
-  let rainCanvas = null, rainCtx = null, rainDrops = [], rainRAF = null, rainRunning = false;
+  let rainCanvas = null, rainCtx = null, rainDrops = [], rainRAF = null, rainRunning = false, rainIntensity = 0;
   let fxSetup = false;
 
   /* ---------- 一次性搭建 DOM ---------- */
