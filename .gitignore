@@ -1,0 +1,6 @@
+# 生成产物（可用 scripts/export_glb.py --full 重新生成）
+models/terrain_dem_full.glb
+
+# 本地临时
+.DS_Store
+*.log
