@@ -7,18 +7,18 @@
  *   - 外部 CDN（three.js/echarts）：缓存优先，失败走网络
  *   - 离线 fallback：所有导航请求失败时回退到 index.html
  * ===================================================================== */
-const CACHE = "ailaoshan-v2026081527";
+const CACHE = "ailaoshan-v2026081528";
 const CORE = [
   "./",
   "./index.html",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./js/site.js?v=2026081518",
-  "./js/gb.js?v=2026081518",
-  "./js/fx.js?v=2026081518",
-  "./js/app.js?v=2026081518",
-  "./js/terrain3d.js?v=2026081518",
+  "./js/site.js?v=2026081528",
+  "./js/gb.js?v=2026081528",
+  "./js/fx.js?v=2026081528",
+  "./js/app.js?v=2026081528",
+  "./js/terrain3d.js?v=2026081528",
   "./js/lib/three.min.js",
   "./js/lib/OrbitControls.js",
 ];
@@ -112,7 +112,16 @@ self.addEventListener("fetch", e => {
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return resp;
-      }).catch(()=> cached || caches.match("./index.html"));
+      }).catch(()=>{
+        // 网络失败：有缓存就返回缓存，没有就返回对应类型的空响应
+        // 绝不能对 JS/CSS 请求返回 index.html（会导致 SyntaxError: Unexpected token '<'）
+        if(cached) return cached;
+        var ct = "text/plain";
+        if(url.pathname.endsWith(".js")) ct = "application/javascript";
+        else if(url.pathname.endsWith(".css")) ct = "text/css";
+        else if(url.pathname.endsWith(".json")) ct = "application/json";
+        return new Response("/* offline */", {status:504, statusText:"Gateway Timeout", headers:{"Content-Type":ct}});
+      });
       return cached || fetchPromise;
     })
   );
