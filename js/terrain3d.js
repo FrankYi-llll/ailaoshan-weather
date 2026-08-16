@@ -266,7 +266,13 @@
     /* ---- 渲染循环（带错误保护，防止单帧异常导致整个循环挂掉） ---- */
     function animLoop(){
       try{
-        controls.update();
+        // 第一视角飞行期间绕过 OrbitControls（其 minDistance 会把贴地相机往后推，造成抖动/穿模）
+        if(!fpFlying) controls.update();
+        // 卫星影像透明度渐变
+        if(terrainMaterial && terrainMaterial.uniforms.satMap.value){
+          const sm = terrainMaterial.uniforms.satMix, st = terrainMaterial.uniforms.satMixTarget;
+          if(Math.abs(st.value - sm.value) > 0.004){ sm.value += (st.value - sm.value) * 0.06; }
+        }
         camLight.position.copy(camera.position);
         // 云雾漂移（受风速影响）
         if(cloudsGroup){
@@ -315,6 +321,7 @@
     const minE = hm.min_elev, maxE = hm.max_elev;
     const positions = new Float32Array(rows * cols * 3);
     const colors = new Float32Array(rows * cols * 3);
+    const uvs = new Float32Array(rows * cols * 2);
     for(let i = 0; i < rows; i++){
       const lat = hm.lat_range[0] + (hm.lat_range[1] - hm.lat_range[0]) * i / (rows - 1);
       for(let j = 0; j < cols; j++){
@@ -323,6 +330,8 @@
         positions[idx*3]   = lon2x(lon);
         positions[idx*3+1] = elev[idx] * VERT;
         positions[idx*3+2] = lat2z(lat);
+        uvs[idx*2]     = j / (cols - 1);
+        uvs[idx*2 + 1] = i / (rows - 1);
         const c = elevColor01((elev[idx] - minE) / (maxE - minE));
         colors[idx*3]   = c[0] / 255;
         colors[idx*3+1] = c[1] / 255;
@@ -339,25 +348,31 @@
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     g.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    g.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
     g.setIndex(indices);
     g.computeVertexNormals();
-    // 自定义着色器：顶点色 + 多光源（太阳光/天空/地面/轮廓光）+ 雾效 + 天气联动
+    // 自定义着色器：顶点色 + 可选卫星影像贴图 + 多光源（太阳光/天空/地面/轮廓光）+ 雾效 + 天气联动
     const m = new THREE.ShaderMaterial({
       uniforms: {
         fogColor: {value: new THREE.Color(0x4a6b8a)},
         fogDensity: {value: 0.0075},
         sunIntensity: {value: 1.0},
         ambientIntensity: {value: 1.0},
-        wetness: {value: 0.0}
+        wetness: {value: 0.0},
+        satMap: {value: null},
+        satMix: {value: 0.0},
+        satMixTarget: {value: 0.0}
       },
       vertexShader: `
         attribute vec3 color;
         varying vec3 vColor;
+        varying vec2 vUv;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
         varying float vFogDepth;
         void main(){
           vColor = color;
+          vUv = uv;
           vNormal = normalize(normalMatrix * normal);
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           vViewPosition = -mvPosition.xyz;
@@ -371,13 +386,20 @@
         uniform float sunIntensity;
         uniform float ambientIntensity;
         uniform float wetness;
+        uniform sampler2D satMap;
+        uniform float satMix;
         varying vec3 vColor;
+        varying vec2 vUv;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
         varying float vFogDepth;
         void main(){
           vec3 n = normalize(vNormal);
           vec3 v = normalize(vViewPosition);
+
+          // 基础色：海拔顶点色 与 卫星影像 按比例混合
+          vec3 satCol = texture2D(satMap, vUv).rgb;
+          vec3 baseCol = mix(vColor, satCol, satMix);
 
           // 1) 主太阳光（左上 45°）
           vec3 sunDir = normalize(vec3(-0.55, 0.75, -0.35));
@@ -403,8 +425,8 @@
           vec3 rimCol   = vec3(0.64, 0.76, 0.92) * rim * 0.32;
 
           vec3 lit = ambient + sunCol + skyCol + groundCol;
-          // 颜色提亮，整体饱和度略降
-          vec3 col = vColor * lit * occlusion + rimCol;
+          // 颜色提亮，整体饱和度略降（baseCol = 顶点色/卫星影像混合）
+          vec3 col = baseCol * lit * occlusion + rimCol;
           col = pow(col, vec3(0.86));
 
           // 湿润效果：雨天地面变暗，带轻微蓝青色调
@@ -1211,9 +1233,19 @@
   };
 
   /* ---------- 路线相机飞行（点击路线按钮后沿路线巡航） ---------- */
+  let camAnimToken = 0;    // 相机动画令牌：新动画启动时令旧 flyTo 失效，避免两个动画争夺相机
+  let fpFlying = false;    // 第一视角飞行中标志（渲染循环据此跳过 controls.update）
+  function endFpFlight(){
+    if(fpFlying){
+      fpFlying = false;
+      camera.fov = 50; camera.updateProjectionMatrix();
+      controls.autoRotate = false;   // 飞行结束后停在用户可控视角，不再自动旋转
+      controls.update();             // 交还 OrbitControls（它会从当前相机位置重新同步）
+    }
+  }
   function stopFly(){
     flyState = null;
-    if(camera && camera.fov !== 50){ camera.fov = 50; camera.updateProjectionMatrix(); }
+    endFpFlight();
   }
   window.stopRouteFly = stopFly;
   function flyRoute(i){
@@ -1221,6 +1253,7 @@
     const rc = tourCurves[i];
     if(!rc) return;
     stopFly();
+    ++camAnimToken;                  // 取消进行中的 flyTo 飞行动画
     // 显示路线并高亮按钮
     tourMode = true;
     routesGroup.visible = true;
@@ -1230,45 +1263,129 @@
     const N = 240;
     const pts = [];
     for(let k = 0; k < N; k++) pts.push(rc.curve.getPoint(k / (N - 1)));
-    const D = 12000;              // 全程 12 秒（提速）
+    const D = 12000;              // 全程 12 秒
     // 第一视角：加宽 FOV 增强沉浸感，结束后恢复
     camera.fov = 66;
     camera.updateProjectionMatrix();
+    controls.autoRotate = false;
+    fpFlying = true;
     const t0 = performance.now();
     let last = -1;
+    // 由世界坐标反查地形真实海拔（防止平滑曲线从山脊下方穿过）
+    function groundY(x, z){
+      const lon = HM().lon_range[0] + (x + X0) / KX;
+      const lat = HM().lat_range[0] + (z + Z0) / KZ;
+      return elevAt(lat, lon) * VERT;
+    }
     function step(now){
-      if(flyState !== step){
-        camera.fov = 50; camera.updateProjectionMatrix();
-        return;
-      }
+      if(flyState !== step){ endFpFlight(); return; }
       const t = Math.min(1, (now - t0) / D);
       const idx = Math.floor(t * (N - 1));
       if(idx !== last){
         last = idx;
         const p = pts[idx];
         const nxt = pts[Math.min(N - 1, idx + 10)];
-        // 第一视角：相机贴近路线表面，视线朝向前方路径
-        camera.position.set(p.x, p.y + 0.15, p.z);
-        controls.target.set(nxt.x, nxt.y + 0.15, nxt.z);
-        controls.update();
+        // 第一视角：相机贴路线表面，视线朝向前方路径；钳制在地形之上防穿模
+        const eyeY = Math.max(p.y + 0.15, groundY(p.x, p.z) + 0.12);
+        camera.position.set(p.x, eyeY, p.z);
+        const tgY = Math.max(nxt.y + 0.15, groundY(nxt.x, nxt.z) + 0.12);
+        controls.target.set(nxt.x, tgY, nxt.z);
+        camera.lookAt(controls.target);
       }
       if(t < 1){ requestAnimationFrame(step); }
-      else {
-        flyState = null;
-        camera.fov = 50; camera.updateProjectionMatrix();
-      }
+      else { flyState = null; endFpFlight(); }
     }
     flyState = step;
     requestAnimationFrame(step);
   }
 
+  /* ---------- 卫星影像贴图（Esri World Imagery，官方瓦片服务支持 CORS） ---------- */
+  let satLoaded = false, satOn = false;
+  function lon2tileX(lon, z){ return (lon + 180) / 360 * Math.pow(2, z); }
+  function lat2tileY(lat, z){
+    const r = lat * Math.PI / 180;
+    return (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * Math.pow(2, z);
+  }
+  function loadTile(url){
+    return new Promise(res => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = ()=> res(img);
+      img.onerror = ()=> res(null);
+      img.src = url;
+    });
+  }
+  async function loadSatellite(){
+    if(satLoaded || !terrainMaterial) return;
+    try{
+      const hm = HM();
+      const lat0 = hm.lat_range[0], lat1 = hm.lat_range[1];
+      const lon0 = hm.lon_range[0], lon1 = hm.lon_range[1];
+      // 自动选合适的缩放级别（瓦片总数 ≤ 64，兼顾清晰度与加载速度）
+      let z = 13;
+      for(; z >= 10; z--){
+        const n = (Math.floor(lon2tileX(lon1,z)) - Math.floor(lon2tileX(lon0,z)) + 1)
+                * (Math.floor(lat2tileY(lat0,z)) - Math.floor(lat2tileY(lat1,z)) + 1);
+        if(n <= 64) break;
+      }
+      const xL = lon2tileX(lon0, z), xR = lon2tileX(lon1, z);
+      const yT = lat2tileY(lat1, z), yB = lat2tileY(lat0, z);
+      const W = 1024, H = Math.max(256, Math.round(W * (yB - yT) / (xR - xL)));
+      const cv = document.createElement("canvas");
+      cv.width = W; cv.height = H;
+      const ctx = cv.getContext("2d");
+      const tx0 = Math.floor(xL), tx1 = Math.floor(xR);
+      const ty0 = Math.floor(yT), ty1 = Math.floor(yB);
+      const jobs = [];
+      for(let ty = ty0; ty <= ty1; ty++){
+        for(let tx = tx0; tx <= tx1; tx++){
+          jobs.push([tx, ty, loadTile(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + z + "/" + ty + "/" + tx
+          )]);
+        }
+      }
+      const results = await Promise.all(jobs.map(j => j[2]));
+      const okCount = results.filter(Boolean).length;
+      if(okCount < jobs.length * 0.7){
+        console.warn("[terrain3d] 卫星瓦片加载不足(" + okCount + "/" + jobs.length + ")，保留海拔着色");
+        return;
+      }
+      jobs.forEach((j, k) => {
+        const img = results[k];
+        if(!img) return;
+        const px0 = (j[0] - xL) / (xR - xL) * W;
+        const px1 = (j[0] + 1 - xL) / (xR - xL) * W;
+        const py0 = (j[1] - yT) / (yB - yT) * H;
+        const py1 = (j[1] + 1 - yT) / (yB - yT) * H;
+        ctx.drawImage(img, px0, py0, px1 - px0, py1 - py0);
+      });
+      const tex = new THREE.CanvasTexture(cv);
+      tex.anisotropy = 4;
+      terrainMaterial.uniforms.satMap.value = tex;
+      satLoaded = true;
+      window.toggleSatellite(true);   // 加载成功后默认开启（渐显）
+      console.log("[terrain3d] 卫星影像贴图完成 z" + z + "，瓦片 " + okCount + "/" + jobs.length);
+    }catch(err){
+      console.warn("[terrain3d] 卫星影像加载失败，保留海拔着色:", err);
+    }
+  }
+  window.toggleSatellite = function(force){
+    if(!satLoaded) return;
+    satOn = (typeof force === "boolean") ? force : !satOn;
+    terrainMaterial.uniforms.satMixTarget.value = satOn ? 1 : 0;
+    const b = $("satBtn");
+    if(b) b.classList.toggle("active", satOn);
+  };
+
   /* ---------- 旅游模式切换（相机飞行 + 显示路线） ---------- */
   function easeInOut(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
   function flyTo(pos, target){
+    const token = ++camAnimToken;   // 启动新动画，令旧的 flyTo 失效
     const fromPos = camera.position.clone();
     const fromTgt = controls.target.clone();
     const t0 = performance.now(), D = 1300;
     function step(now){
+      if(token !== camAnimToken) return;   // 已被新动画取代，立即停止
       const t = Math.min(1, (now - t0) / D);
       const e = easeInOut(t);
       camera.position.lerpVectors(fromPos, pos, e);
@@ -1356,6 +1473,8 @@
       window.__threeRenderer = renderer;
       window.__threeControls = controls;
       initialized = true;
+      // 后台加载卫星影像贴图（不阻塞初始化，失败自动回退海拔着色）
+      setTimeout(loadSatellite, 600);
     }catch(err){
       console.error("[terrain3d] init error:", err);
       container.innerHTML = `<div class="desc" style="padding:20px">⚠ 3D 地形初始化失败：${err.message}</div>`;

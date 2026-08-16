@@ -252,9 +252,9 @@ h3{font-size:13.5px;margin:14px 0 8px;color:var(--text);font-weight:600}
 #ctrlToggleBtn.open{background:rgba(111,211,154,.18);border-color:var(--teal);color:var(--teal)}
 #ctrlMenu{display:none;flex-direction:column;gap:6px;align-items:flex-end}
 #three3DCtrl.open #ctrlMenu{display:flex}
-#tourBtn{padding:6px 12px;border-radius:4px;border:1px solid rgba(150,204,170,.3);background:rgba(4,14,9,.72);color:#9fc4a8;font-size:11.5px;cursor:pointer;backdrop-filter:blur(6px);font-family:var(--mono);transition:all .15s}
-#tourBtn:hover{color:#fff;border-color:var(--teal);background:rgba(111,211,154,.15)}
-#tourBtn.active{background:rgba(98,196,232,.2);border-color:var(--blue);font-weight:700;color:var(--blue)}
+#tourBtn,#satBtn{padding:6px 12px;border-radius:4px;border:1px solid rgba(150,204,170,.3);background:rgba(4,14,9,.72);color:#9fc4a8;font-size:11.5px;cursor:pointer;backdrop-filter:blur(6px);font-family:var(--mono);transition:all .15s}
+#tourBtn:hover,#satBtn:hover{color:#fff;border-color:var(--teal);background:rgba(111,211,154,.15)}
+#tourBtn.active,#satBtn.active{background:rgba(98,196,232,.2);border-color:var(--blue);font-weight:700;color:var(--blue)}
 #three3DRoutes{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 #three3DRoutes .rbtn{padding:6px 12px;border-radius:4px;border:1px solid rgba(150,204,170,.3);background:rgba(4,14,9,.72);color:#9fc4a8;font-size:11.5px;cursor:pointer;backdrop-filter:blur(6px);text-align:left;font-family:var(--mono);transition:all .15s}
 #three3DRoutes .rbtn:hover{color:#fff;border-color:var(--orange);background:rgba(232,163,92,.15)}
@@ -490,7 +490,7 @@ body.bg-atmos-fog{
   #weatherChart{height:280px}
   #three3DClickInfo{width:180px;font-size:11px;max-width:calc(100vw - 24px)}
   #ctrlToggleBtn{padding:5px 10px;font-size:11px}
-  #tourBtn{padding:5px 10px;font-size:11px}
+  #tourBtn,#satBtn{padding:5px 10px;font-size:11px}
   #three3DRoutes .rbtn{padding:5px 10px;font-size:10.5px}
   #three3DCtrl{right:8px;top:8px}
   #windGauge{display:none!important}
@@ -1105,6 +1105,7 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
             <button id="ctrlToggleBtn" onclick="toggleHeroCtrl(this)">🎬 视角 / 路线</button>
             <div id="ctrlMenu">
               <button id="tourBtn" onclick="window.toggleTourMode && window.toggleTourMode()">🗺️ 旅游视角</button>
+              <button id="satBtn" onclick="window.toggleSatellite && window.toggleSatellite()">🛰 卫星影像</button>
               <div id="three3DRoutes">
                 <button class="rbtn" data-route="0">① 半日 · 耳海环线</button>
                 <button class="rbtn" data-route="1">② 深度 · 石门峡→金山</button>
@@ -1118,7 +1119,7 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
             <div class="scale-max" id="scaleMax">3078m</div>
             <div class="scale-min" id="scaleMin">452m</div>
           </div>
-          <div id="three3DHint">🖱️ 拖拽旋转 · 滚轮缩放 · 点击地形查看当地天气</div>
+          <div id="three3DHint">🖱️ 拖拽旋转 · 滚轮缩放 · 点击地形查看当地天气 · 影像 © Esri/Maxar</div>
         </div>
       </div>
       <div id="heroSide">
@@ -1591,16 +1592,16 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081531"></script>
-<script src="js/gb.js?v=2026081531"></script>
-<script src="js/fx.js?v=2026081531"></script>
-<script src="js/app.js?v=2026081531"></script>
-<script src="js/terrain3d.js?v=2026081531"></script>
+<script src="js/site.js?v=2026081532"></script>
+<script src="js/gb.js?v=2026081532"></script>
+<script src="js/fx.js?v=2026081532"></script>
+<script src="js/app.js?v=2026081532"></script>
+<script src="js/terrain3d.js?v=2026081532"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081531").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081532").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
