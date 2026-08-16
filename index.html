@@ -792,6 +792,20 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
   #quickVerdict .qv-stat .qv-val{font-size:18px}
 }
 
+/* ===== 入门道路安全速览卡 ===== */
+#quickRoad{
+  display:none;margin-bottom:14px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:14px 20px;
+}
+#quickRoad.show{display:block}
+#quickRoad .qr-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:15px;font-weight:800;color:var(--text)}
+#quickRoad .qr-overall{font-size:12px;font-weight:700;padding:2px 12px;border-radius:10px;background:rgba(150,204,170,.12)}
+#quickRoad .qr-rows{margin-top:9px;display:flex;flex-direction:column;gap:5px}
+#quickRoad .qr-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--sub);line-height:1.6}
+#quickRoad .qr-row b{color:var(--text)}
+#quickRoad .qr-tip{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;color:var(--sub);line-height:1.6}
+
 .term-tip{display:inline-block;margin-left:3px;font-size:11px;color:var(--dim);cursor:help;border-bottom:1px dotted var(--dim);line-height:1}
 .term-tip:hover{color:var(--teal);border-color:var(--teal)}
 
@@ -1078,6 +1092,12 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
       </div>
     </div>
     <div class="qv-stats" id="qvStats"></div>
+  </div>
+  <!-- 入门道路安全速览卡（仅入门模式显示） -->
+  <div id="quickRoad">
+    <div class="qr-head">🚗 道路安全速览 <span class="qr-overall" id="qrOverall">评估中…</span></div>
+    <div class="qr-rows" id="qrRows"><div style="font-size:13px;color:var(--sub)">正在获取实时道路风险评估…</div></div>
+    <div class="qr-tip" id="qrTip"></div>
   </div>
   <div id="gpsInfo">
     <div class="gi-title">📍 您的定位</div>
@@ -1592,11 +1612,11 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081537"></script>
-<script src="js/gb.js?v=2026081537"></script>
-<script src="js/fx.js?v=2026081537"></script>
-<script src="js/app.js?v=2026081537"></script>
-<script src="js/terrain3d.js?v=2026081537"></script>
+<script src="js/site.js?v=2026081538"></script>
+<script src="js/gb.js?v=2026081538"></script>
+<script src="js/fx.js?v=2026081538"></script>
+<script src="js/app.js?v=2026081538"></script>
+<script src="js/terrain3d.js?v=2026081538"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
@@ -1813,9 +1833,11 @@ function setView(mode){
   // 更新 body class（清除旧 view-* 类，添加新的）
   document.body.className = document.body.className.replace(/\bview-\w+/g, "").trim();
   document.body.classList.add("view-" + mode);
-  // 入门模式显示快速结论卡
+  // 入门模式显示快速结论卡 + 道路速览卡
   var qv = document.getElementById("quickVerdict");
   if(qv) qv.classList.toggle("show", mode === "beginner");
+  var qr = document.getElementById("quickRoad");
+  if(qr) qr.classList.toggle("show", mode === "beginner");
   // 保存偏好
   try { localStorage.setItem("ailaoshan_view", mode); } catch(e){}
 }
@@ -1877,6 +1899,42 @@ function updateQuickVerdict(maxRI){
     html += '<div class="qv-stat"><div class="qv-val" style="color:' + (maxF >= 0.4 ? 'var(--yellow)' : 'var(--teal)') + '">' + Math.round(maxF * 100) + '%</div><div class="qv-label">浓雾概率</div></div>';
   }
   stats.innerHTML = html;
+}
+
+/* ===== 入门道路安全速览更新（roads 已按风险从高到低排序） ===== */
+function updateQuickRoad(roads){
+  var box = document.getElementById("quickRoad");
+  if(!box || !roads || !roads.length) return;
+  var worst = roads[0];
+  var best = roads[roads.length - 1];
+  var maxLv = worst.risk_index.level;
+  var overall, oc;
+  if(maxLv === "预警"){ overall = "有预警路段 · 谨慎出行"; oc = "var(--red)"; }
+  else if(maxLv === "较高"){ overall = "注意路况"; oc = "var(--orange)"; }
+  else if(maxLv === "关注"){ overall = "基本畅通 · 留意天气"; oc = "var(--yellow)"; }
+  else { overall = "整体畅通"; oc = "var(--teal)"; }
+  var ov = document.getElementById("qrOverall");
+  if(ov){
+    ov.textContent = overall;
+    ov.style.color = oc;
+  }
+  var rows = document.getElementById("qrRows");
+  if(rows){
+    var html = "";
+    html += '<div class="qr-row"><span>✅</span><span>推荐行驶：<b>' + best.name + '</b>（' + best.road_type + ' · 风险' + best.risk_index.level + '）</span></div>';
+    if(maxLv !== "低"){
+      var worstHaz = (worst.risk_index.top_hazards || []).join("、") || "综合风险";
+      html += '<div class="qr-row"><span>⚠️</span><span>注意路段：<b>' + worst.name + '</b> — ' + worstHaz + '风险，减速慢行</span></div>';
+    }
+    rows.innerHTML = html;
+  }
+  var tip = document.getElementById("qrTip");
+  if(tip){
+    var t = "山区道路多弯多雾，建议白天通行、控制车速、避免夜间驾驶。";
+    if(maxLv === "预警" || maxLv === "较高") t = "降雨致路面湿滑、能见度差，非必要不进山；务必白天通行，远离陡坡临崖路段。";
+    else if(maxLv === "关注") t = "午后可能有阵雨或团雾，建议上午出行，遇浓雾开启雾灯减速慢行。";
+    tip.textContent = "💡 " + t;
+  }
 }
 
 /* ===== GPS 定位 ===== */

@@ -2564,6 +2564,7 @@ async function main(){
     applyCalibration();
     renderRisk(GRID, ROADS);
     renderRoads(ROADS);
+    if(typeof updateQuickRoad === "function") updateQuickRoad(ROADS);
     // 天气 chart
     window.__chartSeries = regionSeries(GRID);
     renderChart(window.__chartSeries);
