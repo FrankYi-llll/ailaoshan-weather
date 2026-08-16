@@ -1612,11 +1612,11 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081539"></script>
-<script src="js/gb.js?v=2026081539"></script>
-<script src="js/fx.js?v=2026081539"></script>
-<script src="js/app.js?v=2026081539"></script>
-<script src="js/terrain3d.js?v=2026081539"></script>
+<script src="js/site.js?v=2026081540"></script>
+<script src="js/gb.js?v=2026081540"></script>
+<script src="js/fx.js?v=2026081540"></script>
+<script src="js/app.js?v=2026081540"></script>
+<script src="js/terrain3d.js?v=2026081540"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
@@ -1838,13 +1838,13 @@ function setView(mode){
   if(qv) qv.classList.toggle("show", mode === "beginner");
   var qr = document.getElementById("quickRoad");
   if(qr) qr.classList.toggle("show", mode === "beginner");
-  // 入门模式：把"当前天气实况"面板移到风险面板之前（更靠上）；离开入门时移回原位
+  // 入门模式：把"当前天气实况"面板移到道路安全速览卡之前；离开入门时移回原位
   var wp = document.getElementById("weatherPanel");
   if(wp){
     if(mode === "beginner"){
-      var rp = document.getElementById("riskIndexPanel");
-      if(rp && rp.parentNode === wp.parentNode && rp.previousElementSibling !== wp){
-        wp.parentNode.insertBefore(wp, rp);
+      var qrEl = document.getElementById("quickRoad");
+      if(qrEl && qrEl.parentNode === wp.parentNode && qrEl.previousElementSibling !== wp){
+        wp.parentNode.insertBefore(wp, qrEl);
       }
     } else {
       var eco = document.getElementById("ecoIndexPanel");
