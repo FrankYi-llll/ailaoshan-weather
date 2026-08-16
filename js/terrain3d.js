@@ -1211,7 +1211,10 @@
   };
 
   /* ---------- 路线相机飞行（点击路线按钮后沿路线巡航） ---------- */
-  function stopFly(){ flyState = null; }
+  function stopFly(){
+    flyState = null;
+    if(camera && camera.fov !== 50){ camera.fov = 50; camera.updateProjectionMatrix(); }
+  }
   window.stopRouteFly = stopFly;
   function flyRoute(i){
     if(!initialized || !tourCurves.length) return;
@@ -1227,24 +1230,33 @@
     const N = 240;
     const pts = [];
     for(let k = 0; k < N; k++) pts.push(rc.curve.getPoint(k / (N - 1)));
-    const D = 20000;              // 全程 20 秒
+    const D = 12000;              // 全程 12 秒（提速）
+    // 第一视角：加宽 FOV 增强沉浸感，结束后恢复
+    camera.fov = 66;
+    camera.updateProjectionMatrix();
     const t0 = performance.now();
     let last = -1;
     function step(now){
-      if(flyState !== step) return;
+      if(flyState !== step){
+        camera.fov = 50; camera.updateProjectionMatrix();
+        return;
+      }
       const t = Math.min(1, (now - t0) / D);
       const idx = Math.floor(t * (N - 1));
       if(idx !== last){
         last = idx;
         const p = pts[idx];
-        const nxt = pts[Math.min(N - 1, idx + 16)];
-        // 相机位于路线点侧上方，视线朝向前方路线
-        camera.position.set(p.x + 1.4, p.y + 2.8, p.z + 1.4);
-        controls.target.set(nxt.x, nxt.y + 0.9, nxt.z);
+        const nxt = pts[Math.min(N - 1, idx + 10)];
+        // 第一视角：相机贴近路线表面，视线朝向前方路径
+        camera.position.set(p.x, p.y + 0.15, p.z);
+        controls.target.set(nxt.x, nxt.y + 0.15, nxt.z);
         controls.update();
       }
       if(t < 1){ requestAnimationFrame(step); }
-      else { flyState = null; }
+      else {
+        flyState = null;
+        camera.fov = 50; camera.updateProjectionMatrix();
+      }
     }
     flyState = step;
     requestAnimationFrame(step);
@@ -1291,23 +1303,23 @@
     }
   };
 
-  /* ---------- 开始探索哀牢山：自动巡航全部路线 ---------- */
+  /* ---------- 开始探索哀牢山：第一视角自动巡航全部路线 ---------- */
   window.startExplore = function(){
     if(!initialized || !tourCurves.length) return;
     const btn = $("heroExploreBtn");
     if(!tourMode) toggleTourMode();
     let routeIdx = 0;
-    btn.textContent = "🚁 探索中… (" + (routeIdx+1) + "/" + tourCurves.length + ")";
+    btn.textContent = "🥾 第一视角探索中… (" + (routeIdx+1) + "/" + tourCurves.length + ")";
     btn.disabled = true;
     function next(){
       if(routeIdx >= tourCurves.length){
-        btn.textContent = "🚁 开始探索哀牢山";
+        btn.textContent = "🥾 第一视角探索哀牢山";
         btn.disabled = false;
         return;
       }
       flyRoute(routeIdx);
       routeIdx++;
-      setTimeout(next, 21000);
+      setTimeout(next, 13000);
     }
     next();
   };
