@@ -732,8 +732,66 @@ body.bg-atmos-fog{
   #viewToggle .vt-btn{padding:4px 10px;font-size:11.5px}
 }
 
-/* 专业视图标记：大众视图下隐藏 */
-body.view-public .pro-only{display:none!important}
+/* ===== 三级视图系统：入门 / 初阶 / 高阶 ===== */
+body.view-beginner .intermediate-only,
+body.view-beginner .advanced-only { display: none !important; }
+body.view-intermediate .advanced-only { display: none !important; }
+/* 入门模式：隐藏次要内容，精简描述 */
+body.view-beginner .beginner-hide { display: none !important; }
+body.view-beginner .panel h2 .sec-no { display: none; }
+body.view-beginner .panel .desc { font-size: 12.5px; line-height: 1.7; }
+/* 入门模式：隐藏出行建议中的AI表单和路线表 */
+body.view-beginner #advicePanel .ai-input,
+body.view-beginner #advicePanel .ai-btn,
+body.view-beginner #advicePanel .ai-result { display: none !important; }
+
+/* ===== 等级选择卡片 ===== */
+#levelGuide{
+  display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;
+}
+.lg-card{
+  flex:1;min-width:180px;cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;transition:all .2s;position:relative;overflow:hidden;
+}
+.lg-card:hover{border-color:var(--line-strong);background:var(--panel-hi)}
+.lg-card.active{border-color:var(--teal);background:rgba(111,211,154,.08);box-shadow:0 0 0 1px rgba(111,211,154,.3)}
+.lg-card .lg-icon{font-size:24px;margin-bottom:6px}
+.lg-card .lg-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.lg-card .lg-desc{font-size:11.5px;color:var(--sub);line-height:1.5}
+.lg-card .lg-tag{
+  position:absolute;right:10px;top:10px;font-size:9.5px;font-family:var(--mono);
+  padding:2px 7px;border-radius:3px;background:rgba(150,204,170,.1);color:var(--dim);
+}
+.lg-card.active .lg-tag{background:rgba(111,211,154,.18);color:var(--teal)}
+@media(max-width:760px){
+  #levelGuide{flex-direction:column}
+  .lg-card{min-width:auto}
+}
+
+/* ===== 入门快速结论卡 ===== */
+#quickVerdict{
+  display:none;margin-bottom:14px;
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:12px;
+  padding:20px 24px;position:relative;overflow:hidden;
+}
+#quickVerdict.show{display:block}
+#quickVerdict .qv-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+#quickVerdict .qv-icon{font-size:42px;line-height:1;flex-shrink:0}
+#quickVerdict .qv-main{flex:1;min-width:200px}
+#quickVerdict .qv-verdict{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px}
+#quickVerdict .qv-detail{font-size:13px;color:var(--sub);line-height:1.6}
+#quickVerdict .qv-stats{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px}
+#quickVerdict .qv-stat{text-align:center;min-width:70px}
+#quickVerdict .qv-stat .qv-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text)}
+#quickVerdict .qv-stat .qv-label{font-size:11px;color:var(--sub);margin-top:2px}
+@media(max-width:760px){
+  #quickVerdict{padding:14px 16px}
+  #quickVerdict .qv-icon{font-size:34px}
+  #quickVerdict .qv-verdict{font-size:17px}
+  #quickVerdict .qv-stat .qv-val{font-size:18px}
+}
+
 .term-tip{display:inline-block;margin-left:3px;font-size:11px;color:var(--dim);cursor:help;border-bottom:1px dotted var(--dim);line-height:1}
 .term-tip:hover{color:var(--teal);border-color:var(--teal)}
 
@@ -911,7 +969,7 @@ body.view-public .pro-only{display:none!important}
 @media(max-width:760px){#pwaInstall{left:8px;right:8px;max-width:none;bottom:8px}}
 </style>
 </head>
-<body>
+<body class="view-beginner">
 
 <!-- 顶部数据源权威声明 -->
 <div id="srcDisclaimer">
@@ -974,8 +1032,9 @@ body.view-public .pro-only{display:none!important}
   <!-- 顶部工具栏：视图切换 + 快捷操作 -->
   <div id="topBar">
     <div id="viewToggle">
-      <button class="vt-btn active" data-view="public" onclick="setView('public')">大众</button>
-      <button class="vt-btn" data-view="pro" onclick="setView('pro')">专业</button>
+      <button class="vt-btn active" data-view="beginner" onclick="setView('beginner')">入门</button>
+      <button class="vt-btn" data-view="intermediate" onclick="setView('intermediate')">初阶</button>
+      <button class="vt-btn" data-view="advanced" onclick="setView('advanced')">高阶</button>
     </div>
     <div id="toolBar">
       <button class="tb-btn" id="btnGPS" onclick="toggleGPS()" title="GPS定位"><span class="tb-dot"></span>📍</button>
@@ -985,6 +1044,40 @@ body.view-public .pro-only{display:none!important}
       <button class="tb-btn" id="btnInstallApp" style="display:none" onclick="installPWA()" title="安装App">📱</button>
       <button class="tb-btn" onclick="manualRefresh()" title="刷新"><span class="tb-dot"></span>🔄</button>
     </div>
+  </div>
+
+  <!-- 等级选择卡片 -->
+  <div id="levelGuide">
+    <div class="lg-card active" data-level="beginner" onclick="setView('beginner')">
+      <span class="lg-tag">5 个板块</span>
+      <div class="lg-icon">🌱</div>
+      <div class="lg-name">入门 · 小白友好</div>
+      <div class="lg-desc">只看重点：能不能进山、今天天气怎样、穿什么、注意什么</div>
+    </div>
+    <div class="lg-card" data-level="intermediate" onclick="setView('intermediate')">
+      <span class="lg-tag">11 个板块</span>
+      <div class="lg-icon">🥾</div>
+      <div class="lg-name">初阶 · 进阶驴友</div>
+      <div class="lg-desc">增加景点路线、风险地图、道路安全、生态指数等实用信息</div>
+    </div>
+    <div class="lg-card" data-level="advanced" onclick="setView('advanced')">
+      <span class="lg-tag">全部板块</span>
+      <div class="lg-icon">🔬</div>
+      <div class="lg-name">高阶 · 专业人员</div>
+      <div class="lg-desc">全量数据：三模型比对、海拔差异、72h图表、3D地形建模等</div>
+    </div>
+  </div>
+
+  <!-- 入门快速结论卡（仅入门模式显示） -->
+  <div id="quickVerdict">
+    <div class="qv-row">
+      <div class="qv-icon" id="qvIcon">✅</div>
+      <div class="qv-main">
+        <div class="qv-verdict" id="qvVerdict">正在计算进山建议…</div>
+        <div class="qv-detail" id="qvDetail">综合风险指数计算中，请稍候</div>
+      </div>
+    </div>
+    <div class="qv-stats" id="qvStats"></div>
   </div>
   <div id="gpsInfo">
     <div class="gi-title">📍 您的定位</div>
@@ -1058,7 +1151,7 @@ body.view-public .pro-only{display:none!important}
   <div class="panel" id="riskIndexPanel">
     <h2>📊 今日进山风险一览 <span class="badge" id="riskCount">—</span></h2>
     <div class="desc">0-100分，分数越高风险越大 · ≥75分建议不要进山 · 55-74分谨慎出行 · 35-54分留意天气 · &lt;35分适合游览 <span class="term-tip" title="综合强对流、浓雾、地形坡度、历史灾害等多因素计算">?</span></div>
-    <div class="legend-row">
+    <div class="legend-row beginner-hide">
       <span><i style="background:#2ecc71"></i>低 &lt;35</span>
       <span><i style="background:#f7d154"></i>关注 35-55</span>
       <span><i style="background:#ff9f43"></i>较高 55-75</span>
@@ -1066,14 +1159,14 @@ body.view-public .pro-only{display:none!important}
       <span><i style="background:transparent;border:1px dashed #ff4d4f"></i>立即停止进山</span>
     </div>
     <div class="summary" id="riskSummary"><div class="loading">计算中…</div></div>
-    <div style="overflow-x:auto"><table>
+    <div style="overflow-x:auto" class="beginner-hide"><table>
       <thead><tr><th>位置 / 路段</th><th>类型</th><th>综合指数</th><th>等级</th><th>主要灾害</th><th>双模型一致</th><th>防护建议</th></tr></thead>
       <tbody id="riskTbody"><tr><td colspan="7" style="text-align:center;color:var(--sub)">加载中…</td></tr></tbody>
     </table></div>
-    <div class="verify-note" id="riskTips"></div>
+    <div class="verify-note beginner-hide" id="riskTips"></div>
   </div>
 
-  <div class="panel pro-only" id="warnCenterPanel">
+  <div class="panel advanced-only" id="warnCenterPanel">
     <h2><span class="sec-no">SYS-01</span>🚨 实时预警中心</h2>
     <div class="desc">9 模型 + 3D 地形增强 · 六类风险当前最高等级与未来 24h 峰值</div>
     <div class="warn-grid" id="warnCenterContent"><div class="loading">计算中…</div></div>
@@ -1085,19 +1178,19 @@ body.view-public .pro-only{display:none!important}
     <div class="summary" id="weatherSummary"><div class="loading">加载中…</div></div>
   </div>
 
-  <div class="panel" id="ecoIndexPanel">
+  <div class="panel intermediate-only" id="ecoIndexPanel">
     <h2><span class="sec-no">SYS-02B</span>🌿 哀牢山生态体验指数</h2>
     <div class="desc">把气象数据转化为徒步、观云海、森林浴的直观指数 · 星级越高体验越好 <span class="term-tip" title="基于实时温度、湿度、降水、能见度、风速、紫外线综合计算">?</span></div>
     <div class="eco-grid" id="ecoIndexContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
-  <div class="panel pro-only" id="altitudePanel">
+  <div class="panel advanced-only" id="altitudePanel">
     <h2><span class="sec-no">SYS-03</span>⛰ 按海拔层天气差异</h2>
     <div class="desc">温度随海拔每升 1000m 约降 6.5°C，风速/湿度/浓雾概率随海拔升高而增强。下表基于各海拔代表点实时预报 + 地形校正。</div>
     <div class="alt-grid" id="altitudeContent"><div class="loading" style="grid-column:1/-1">计算中…</div></div>
   </div>
 
-  <div class="panel pro-only" id="chartPanel">
+  <div class="panel advanced-only" id="chartPanel">
     <h2>📈 未来 72h 强对流/浓雾概率与气象要素</h2>
     <div class="desc">曲线 = 30 格点逐小时强对流/浓雾概率最大值 · 柱状 = 降水 · 面积 = 湿度/云量 · 鼠标悬停看逐小时详情</div>
     <div class="btn-group">
@@ -1111,7 +1204,7 @@ body.view-public .pro-only{display:none!important}
     <h2>🧭 出行建议与智能规划</h2>
     <div class="desc">基于安全风险指数自动生成建议 · 下方可输入徒步计划生成分段避险方案 <span class="term-tip" title="安全风险指数0-100分，分数越高风险越大，≥75分建议不要进山">?</span></div>
     <div id="adviceContent"><div class="loading">加载中…</div></div>
-    <h3 style="margin-top:16px">🤖 AI 智能出行方案</h3>
+    <h3 style="margin-top:16px" class="beginner-hide">🤖 AI 智能出行方案</h3>
     <div class="ai-input">
       <label>徒步路线
         <select id="aiRoute">
@@ -1136,7 +1229,7 @@ body.view-public .pro-only{display:none!important}
     <div class="ai-result" id="aiResult"></div>
   </div>
 
-  <div class="panel" id="poiPanel">
+  <div class="panel intermediate-only" id="poiPanel">
     <h2>📍 景点聚焦与路线推荐 <span class="badge" id="poiBadge">点击 → 3D 聚焦</span></h2>
     <div class="desc">点击景点按钮可在 3D 地形中飞行聚焦 · 推荐指数 = 安全风险 + 海拔 + 景点类型综合评分 <span class="term-tip" title="分数越高越推荐游览，基于实时天气和地形风险计算">?</span></div>
     <div class="poi-grid" id="poiGrid"><div class="loading">加载中…</div></div>
@@ -1156,7 +1249,7 @@ body.view-public .pro-only{display:none!important}
     <div class="verify-note" id="routeRules"></div>
   </div>
 
-  <div class="panel" id="riskMapPanel">
+  <div class="panel intermediate-only" id="riskMapPanel">
     <h2>🗺 哀牢山精细地形与风险地图</h2>
     <div class="desc">0.02° 精细 DEM 出行底图 · 色块 = 该格点未来 24h 峰值风险 · 鼠标悬停/点击看详情</div>
     <div id="riskMapSummary" class="risk-map-summary"></div>
@@ -1205,7 +1298,7 @@ body.view-public .pro-only{display:none!important}
     </div>
   </div>
 
-  <div class="panel" id="roadPanel">
+  <div class="panel intermediate-only" id="roadPanel">
     <h2>🚗 道路出行安全 <span class="badge" id="roadCount">—</span></h2>
     <div class="desc">主要公路大雾、泥石流、山洪、塌方风险评级 · 出行前必看 <span class="term-tip" title="结合实时降水和地形敏感性计算，等级越高风险越大">?</span></div>
     <div style="overflow-x:auto"><table>
@@ -1216,7 +1309,7 @@ body.view-public .pro-only{display:none!important}
     <div id="roadSafetyContent"><div class="loading">加载中…</div></div>
   </div>
 
-  <div class="panel pro-only" id="altVerifyPanel">
+  <div class="panel advanced-only" id="altVerifyPanel">
     <h2>🔁 双模型交叉验证</h2>
     <div class="desc" id="altDesc">加载中…</div>
     <div class="grid2">
@@ -1232,7 +1325,7 @@ body.view-public .pro-only{display:none!important}
   </div>
 
   <!-- ===== 三模型比对（专业视图） ===== -->
-  <div class="panel pro-only" id="triModelPanel">
+  <div class="panel advanced-only" id="triModelPanel">
     <h2>🔬 三模型交叉比对（GFS · ECMWF · ICON）</h2>
     <div class="desc">同时拉取 GFS/ECMWF/ICON 三大模型数据，计算分歧度。分歧越大不确定性越高，风险自动上调。</div>
     <button class="risk-btn active" onclick="fetchTriModel()" style="margin-top:8px">🔄 刷新三模型比对</button>
@@ -1241,7 +1334,7 @@ body.view-public .pro-only{display:none!important}
     </div>
   </div>
 
-  <div class="panel pro-only" id="terrain3DPanel" style="display:none">
+  <div class="panel advanced-only" id="terrain3DPanel" style="display:none">
     <h2>🏔️ 3D全景地形建模与多模型重算</h2>
     <div class="desc" id="terrain3DNote">加载中…</div>
     <div class="summary" id="terrain3DSummary"><div class="loading">计算中…</div></div>
@@ -1271,7 +1364,7 @@ body.view-public .pro-only{display:none!important}
     <div class="desc" id="heat3DDesc" style="margin-top:6px"></div>
   </div>
 
-  <div class="panel pro-only" id="recalc3DPanel" style="display:none">
+  <div class="panel advanced-only" id="recalc3DPanel" style="display:none">
     <h2>🔬 3D地形驱动多模型重算结果</h2>
     <div class="desc" id="recalc3DNote">加载中…</div>
     <div class="summary" id="recalc3DSummary"><div class="loading">计算中…</div></div>
@@ -1317,7 +1410,7 @@ body.view-public .pro-only{display:none!important}
   </div>
 
   <!-- 静态 SEO 内容 + 数据来源（合并） -->
-  <section class="panel" id="sourcesPanel">
+  <section class="panel intermediate-only" id="sourcesPanel">
     <h2>🔬 关于本系统与数据来源</h2>
     <div class="desc">覆盖云南新平（戛洒镇）、双柏、镇沅等哀牢山核心区域 · 9 模型交叉验证 + 169×209 精细 DEM + Three.js 3D 可视化 · 浏览器端实时计算，每次刷新获取最新预报</div>
     <div class="desc" style="background:rgba(98,196,232,.04);border-left:3px solid var(--blue);padding:10px 16px;border-radius:4px;margin:10px 0;line-height:1.8">
@@ -1360,7 +1453,7 @@ body.view-public .pro-only{display:none!important}
     <div class="verify-note" style="margin-top:14px">⚠️ 本页为研究性预警系统，实际出行请以<b style="color:var(--text)">中国气象局</b>及<b style="color:var(--text)">哀牢山管护局</b>官方发布为准。</div>
   </section>
 
-  <section class="panel science" id="sciencePanel">
+  <section class="panel science intermediate-only" id="sciencePanel">
     <h2>🔭 哀牢山科普小贴士</h2>
     <details>
       <summary>🧭 为什么哀牢山"磁场异常"、指南针会失灵？</summary>
@@ -1485,31 +1578,33 @@ body.view-public .pro-only{display:none!important}
     <div class="fn-title">快速导航</div>
     <div class="fn-item" data-target="heroSection" title="首屏 3D 数字孪生"><span class="fn-dot"></span><span class="fn-label">首屏 3D</span></div>
     <div class="fn-item" data-target="riskIndexPanel" title="综合风险指数总表"><span class="fn-dot"></span><span class="fn-label">风险总表</span></div>
-    <div class="fn-item" data-target="warnCenterPanel" title="实时预警中心"><span class="fn-dot"></span><span class="fn-label">预警中心</span></div>
+    <div class="fn-item advanced-only" data-target="warnCenterPanel" title="实时预警中心"><span class="fn-dot"></span><span class="fn-label">预警中心</span></div>
     <div class="fn-item" data-target="weatherPanel" title="实况天气与气象要素"><span class="fn-dot"></span><span class="fn-label">实况天气</span></div>
-    <div class="fn-item" data-target="altitudePanel" title="按海拔层天气差异"><span class="fn-dot"></span><span class="fn-label">海拔差异</span></div>
-    <div class="fn-item" data-target="chartPanel" title="未来 72h 概率与气象要素"><span class="fn-dot"></span><span class="fn-label">72h 图表</span></div>
+    <div class="fn-item intermediate-only" data-target="ecoIndexPanel" title="生态体验指数"><span class="fn-dot"></span><span class="fn-label">生态指数</span></div>
+    <div class="fn-item advanced-only" data-target="altitudePanel" title="按海拔层天气差异"><span class="fn-dot"></span><span class="fn-label">海拔差异</span></div>
+    <div class="fn-item advanced-only" data-target="chartPanel" title="未来 72h 概率与气象要素"><span class="fn-dot"></span><span class="fn-label">72h 图表</span></div>
     <div class="fn-item" data-target="advicePanel" title="出行建议与智能规划"><span class="fn-dot"></span><span class="fn-label">出行建议</span></div>
-    <div class="fn-item" data-target="poiPanel" title="景点聚焦与路线推荐"><span class="fn-dot"></span><span class="fn-label">景点路线</span></div>
-    <div class="fn-item" data-target="riskMapPanel" title="精细地形与风险地图"><span class="fn-dot"></span><span class="fn-label">风险地图</span></div>
-    <div class="fn-item" data-target="roadPanel" title="道路出行安全"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
-    <div class="fn-item" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
-    <div class="fn-item pro-only" data-target="triModelPanel" title="三模型交叉比对"><span class="fn-dot"></span><span class="fn-label">三模型比对</span></div>
+    <div class="fn-item intermediate-only" data-target="poiPanel" title="景点聚焦与路线推荐"><span class="fn-dot"></span><span class="fn-label">景点路线</span></div>
+    <div class="fn-item intermediate-only" data-target="riskMapPanel" title="精细地形与风险地图"><span class="fn-dot"></span><span class="fn-label">风险地图</span></div>
+    <div class="fn-item intermediate-only" data-target="roadPanel" title="道路出行安全"><span class="fn-dot"></span><span class="fn-label">道路安全</span></div>
+    <div class="fn-item advanced-only" data-target="altVerifyPanel" title="双模型交叉验证"><span class="fn-dot"></span><span class="fn-label">双模型验证</span></div>
+    <div class="fn-item advanced-only" data-target="triModelPanel" title="三模型交叉比对"><span class="fn-dot"></span><span class="fn-label">三模型比对</span></div>
+    <div class="fn-item intermediate-only" data-target="sciencePanel" title="哀牢山科普小贴士"><span class="fn-dot"></span><span class="fn-label">科普贴士</span></div>
     <div class="fn-item" data-target="safetyPanel" title="安全科普与应急指引"><span class="fn-dot"></span><span class="fn-label">安全科普</span></div>
     <div class="fn-item fn-top" data-target="__top" title="返回顶部"><span class="fn-dot"></span><span class="fn-label">顶部</span></div>
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081528"></script>
-<script src="js/gb.js?v=2026081528"></script>
-<script src="js/fx.js?v=2026081528"></script>
-<script src="js/app.js?v=2026081528"></script>
-<script src="js/terrain3d.js?v=2026081528"></script>
+<script src="js/site.js?v=2026081529"></script>
+<script src="js/gb.js?v=2026081529"></script>
+<script src="js/fx.js?v=2026081529"></script>
+<script src="js/app.js?v=2026081529"></script>
+<script src="js/terrain3d.js?v=2026081529"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081528").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081529").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -1685,26 +1780,89 @@ function updateRiskBanner(maxRI){
     var body = "综合风险指数 " + maxRI + "，" + actions.textContent;
     try { new Notification(title, {body:body, icon:"assets/ailaoshan_map.png"}); } catch(e){}
   }
+  // 同步更新入门快速结论卡
+  try { updateQuickVerdict(maxRI); } catch(e){}
 }
 
-/* ===== 视图切换 ===== */
+/* ===== 三级视图切换：入门 / 初阶 / 高阶 ===== */
 function setView(mode){
+  if(mode !== "beginner" && mode !== "intermediate" && mode !== "advanced") mode = "beginner";
+  // 更新顶部切换按钮
   document.querySelectorAll("#viewToggle .vt-btn").forEach(function(b){
     b.classList.toggle("active", b.getAttribute("data-view") === mode);
   });
-  if(mode === "public"){
-    document.body.classList.add("view-public");
-  } else {
-    document.body.classList.remove("view-public");
-  }
+  // 更新等级选择卡片
+  document.querySelectorAll("#levelGuide .lg-card").forEach(function(c){
+    c.classList.toggle("active", c.getAttribute("data-level") === mode);
+  });
+  // 更新 body class（清除旧 view-* 类，添加新的）
+  document.body.className = document.body.className.replace(/\bview-\w+/g, "").trim();
+  document.body.classList.add("view-" + mode);
+  // 入门模式显示快速结论卡
+  var qv = document.getElementById("quickVerdict");
+  if(qv) qv.classList.toggle("show", mode === "beginner");
+  // 保存偏好
   try { localStorage.setItem("ailaoshan_view", mode); } catch(e){}
 }
+// 初始化视图（兼容旧版 public/pro 值）
 (function(){
   try {
     var saved = localStorage.getItem("ailaoshan_view");
-    if(saved === "pro") setView("pro");
-  } catch(e){}
+    if(saved === "public" || saved === "beginner") saved = "beginner";
+    else if(saved === "pro" || saved === "advanced") saved = "advanced";
+    else saved = "beginner";
+    setView(saved);
+  } catch(e){
+    setView("beginner");
+  }
 })();
+
+/* ===== 入门快速结论卡更新 ===== */
+function updateQuickVerdict(maxRI){
+  var qv = document.getElementById("quickVerdict");
+  if(!qv) return;
+  var icon = document.getElementById("qvIcon");
+  var verdict = document.getElementById("qvVerdict");
+  var detail = document.getElementById("qvDetail");
+  var stats = document.getElementById("qvStats");
+  if(!verdict || !detail) return;
+
+  var verdictText, iconText, detailText, color;
+  if(maxRI >= 75){
+    iconText = "🔴"; verdictText = "建议暂缓进山"; color = "var(--red)";
+    detailText = "强对流或地质灾害风险较高，建议取消进山计划。已进山者请尽早下山至安全区域。";
+  } else if(maxRI >= 55){
+    iconText = "⚠️"; verdictText = "较高风险 · 谨慎出行"; color = "var(--orange)";
+    detailText = "存在较强对流或地质灾害风险，如需进山请在 12:00 前完成，避开陡坡和河道。";
+  } else if(maxRI >= 35){
+    iconText = "📍"; verdictText = "关注级 · 注意天气变化"; color = "var(--yellow)";
+    detailText = "山区天气多变，建议选择短途平缓路线，14:00 前完成下山，留意午后对流发展。";
+  } else {
+    iconText = "✅"; verdictText = "低风险 · 适合游览"; color = "var(--teal)";
+    detailText = "天气状况良好，适合正常游览。建议 16:00 前下山，注意山区天气突变。";
+  }
+  if(icon) icon.textContent = iconText;
+  verdict.textContent = verdictText;
+  verdict.style.color = color;
+  detail.textContent = detailText;
+
+  // 统计数据
+  var html = "";
+  if(window.GRID && window.GRID.length){
+    var maxT = -999, maxP = 0, maxF = 0;
+    window.GRID.forEach(function(g){
+      if(g.temp != null && g.temp > maxT) maxT = g.temp;
+      if(g.peak_prob > maxP) maxP = g.peak_prob;
+      if(g.fog_prob > maxF) maxF = g.fog_prob;
+    });
+    var series = window.__chartSeries;
+    var curTemp = series && series[0] ? series[0].temp : (maxT > -999 ? maxT : "—");
+    html += '<div class="qv-stat"><div class="qv-val" style="color:var(--orange)">' + (curTemp !== "—" ? Math.round(curTemp) : "—") + '°</div><div class="qv-label">当前气温</div></div>';
+    html += '<div class="qv-stat"><div class="qv-val" style="color:' + (maxP >= 0.4 ? 'var(--red)' : 'var(--teal)') + '">' + Math.round(maxP * 100) + '%</div><div class="qv-label">强对流概率</div></div>';
+    html += '<div class="qv-stat"><div class="qv-val" style="color:' + (maxF >= 0.4 ? 'var(--yellow)' : 'var(--teal)') + '">' + Math.round(maxF * 100) + '%</div><div class="qv-label">浓雾概率</div></div>';
+  }
+  stats.innerHTML = html;
+}
 
 /* ===== GPS 定位 ===== */
 function toggleGPS(){
