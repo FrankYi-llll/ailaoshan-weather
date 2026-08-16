@@ -1264,8 +1264,8 @@
     const pts = [];
     for(let k = 0; k < N; k++) pts.push(rc.curve.getPoint(k / (N - 1)));
     const D = 12000;              // 全程 12 秒
-    // 第一视角：加宽 FOV 增强沉浸感，结束后恢复
-    camera.fov = 66;
+    // 无人机视角：标准 FOV
+    camera.fov = 50;
     camera.updateProjectionMatrix();
     controls.autoRotate = false;
     fpFlying = true;
@@ -1284,11 +1284,11 @@
       if(idx !== last){
         last = idx;
         const p = pts[idx];
-        const nxt = pts[Math.min(N - 1, idx + 10)];
-        // 第一视角：相机悬于路线上方约120m，视线略朝下看前方路径；钳制在地形之上防穿模
-        const eyeY = Math.max(p.y + 0.36, groundY(p.x, p.z) + 0.30);
-        camera.position.set(p.x, eyeY, p.z);
-        const tgY = Math.max(nxt.y + 0.18, groundY(nxt.x, nxt.z) + 0.15);
+        const nxt = pts[Math.min(N - 1, idx + 16)];
+        // 无人机视角：相机悬于路线侧上方俯瞰路径；钳制在地形之上防穿模
+        const eyeY = Math.max(p.y + 2.8, groundY(p.x + 1.4, p.z + 1.4) + 1.6);
+        camera.position.set(p.x + 1.4, eyeY, p.z + 1.4);
+        const tgY = Math.max(nxt.y + 0.9, groundY(nxt.x, nxt.z) + 0.5);
         controls.target.set(nxt.x, tgY, nxt.z);
         camera.lookAt(controls.target);
       }
@@ -1426,11 +1426,11 @@
     const btn = $("heroExploreBtn");
     if(!tourMode) toggleTourMode();
     let routeIdx = 0;
-    btn.textContent = "🥾 第一视角探索中… (" + (routeIdx+1) + "/" + tourCurves.length + ")";
+    btn.textContent = "🚁 无人机探索中… (" + (routeIdx+1) + "/" + tourCurves.length + ")";
     btn.disabled = true;
     function next(){
       if(routeIdx >= tourCurves.length){
-        btn.textContent = "🥾 第一视角探索哀牢山";
+        btn.textContent = "🚁 无人机探索哀牢山";
         btn.disabled = false;
         return;
       }
