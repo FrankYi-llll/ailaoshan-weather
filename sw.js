@@ -7,18 +7,18 @@
  *   - 外部 CDN（three.js/echarts）：缓存优先，失败走网络
  *   - 离线 fallback：所有导航请求失败时回退到 index.html
  * ===================================================================== */
-const CACHE = "ailaoshan-v2026081538";
+const CACHE = "ailaoshan-v2026081539";
 const CORE = [
   "./",
   "./index.html",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./js/site.js?v=2026081538",
-  "./js/gb.js?v=2026081538",
-  "./js/fx.js?v=2026081538",
-  "./js/app.js?v=2026081538",
-  "./js/terrain3d.js?v=2026081538",
+  "./js/site.js?v=2026081539",
+  "./js/gb.js?v=2026081539",
+  "./js/fx.js?v=2026081539",
+  "./js/app.js?v=2026081539",
+  "./js/terrain3d.js?v=2026081539",
   "./js/lib/three.min.js",
   "./js/lib/OrbitControls.js",
 ];
