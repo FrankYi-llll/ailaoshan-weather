@@ -496,14 +496,14 @@
     });
   }
 
-  /* ---------- 道路（路基/路面/中线 三层管道） ---------- */
+  /* ---------- 道路（真实比例：高速≈26m宽，县乡道≈15m，路基/路面/中线三层） ---------- */
   const ROAD_STYLES = {
-    "高速":   {base: 0.034, face: 0x8a929c, mid: 0xffffff},
-    "国道":   {base: 0.030, face: 0xa8adb5, mid: 0xffffff},
-    "省道":   {base: 0.028, face: 0xb6bbc1, mid: 0xffffff},
-    "县道":   {base: 0.026, face: 0xbec3c9, mid: 0xffffff},
-    "县乡道": {base: 0.023, face: 0xc4c9ce, mid: 0xeeeeee},
-    "景区公路":{base: 0.026, face: 0xc9b28a, mid: 0xfff0c0}
+    "高速":   {base: 0.013, face: 0x8a929c, mid: 0xffffff},
+    "国道":   {base: 0.012, face: 0xa8adb5, mid: 0xffffff},
+    "省道":   {base: 0.011, face: 0xb6bbc1, mid: 0xffffff},
+    "县道":   {base: 0.010, face: 0xbec3c9, mid: 0xffffff},
+    "县乡道": {base: 0.008, face: 0xc4c9ce, mid: 0xeeeeee},
+    "景区公路":{base: 0.009, face: 0xc9b28a, mid: 0xfff0c0}
   };
   function roadStyleOf(r){
     if(r.road_type && ROAD_STYLES[r.road_type]) return ROAD_STYLES[r.road_type];
@@ -525,7 +525,7 @@
       new THREE.TubeGeometry(curve, segs, style.base, 6, false),
       new THREE.MeshLambertMaterial({color: 0x0a0d12, transparent: true, opacity: 0.42})
     );
-    baseMesh.position.y = -0.008;
+    baseMesh.position.y = -0.003;
     // 路面
     const faceMesh = new THREE.Mesh(
       new THREE.TubeGeometry(curve, segs, style.base * 0.55, 6, false),
@@ -537,7 +537,7 @@
       new THREE.TubeGeometry(curve, segs, style.base * 0.14, 5, false),
       new THREE.MeshLambertMaterial({color: style.mid})
     );
-    midMesh.position.y = 0.002;
+    midMesh.position.y = 0.001;
     roadsGroup.add(baseMesh, faceMesh, midMesh);
   }
   function buildRoads(){
@@ -559,27 +559,37 @@
     // 树冠
     const cx = 64, cy = 66;
     if(kind === 0){
-      // 阔叶：三层圆冠
-      const cols = [["#2f6b33","#3d8a45","#57a65a"], ["#3a7a3e","#4f9c55","#6cb86e"], ["#45884a","#5aa860","#79c47c"]];
-      const layers = [[64, 78, 34, 0], [44, 96, 24, 1], [84, 96, 24, 1], [64, 108, 26, 2]];
+      // 阔叶：不规则冠簇 + 底部暗影
+      const cols = [["#2a5f2e","#3d8a45","#57a65a"], ["#357238","#4f9c55","#6cb86e"], ["#3f7f44","#5aa860","#79c47c"]];
+      const layers = [[64, 74, 36, 0], [40, 92, 25, 1], [88, 94, 25, 1], [58, 106, 27, 2], [78, 108, 22, 2]];
       for(const [lx, ly, rr, li] of layers){
         const g = ctx.createRadialGradient(lx-8, ly-10, 4, lx, ly, rr);
         g.addColorStop(0, cols[li][1]); g.addColorStop(1, cols[li][0]);
         ctx.fillStyle = g;
         ctx.beginPath(); ctx.arc(lx, ly, rr, 0, Math.PI * 2); ctx.fill();
       }
+      // 冠底阴影（受光在左上，右下更暗）
+      const sh = ctx.createLinearGradient(24, 60, 104, 136);
+      sh.addColorStop(0, "rgba(10,30,12,0)");
+      sh.addColorStop(1, "rgba(10,30,12,0.45)");
+      ctx.globalCompositeOperation = "source-atop";
+      ctx.fillStyle = sh;
+      ctx.fillRect(0, 0, 128, 160);
+      ctx.globalCompositeOperation = "source-over";
     } else if(kind === 1){
-      // 针叶：三层三角
-      const cols = ["#2c5f38","#3c7c4a","#57a06a"];
-      for(let k = 0; k < 3; k++){
-        const yTop = 34 + k * 22;
-        const g = ctx.createLinearGradient(0, yTop, 0, yTop + 46);
-        g.addColorStop(0, cols[k+1] || cols[2]); g.addColorStop(1, cols[k]);
+      // 针叶：五层下坠枝，冷杉形态
+      const cols = ["#1f4a2c","#2c5f38","#3c7c4a","#57a06a","#6db87f"];
+      for(let k = 0; k < 5; k++){
+        const yTop = 26 + k * 17;
+        const w = 14 + k * 6;              // 越往下越宽，呈下坠状
+        const g = ctx.createLinearGradient(0, yTop, 0, yTop + 40);
+        g.addColorStop(0, cols[Math.min(k + 1, 4)]);
+        g.addColorStop(1, cols[Math.max(k - 1, 0)]);
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.moveTo(cx, yTop);
-        ctx.lineTo(cx - 30, yTop + 46);
-        ctx.lineTo(cx + 30, yTop + 46);
+        ctx.lineTo(cx - w, yTop + 40);
+        ctx.lineTo(cx + w, yTop + 40);
         ctx.closePath(); ctx.fill();
       }
     } else {
@@ -602,7 +612,7 @@
       new THREE.SpriteMaterial({map: makeTreeTexture(1), transparent: true, depthWrite: false, alphaTest: 0.35}),
       new THREE.SpriteMaterial({map: makeTreeTexture(2), transparent: true, depthWrite: false, alphaTest: 0.35})
     ];
-    const N = 1400;
+    const N = 3200;
     let placed = 0;
     for(let i = 0; i < N; i++){
       const lat = lat0 + rnd() * (lat1 - lat0);
@@ -617,7 +627,8 @@
       if(rnd() > density) continue;
       if(slopeDegAt(lat, lon) > 42) continue;
       let kind = e < 1400 ? 0 : (e < 2200 ? (rnd() < 0.55 ? 1 : 0) : (e >= 2700 ? 2 : 1));
-      const s = (0.5 + rnd() * 0.75) * 1.0;
+      // 真实比例：树高约 25-35m（× 地形3倍垂直夸张 ≈ 0.06-0.1 单位）
+      const s = 0.048 + rnd() * 0.04;
       const p = surfPt(lat, lon);
       const mat = mats[kind].clone();      // 每树独立材质，避免共享 rotation
       mat.rotation = rnd() * Math.PI;
@@ -1012,19 +1023,19 @@
       const curve = new THREE.CatmullRomCurve3(v3, false, "centripetal", 0.5);
       tourCurves.push({name: rt.name, color: rt.color, curve});   // 供相机飞行
       const tube = new THREE.Mesh(
-        new THREE.TubeGeometry(curve, 64, 0.035, 8, false),
-        new THREE.MeshLambertMaterial({color: rt.color, emissive: rt.color, emissiveIntensity: 0.35})
+        new THREE.TubeGeometry(curve, 64, 0.014, 8, false),
+        new THREE.MeshLambertMaterial({color: rt.color, emissive: rt.color, emissiveIntensity: 0.3})
       );
-      tube.position.y = 0.03;
+      tube.position.y = 0.012;
       tube.userData = {route: rt.name};
       routesGroup.add(tube);
       // 端点光点
       v3.forEach(v => {
         const dot = new THREE.Mesh(
-          new THREE.SphereGeometry(0.07, 10, 10),
+          new THREE.SphereGeometry(0.03, 10, 10),
           new THREE.MeshBasicMaterial({color: rt.color})
         );
-        dot.position.set(v.x, v.y + 0.25, v.z);
+        dot.position.set(v.x, v.y + 0.1, v.z);
         routesGroup.add(dot);
       });
       // 中间标签
@@ -1373,6 +1384,8 @@
     if(!satLoaded) return;
     satOn = (typeof force === "boolean") ? force : !satOn;
     terrainMaterial.uniforms.satMixTarget.value = satOn ? 1 : 0;
+    // 卫星影像自带真实森林纹理，开启时隐藏树精灵避免叠加混乱
+    if(treesGroup) treesGroup.visible = !satOn;
     const b = $("satBtn");
     if(b) b.classList.toggle("active", satOn);
   };
