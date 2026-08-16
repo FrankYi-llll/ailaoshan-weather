@@ -1285,10 +1285,10 @@
         last = idx;
         const p = pts[idx];
         const nxt = pts[Math.min(N - 1, idx + 10)];
-        // 第一视角：相机贴路线表面，视线朝向前方路径；钳制在地形之上防穿模
-        const eyeY = Math.max(p.y + 0.15, groundY(p.x, p.z) + 0.12);
+        // 第一视角：相机悬于路线上方约120m，视线略朝下看前方路径；钳制在地形之上防穿模
+        const eyeY = Math.max(p.y + 0.36, groundY(p.x, p.z) + 0.30);
         camera.position.set(p.x, eyeY, p.z);
-        const tgY = Math.max(nxt.y + 0.15, groundY(nxt.x, nxt.z) + 0.12);
+        const tgY = Math.max(nxt.y + 0.18, groundY(nxt.x, nxt.z) + 0.15);
         controls.target.set(nxt.x, tgY, nxt.z);
         camera.lookAt(controls.target);
       }
