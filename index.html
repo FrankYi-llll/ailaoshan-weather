@@ -1192,11 +1192,7 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
 
   <div class="panel advanced-only" id="chartPanel">
     <h2>📈 未来 72h 强对流/浓雾概率与气象要素</h2>
-    <div class="desc">曲线 = 30 格点逐小时强对流/浓雾概率最大值 · 柱状 = 降水 · 面积 = 湿度/云量 · 鼠标悬停看逐小时详情</div>
-    <div class="btn-group">
-      <button class="risk-btn active" id="btnChartT" onclick="setChart('thunder')">🌩 强对流</button>
-      <button class="risk-btn" id="btnChartF" onclick="setChart('fog')">🌫 浓雾</button>
-    </div>
+    <div class="desc">曲线 = 30 格点逐小时概率最大值 · 柱状 = 降水 · 点击下方筛选切换指标 · 悬停看逐小时详情</div>
     <div id="weatherChart" style="width:100%;height:380px;border-radius:12px;background:#0b1526;border:1px solid var(--line)"></div>
   </div>
 
@@ -1595,16 +1591,16 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081529"></script>
-<script src="js/gb.js?v=2026081529"></script>
-<script src="js/fx.js?v=2026081529"></script>
-<script src="js/app.js?v=2026081529"></script>
-<script src="js/terrain3d.js?v=2026081529"></script>
+<script src="js/site.js?v=2026081530"></script>
+<script src="js/gb.js?v=2026081530"></script>
+<script src="js/fx.js?v=2026081530"></script>
+<script src="js/app.js?v=2026081530"></script>
+<script src="js/terrain3d.js?v=2026081530"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081529").then(function(reg){
+    navigator.serviceWorker.register("sw.js?v=2026081530").then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
@@ -2081,11 +2077,11 @@ window.addEventListener("offline", function(){
 (function(){
   var chartPanel = document.getElementById("chartPanel");
   if(!chartPanel) return;
-  var btnGroup = chartPanel.querySelector(".btn-group");
-  if(!btnGroup) return;
+  var chartDom = chartPanel.querySelector("#weatherChart");
+  if(!chartDom) return;
   var filterDiv = document.createElement("div");
   filterDiv.className = "chart-filters";
-  filterDiv.style.marginTop = "8px";
+  filterDiv.style.margin = "8px 0";
   filterDiv.innerHTML = '<span class="cf-label">筛选：</span>'+
     '<span class="cf-chip active" data-filter="all">全部</span>'+
     '<span class="cf-chip" data-filter="thunder">强对流</span>'+
@@ -2093,7 +2089,7 @@ window.addEventListener("offline", function(){
     '<span class="cf-chip" data-filter="rain">降水</span>'+
     '<span class="cf-chip" data-filter="temp">温度</span>'+
     '<span class="cf-chip" data-filter="wind">风速</span>';
-  btnGroup.parentNode.insertBefore(filterDiv, btnGroup.nextSibling);
+  chartPanel.insertBefore(filterDiv, chartDom);
   filterDiv.querySelectorAll(".cf-chip").forEach(function(chip){
     chip.addEventListener("click", function(){
       filterDiv.querySelectorAll(".cf-chip").forEach(function(c){c.classList.remove("active")});

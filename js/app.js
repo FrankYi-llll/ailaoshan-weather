@@ -1583,7 +1583,7 @@ function renderRoads(roads){
 }
 
 /* ---------- 天气 chart ---------- */
-let weatherChart = null, chartType = "thunder";
+let weatherChart = null;
 function renderChart(series){
   const dom = $("weatherChart");
   if(!dom) return;
@@ -1592,24 +1592,76 @@ function renderChart(series){
   const ps = series.map(s=>Math.round(s.p*100));
   const fs = series.map(s=>Math.round(s.f*100));
   const pre = series.map(s=>s.precip);
-  const rha = series.map(s=>s.rh);
-  const cloud = series.map(s=>s.cloud);
   const tmp = series.map(s=>s.temp);
-  const isT = chartType==="thunder";
-  // 图表筛选
-  const cf = window.__chartFilter || "all";
-  const showAll = (cf === "all");
-  const showThunder = showAll || cf === "thunder";
-  const showFog = showAll || cf === "fog";
-  const showRain = showAll || cf === "rain";
-  const showTemp = showAll || cf === "temp";
-  const showWind = showAll || cf === "wind";
-  const showHumidity = showAll;
   const ws = series.map(s=>s.ws);
   const wg = series.map(s=>s.wg);
+  const cf = window.__chartFilter || "all";
+
+  /* 按筛选动态生成 Y 轴：每种量纲独立刻度，绝不混用 */
+  const axisCommon = {
+    axisLine:{lineStyle:{color:"#243349"}},
+    axisLabel:{color:"#8fa3c0", fontSize:10},
+    nameTextStyle:{color:"#8fa3c0", fontSize:10}
+  };
+  const yAxes = [];
+  const sList = [];
+  const legendData = [];
+  const mkProbAxis = () => ({type:"value", name:"概率 %", min:0, max:100, position:"left",
+    splitLine:{lineStyle:{color:"#1a2a40"}}, ...axisCommon});
+  const mkRainAxis = () => ({type:"value", name:"降水 mm", min:0, position:"right",
+    splitLine:{show:false}, ...axisCommon});
+  const mkTempAxis = () => ({type:"value", name:"气温 °C", scale:true, position:"left",
+    splitLine:{lineStyle:{color:"#1a2a40"}}, ...axisCommon});
+  const mkWindAxis = () => ({type:"value", name:"风速 m/s", min:0, position:"left",
+    splitLine:{lineStyle:{color:"#1a2a40"}}, ...axisCommon});
+
+  if(cf === "all" || cf === "thunder" || cf === "fog"){
+    yAxes.push(mkProbAxis());
+    const probIdx = yAxes.length - 1;
+    if(cf !== "fog"){
+      legendData.push("强对流概率");
+      sList.push({name:"强对流概率", type:"line", yAxisIndex:probIdx, data:ps, smooth:true, symbol:"none",
+        lineStyle:{width:3, color:"#ff9f43"},
+        areaStyle:{color:{type:"linear", x:0, y:0, x2:0, y2:1, colorStops:[
+          {offset:0, color:"rgba(255,159,67,.30)"}, {offset:1, color:"rgba(255,159,67,.02)"}]}}});
+    }
+    if(cf !== "thunder"){
+      legendData.push("浓雾概率");
+      sList.push({name:"浓雾概率", type:"line", yAxisIndex:probIdx, data:fs, smooth:true, symbol:"none",
+        lineStyle:{width:3, color:"#4aa3ff"},
+        areaStyle:{color:{type:"linear", x:0, y:0, x2:0, y2:1, colorStops:[
+          {offset:0, color:"rgba(74,163,255,.30)"}, {offset:1, color:"rgba(74,163,255,.02)"}]}}});
+    }
+  }
+  if(cf === "all" || cf === "rain"){
+    yAxes.push(mkRainAxis());
+    const rainIdx = yAxes.length - 1;
+    legendData.push("降水量");
+    sList.push({name:"降水量", type:"bar", yAxisIndex:rainIdx, data:pre,
+      itemStyle:{color:"rgba(74,163,255,.55)"}, barWidth:"40%"});
+  }
+  if(cf === "temp"){
+    yAxes.push(mkTempAxis());
+    const tempIdx = yAxes.length - 1;
+    legendData.push("气温");
+    sList.push({name:"气温", type:"line", yAxisIndex:tempIdx, data:tmp, smooth:true, symbol:"none",
+      lineStyle:{width:2.5, color:"#ff6b6b"}});
+  }
+  if(cf === "wind"){
+    yAxes.push(mkWindAxis());
+    const windIdx = yAxes.length - 1;
+    legendData.push("风速", "阵风");
+    sList.push({name:"风速", type:"line", yAxisIndex:windIdx, data:ws, smooth:true, symbol:"none",
+      lineStyle:{width:2, color:"#e8a35c"}});
+    sList.push({name:"阵风", type:"line", yAxisIndex:windIdx, data:wg, smooth:true, symbol:"none",
+      lineStyle:{width:1.5, color:"#e8a35c", type:"dashed"}});
+  }
+  if(!sList.length){ yAxes.push(mkProbAxis()); }
+
+  const gridRight = (cf === "all") ? 60 : 30;
   const option = {
     backgroundColor:"transparent",
-    tooltip:{trigger:"axis", axisPointer:{type:"cross"}, formatter:p=>{
+    tooltip:{trigger:"axis", axisPointer:{type:"line"}, formatter:p=>{
       const i = p[0].dataIndex;
       const s = series[i];
       let h = '<b>'+times[i]+'</b><br/>';
@@ -1619,34 +1671,15 @@ function renderChart(series){
       h += '💨 风速 '+s.ws+'m/s · 阵风 '+s.wg+'m/s';
       return h;
     }},
-    legend:{data:[showThunder?"强对流概率":(showFog?"浓雾概率":""), showRain?"降水":"", showHumidity?"湿度":"", showTemp?"气温":"", showWind?"风速/阵风":""].filter(Boolean), textStyle:{color:"#8fa3c0"}, top:6},
-    grid:{left:48, right:52, top:48, bottom:28},
-    xAxis:{type:"category", data:times, axisLine:{lineStyle:{color:"#243349"}}, axisLabel:{color:"#8fa3c0", fontSize:10}},
-    yAxis:[
-      {type:"value", name:"概率 %", min:0, max:100, axisLine:{lineStyle:{color:"#243349"}}, axisLabel:{color:"#8fa3c0"}, splitLine:{lineStyle:{color:"#1a2a40"}}},
-      {type:"value", name:"mm / % / °C", min:0, max:100, axisLine:{lineStyle:{color:"#243349"}}, axisLabel:{color:"#8fa3c0"}, splitLine:{show:false}}
-    ],
-    series:[
-      (showThunder||showFog) ? {name:isT?"强对流概率":"浓雾概率", type:"line", data:(isT?ps:fs), smooth:true, symbol:"none",
-       lineStyle:{width:3, color:(isT?"#ff9f43":"#4aa3ff")},
-       areaStyle:{color:{type:"linear", x:0, y:0, x2:0, y2:1,
-         colorStops:[
-           {offset:0, color:(isT?"rgba(255,159,67,.35)":"rgba(74,163,255,.35)")},
-           {offset:1, color:(isT?"rgba(255,159,67,.05)":"rgba(74,163,255,.05)")}
-         ]}}} : null,
-      showRain ? {name:"降水", type:"bar", yAxisIndex:1, data:pre, itemStyle:{color:"rgba(74,163,255,.55)"}, barWidth:"40%"} : null,
-      showHumidity ? {name:"湿度", type:"line", yAxisIndex:1, data:rha, smooth:true, symbol:"none", lineStyle:{width:2, color:"#2ecc71"}} : null,
-      showTemp ? {name:"气温", type:"line", yAxisIndex:1, data:tmp, smooth:true, symbol:"none", lineStyle:{width:2, color:"#ff6b6b"}} : null,
-      showWind ? {name:"风速/阵风", type:"line", yAxisIndex:1, data:ws, smooth:true, symbol:"none", lineStyle:{width:1.5, color:"#e8a35c", type:"dashed"}} : null
-    ].filter(Boolean)
+    legend:{data:legendData, textStyle:{color:"#8fa3c0"}, top:6, itemWidth:14, itemHeight:8},
+    grid:{left:52, right:gridRight, top:44, bottom:28},
+    xAxis:{type:"category", data:times, boundaryGap:(cf==="all"||cf==="rain"),
+      axisLine:{lineStyle:{color:"#243349"}}, axisLabel:{color:"#8fa3c0", fontSize:10}},
+    yAxis:yAxes,
+    series:sList
   };
-  weatherChart.setOption(option);
-}
-function setChart(t){
-  chartType = t;
-  $("btnChartT").classList.toggle("active", t==="thunder");
-  $("btnChartF").classList.toggle("active", t==="fog");
-  if(window.__chartSeries) renderChart(window.__chartSeries);
+  /* notMerge=true：完全替换旧配置，避免图例/系列累积 */
+  weatherChart.setOption(option, true);
 }
 
 /* ---------- 渲染: 风和气象模型面板（已删除） ---------- */
