@@ -1592,16 +1592,34 @@ body.view-beginner #advicePanel .ai-result { display: none !important; }
   </nav>
 </div>
 
-<script src="js/site.js?v=2026081535"></script>
-<script src="js/gb.js?v=2026081535"></script>
-<script src="js/fx.js?v=2026081535"></script>
-<script src="js/app.js?v=2026081535"></script>
-<script src="js/terrain3d.js?v=2026081535"></script>
+<script src="js/site.js?v=2026081536"></script>
+<script src="js/gb.js?v=2026081536"></script>
+<script src="js/fx.js?v=2026081536"></script>
+<script src="js/app.js?v=2026081536"></script>
+<script src="js/terrain3d.js?v=2026081536"></script>
 <script>
 /* PWA：注册 Service Worker（弱网缓存，GitHub Pages 可安装）+ 更新提示 */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("sw.js?v=2026081535").then(function(reg){
+    /* 关键修复：清除旧版本 SW（之前用 sw.js?v=XXXX 注册，每次换版本留下残留 SW） */
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      var cleanups = [];
+      regs.forEach(function(r){
+        // 注销所有 script URL 含 ?v= 的旧 SW
+        if(r.active && r.active.scriptURL.indexOf("?v=") !== -1){
+          cleanups.push(r.unregister());
+        }
+      });
+      // 清除所有旧缓存
+      return Promise.all(cleanups).then(function(){
+        return caches.keys();
+      }).then(function(keys){
+        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+      });
+    }).then(function(){
+      /* 用不带版本戳的 URL 注册 SW —— 浏览器通过 sw.js 文件内容变化检测更新 */
+      return navigator.serviceWorker.register("sw.js");
+    }).then(function(reg){
       // 检测 SW 更新
       reg.addEventListener("updatefound", function(){
         var nw = reg.installing;
