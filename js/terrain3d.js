@@ -187,9 +187,9 @@
     sunLight.shadow.camera.bottom = -tDiag * 1.2;
     fillLight.position.set(tDiag * 0.45, tDiag * 0.35, tDiag * 0.4);
 
-    /* ---- 等高线 ---- */
-    contoursLine = buildContours();
-    scene.add(contoursLine);
+    /* ---- 等高线（已移除：卫星影像上白色线条视觉干扰） ---- */
+    // contoursLine = buildContours();
+    // scene.add(contoursLine);
 
     /* ---- 河流 / 道路 ---- */
     riversGroup = new THREE.Group();
