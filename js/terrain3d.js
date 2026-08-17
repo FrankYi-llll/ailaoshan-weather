@@ -250,11 +250,11 @@
       if(Math.hypot(dx, dy) > 6) return;   // 拖拽旋转不算点击
       onTerrainClick(e);
     });
-    // 用户开始拖拽/缩放时停止相机飞行
-    controls.addEventListener("start", ()=> stopFly());
+    // 用户开始拖拽/缩放时停止相机飞行（并取消进行中的无人机探索）
+    controls.addEventListener("start", ()=>{ stopFly(); cancelExplore(); });
     // 路线飞行按钮
     document.querySelectorAll("#three3DRoutes .rbtn").forEach((b, k)=>{
-      b.addEventListener("click", ()=> flyRoute(parseInt(b.dataset.route, 10)));
+      b.addEventListener("click", ()=>{ cancelExplore(); flyRoute(parseInt(b.dataset.route, 10)); });
     });
 
     /* ---- 海拔色标文字 ---- */
@@ -1259,7 +1259,7 @@
     endFpFlight();
   }
   window.stopRouteFly = stopFly;
-  function flyRoute(i){
+  function flyRoute(i, onDone){
     if(!initialized || !tourCurves.length) return;
     const rc = tourCurves[i];
     if(!rc) return;
@@ -1304,25 +1304,33 @@
         camera.lookAt(controls.target);
       }
       if(t < 1){ requestAnimationFrame(step); }
-      else { flyState = null; endFpFlight(); }
+      else { flyState = null; endFpFlight(); if(onDone) onDone(); }
     }
     flyState = step;
     requestAnimationFrame(step);
   }
 
-  /* ---------- 卫星影像贴图（Esri World Imagery，官方瓦片服务支持 CORS） ---------- */
+  /* ---------- 卫星影像贴图（高德为主源 + Esri 兜底，均支持 CORS） ---------- */
   let satLoaded = false, satOn = false;
   function lon2tileX(lon, z){ return (lon + 180) / 360 * Math.pow(2, z); }
   function lat2tileY(lat, z){
     const r = lat * Math.PI / 180;
     return (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * Math.pow(2, z);
   }
-  function loadTile(url){
+  // 高德影像在国内响应快（约 0.1-0.3s），4 个子域并发；Esri 作为兜底
+  const TILE_SOURCES = [
+    { name:"amap", tile:(z,ty,tx)=> "https://webst0" + (1 + tx % 4) + ".is.autonavi.com/appmaptile?style=6&x=" + tx + "&y=" + ty + "&z=" + z },
+    { name:"esri", tile:(z,ty,tx)=> "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + z + "/" + ty + "/" + tx }
+  ];
+  function loadTile(url, timeout){
     return new Promise(res => {
       const img = new Image();
+      let done = false;
+      const finish = v => { if(!done){ done = true; clearTimeout(timer); res(v); } };
+      const timer = setTimeout(()=> finish(null), timeout || 6000);   // 挂死兜底，避免 Promise 永不落定
+      img.onload = ()=> finish(img);
+      img.onerror = ()=> finish(null);
       img.crossOrigin = "anonymous";
-      img.onload = ()=> res(img);
-      img.onerror = ()=> res(null);
       img.src = url;
     });
   }
@@ -1347,35 +1355,38 @@
       const ctx = cv.getContext("2d");
       const tx0 = Math.floor(xL), tx1 = Math.floor(xR);
       const ty0 = Math.floor(yT), ty1 = Math.floor(yB);
-      const jobs = [];
-      for(let ty = ty0; ty <= ty1; ty++){
-        for(let tx = tx0; tx <= tx1; tx++){
-          jobs.push([tx, ty, loadTile(
-            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + z + "/" + ty + "/" + tx
-          )]);
+      // 依次尝试多个影像源：任一源瓦片成功率 ≥70% 即采用
+      for(const src of TILE_SOURCES){
+        const jobs = [];
+        for(let ty = ty0; ty <= ty1; ty++){
+          for(let tx = tx0; tx <= tx1; tx++){
+            jobs.push([tx, ty, loadTile(src.tile(z, ty, tx))]);
+          }
         }
-      }
-      const results = await Promise.all(jobs.map(j => j[2]));
-      const okCount = results.filter(Boolean).length;
-      if(okCount < jobs.length * 0.7){
-        console.warn("[terrain3d] 卫星瓦片加载不足(" + okCount + "/" + jobs.length + ")，保留海拔着色");
+        const results = await Promise.all(jobs.map(j => j[2]));
+        const okCount = results.filter(Boolean).length;
+        if(okCount < jobs.length * 0.7){
+          console.warn("[terrain3d] 卫星源 " + src.name + " 瓦片加载不足(" + okCount + "/" + jobs.length + ")，尝试下一源");
+          continue;
+        }
+        jobs.forEach((j, k) => {
+          const img = results[k];
+          if(!img) return;
+          const px0 = (j[0] - xL) / (xR - xL) * W;
+          const px1 = (j[0] + 1 - xL) / (xR - xL) * W;
+          const py0 = (j[1] - yT) / (yB - yT) * H;
+          const py1 = (j[1] + 1 - yT) / (yB - yT) * H;
+          ctx.drawImage(img, px0, py0, px1 - px0, py1 - py0);
+        });
+        const tex = new THREE.CanvasTexture(cv);
+        tex.anisotropy = 4;
+        terrainMaterial.uniforms.satMap.value = tex;
+        satLoaded = true;
+        window.toggleSatellite(true);   // 加载成功后默认开启（渐显）
+        console.log("[terrain3d] 卫星影像贴图完成(" + src.name + ", z" + z + ")，瓦片 " + okCount + "/" + jobs.length);
         return;
       }
-      jobs.forEach((j, k) => {
-        const img = results[k];
-        if(!img) return;
-        const px0 = (j[0] - xL) / (xR - xL) * W;
-        const px1 = (j[0] + 1 - xL) / (xR - xL) * W;
-        const py0 = (j[1] - yT) / (yB - yT) * H;
-        const py1 = (j[1] + 1 - yT) / (yB - yT) * H;
-        ctx.drawImage(img, px0, py0, px1 - px0, py1 - py0);
-      });
-      const tex = new THREE.CanvasTexture(cv);
-      tex.anisotropy = 4;
-      terrainMaterial.uniforms.satMap.value = tex;
-      satLoaded = true;
-      window.toggleSatellite(true);   // 加载成功后默认开启（渐显）
-      console.log("[terrain3d] 卫星影像贴图完成 z" + z + "，瓦片 " + okCount + "/" + jobs.length);
+      console.warn("[terrain3d] 所有卫星影像源均不可用，保留海拔着色");
     }catch(err){
       console.warn("[terrain3d] 卫星影像加载失败，保留海拔着色:", err);
     }
@@ -1410,6 +1421,7 @@
   }
   window.toggleTourMode = function(){
     if(!initialized) return;
+    cancelExplore();          // 手动切换旅游模式时取消进行中的无人机探索
     tourMode = !tourMode;
     routesGroup.visible = tourMode;
     if(!tourMode) stopFly();
@@ -1434,22 +1446,30 @@
   };
 
   /* ---------- 开始探索哀牢山：第一视角自动巡航全部路线 ---------- */
+  let exploreActive = false;
+  function cancelExplore(){
+    exploreActive = false;
+    const b = $("heroExploreBtn");
+    if(b){ b.textContent = "🚁 无人机探索哀牢山"; b.disabled = false; }
+  }
   window.startExplore = function(){
     if(!initialized || !tourCurves.length) return;
     const btn = $("heroExploreBtn");
     if(!tourMode) toggleTourMode();
+    exploreActive = true;
     let routeIdx = 0;
-    btn.textContent = "🚁 无人机探索中… (" + (routeIdx+1) + "/" + tourCurves.length + ")";
     btn.disabled = true;
+    function label(){
+      btn.textContent = "🚁 无人机探索中… (" + Math.min(routeIdx + 1, tourCurves.length) + "/" + tourCurves.length + ")";
+    }
     function next(){
-      if(routeIdx >= tourCurves.length){
-        btn.textContent = "🚁 无人机探索哀牢山";
-        btn.disabled = false;
-        return;
-      }
-      flyRoute(routeIdx);
+      if(!exploreActive) return;
+      if(routeIdx >= tourCurves.length){ cancelExplore(); return; }
+      label();                       // 每次切换路线都更新进度文字
+      flyRoute(routeIdx, function(){ // 上一条飞行真正完成后才进入下一条
+        if(exploreActive) setTimeout(next, 900);
+      });
       routeIdx++;
-      setTimeout(next, 13000);
     }
     next();
   };
